@@ -17,17 +17,13 @@ final class Form_Block {
 	
 	/**
 	 * Initialize the class.
-	 * 
-	 * @since	1.2.0
 	 */
 	public function init() {
-		
+		Admin::get_instance()->init();
 	}
 	
 	/**
 	 * Get a unique instance of the class.
-	 * 
-	 * @since	1.1.0
 	 * 
 	 * @return	\epiphyt\Form_Block\Form_Block The single instance of this class
 	 */
