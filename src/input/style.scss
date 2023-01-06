@@ -1,0 +1,22 @@
+[data-type="form-block/input"] {
+	.form-block__label-control .components-text-control__input {
+		background-color: rgba(0, 0, 0, 0);
+		border: 0;
+		border-radius: 0;
+		padding-left: 0;
+		padding-right: 0;
+	}
+	
+	.components-form-toggle {
+		line-height: 0; // fix vertical alignment
+	}
+	
+	.components-toggle-control {
+		margin-bottom: $grid-unit-10;
+	}
+	
+	.editor-styles-wrapper & {
+		margin-bottom: $grid-unit-20 !important;
+		margin-top: $grid-unit-20 !important;
+	}
+}

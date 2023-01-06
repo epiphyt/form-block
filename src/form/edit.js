@@ -1,5 +1,5 @@
 import {
-	__experimentalBlockVariationPicker as BlockVariationPicker,
+	__experimentalBlockVariationPicker as BlockVariationPicker, InnerBlocks,
 	store as blockEditorStore, useBlockProps,
 } from '@wordpress/block-editor';
 import {
@@ -18,7 +18,9 @@ export default function FormEdit( props ) {
 		},
 		clientId,
 		name,
+		setAttributes,
 	} = props;
+	const blockProps = useBlockProps();
 	const hasInnerBlocks = useSelect(
 		( select ) =>
 			select( blockEditorStore ).getBlocks( clientId ).length > 0,
@@ -27,14 +29,20 @@ export default function FormEdit( props ) {
 	
 	if ( ! hasInnerBlocks ) {
 		return <Placeholder
+			clientId={ clientId }
 			name={ name }
+			setAttributes={ setAttributes }
 		/>;
 	}
 	
-	return null;
+	return (
+		<div { ...blockProps }>
+			<InnerBlocks />
+		</div>
+	);
 }
 
-function Placeholder( { name } ) {
+function Placeholder( { clientId, name, setAttributes } ) {
 	const { defaultVariation, variations } = useSelect(
 		( select ) => {
 			const {

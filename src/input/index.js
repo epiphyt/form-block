@@ -6,31 +6,25 @@ import { __ } from '@wordpress/i18n';
 
 import attributes from './attributes';
 import FormEdit from './edit';
-import { form } from './icon';
-import variations from './variations';
 
 registerBlockType( {
 	apiVersion: 2,
-	name: 'form-block/form',
+	name: 'form-block/input',
 }, {
-	title: __( 'Form', 'form-block' ),
-	icon: form,
+	title: __( 'Input', 'form-block' ),
+	icon: 'editor-textcolor',
 	category: 'formatting',
 	attributes,
 	edit: FormEdit,
 	keywords: [
-		__( 'contact', 'form-block' ),
-		__( 'mail', 'form-block' ),
-		// TODO: add third keywords
+		__( 'text', 'form-block' ),
+		__( 'number', 'form-block' ),
 	],
 	save: () => null,
 	supports: {
-		align: [
-			'full',
-			'wide',
-		],
-		anchor: true,
 		html: false,
 	},
-	variations,
+	ancestor: [
+		'form-block/form',
+	],
 } );
