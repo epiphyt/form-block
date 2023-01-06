@@ -6,14 +6,15 @@ import { __ } from '@wordpress/i18n';
 
 import attributes from './attributes';
 import FormEdit from './edit';
-import icon from './icon';
+import { form } from './icon';
+import variations from './variations';
 
 registerBlockType( {
 	apiVersion: 2,
 	name: 'form-block/form',
 }, {
 	title: __( 'Form', 'form-block' ),
-	icon,
+	icon: form,
 	category: 'common',
 	attributes,
 	edit: FormEdit,
@@ -31,4 +32,5 @@ registerBlockType( {
 		anchor: true,
 		html: false,
 	},
+	variations,
 } );
