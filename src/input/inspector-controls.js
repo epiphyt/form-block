@@ -140,6 +140,7 @@ export default function Controls( props ) {
 						</Tooltip>
 						{ isHelpOpen[ attribute ]
 							? <Modal
+								className="form-block__help-modal"
 								onRequestClose={ () => {
 									let newState = {};
 									newState[ attribute ] = false;
