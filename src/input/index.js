@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { overlayText } from '@wordpress/icons';
 
 import attributes from './attributes';
-import FormEdit from './edit';
+import InputEdit from './edit';
 
 registerBlockType( {
 	apiVersion: 2,
@@ -16,7 +16,7 @@ registerBlockType( {
 	icon: overlayText,
 	category: 'formatting',
 	attributes,
-	edit: FormEdit,
+	edit: InputEdit,
 	keywords: [
 		__( 'text', 'form-block' ),
 		__( 'number', 'form-block' ),
