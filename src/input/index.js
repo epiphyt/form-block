@@ -3,6 +3,7 @@
  */
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
+import { overlayText } from '@wordpress/icons';
 
 import attributes from './attributes';
 import FormEdit from './edit';
@@ -12,7 +13,7 @@ registerBlockType( {
 	name: 'form-block/input',
 }, {
 	title: __( 'Input', 'form-block' ),
-	icon: 'editor-textcolor',
+	icon: overlayText,
 	category: 'formatting',
 	attributes,
 	edit: FormEdit,
