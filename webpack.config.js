@@ -7,10 +7,10 @@ const isProduction = process.env.NODE_ENV === 'production';
 const mode = isProduction ? 'production' : 'development';
 
 const jsFiles = {
-	'smooth-scroll': path.resolve( process.cwd(), 'assets/js', 'smooth-scroll.js' ),
+	//'smooth-scroll': path.resolve( process.cwd(), 'assets/js', 'smooth-scroll.js' ),
 };
 const scssFiles = {
-	'style': path.resolve( process.cwd(), 'assets/style/scss', 'style.scss' ),
+	//'style': path.resolve( process.cwd(), 'assets/style/scss', 'style.scss' ),
 };
 
 module.exports = [
