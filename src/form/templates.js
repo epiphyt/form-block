@@ -11,7 +11,7 @@ export const contactForm = [
 	[
 		'form-block/input',
 		{
-			label: __( 'Email', 'form-block' ),
+			label: __( 'Email Address', 'form-block' ),
 			required: true,
 			type: 'email',
 		},
@@ -23,6 +23,13 @@ export const contactForm = [
 			type: 'tel',
 		},
 	],
+	[
+		'form-block/input',
+		{
+			label: __( 'Submit', 'form-block' ),
+			type: 'submit',
+		},
+	],
 ];
 
 export const defaultForm = [
@@ -30,8 +37,29 @@ export const defaultForm = [
 		'form-block/input',
 		{},
 	],
+	[
+		'form-block/input',
+		{
+			label: __( 'Submit', 'form-block' ),
+			type: 'submit',
+		},
+	],
 ];
 
 export const newsletterForm = [
-	
+	[
+		'form-block/input',
+		{
+			label: __( 'Email Address', 'form-block' ),
+			required: true,
+			type: 'email',
+		},
+	],
+	[
+		'form-block/input',
+		{
+			label: __( 'Submit', 'form-block' ),
+			type: 'submit',
+		},
+	],
 ];
