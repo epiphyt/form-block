@@ -8,6 +8,7 @@ import {
 import { __ } from '@wordpress/i18n';
 
 import Controls from './inspector-controls';
+import { isAllowedAttribute } from './html-data';
 
 export default function InputEdit( props ) {
 	const {
@@ -25,25 +26,33 @@ export default function InputEdit( props ) {
 		<div { ...blockProps }>
 			<Controls { ...props } />
 			
-			<Flex>
-				<FlexBlock>
-					<TextControl
-						className="form-block__label-control"
-						onChange={ ( label ) => setAttributes( { label } ) }
-						placeholder={ __( 'Label', 'form-block' ) }
-						value={ label }
-					/>
-				</FlexBlock>
-				
-				<FlexItem>
-					<ToggleControl
-						checked={ !! required }
-						label={ __( 'Required', 'form-block' ) }
-						onChange={ ( required ) => setAttributes( { required } ) }
-						value={ required }
-					/>
-				</FlexItem>
-			</Flex>
+			{ isAllowedAttribute( type, 'label' ) || isAllowedAttribute( type, 'required' )
+				? <Flex>
+					{ isAllowedAttribute( type, 'label' )
+						? <FlexBlock>
+							<TextControl
+								className="form-block__label-control"
+								onChange={ ( label ) => setAttributes( { label } ) }
+								placeholder={ __( 'Label', 'form-block' ) }
+								value={ label }
+							/>
+						</FlexBlock>
+						: null
+					}
+					{ isAllowedAttribute( type, 'required' )
+						? <FlexItem>
+							<ToggleControl
+								checked={ !! required }
+								label={ __( 'Required', 'form-block' ) }
+								onChange={ ( required ) => setAttributes( { required } ) }
+								value={ required }
+							/>
+						</FlexItem>
+						: null
+					}
+				</Flex>
+				: null
+			}
 			
 			<TextControl
 				onChange={ ( value ) => setAttributes( { value } ) }
