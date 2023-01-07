@@ -7,7 +7,7 @@ import {
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
-import Controls from './inspector-controls';
+import Controls from './controls';
 import { isAllowedAttribute } from './html-data';
 
 export default function InputEdit( props ) {
