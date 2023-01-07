@@ -22,10 +22,20 @@
 }
 
 .form-block__block-control {
-	.components-base-control__label {
+	.components-base-control__label, // TextControl
+	.components-input-control__label.components-input-control__label.components-input-control__label, // SelectControl
+	.components-toggle-control__label { // ToggleControl
 		align-items: center;
 		display: flex;
 		justify-content: space-between;
+	}
+	
+	.components-toggle-control__label {
+		flex: 1 0;
+	}
+	
+	&.components-select-control > .components-flex-item {
+		max-width: 100%;
 	}
 	
 	.components-button.is-tertiary {

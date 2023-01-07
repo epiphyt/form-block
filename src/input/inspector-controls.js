@@ -6,22 +6,29 @@ import {
 	PanelBody,
 	SelectControl,
 	TextControl,
+	ToggleControl,
 	Tooltip,
 } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { help } from '@wordpress/icons';
 
-import { getTypes, inputAttributes, isAllowedAttribute } from './html-data';
+import {
+	getTypes,
+	inputAttributes,
+	isAllowedAttribute,
+	mdnAttributeLinkBase,
+} from './html-data';
 
 export default function Controls( props ) {
 	const {
 		attributes: {
-			accept,
+			name,
 			type,
 		},
 		setAttributes,
 	} = props;
+	const [ isHelpOpen, setIsHelpOpen ] = useState( [] );
 	
 	const getAttributeHelp = ( attribute ) => {
 		if ( ! inputAttributes[ attribute ].description ) {
@@ -30,7 +37,10 @@ export default function Controls( props ) {
 		
 		return (
 			<>
-				{ inputAttributes[ attribute ].description || null }
+				{ inputAttributes[ attribute ].description
+					? <p>{ inputAttributes[ attribute ].description }</p>
+					: null
+				}
 				{ inputAttributes[ attribute ].examples
 					? <>
 						<h2>{ __( 'Examples', 'form-block' ) }</h2>
@@ -46,22 +56,69 @@ export default function Controls( props ) {
 					</>
 					: null
 				}
-				{ inputAttributes[ attribute ].moreInfoLink
-					? <ExternalLink href={ inputAttributes[ attribute ].moreInfoLink }>
-						{ __( 'More information', 'form-block' ) }
-					</ExternalLink>
-					: null
-				}
+				<ExternalLink href={ mdnAttributeLinkBase + '#' + attribute }>
+					{ __( 'More information', 'form-block' ) }
+				</ExternalLink>
 			</>
 		);
+	}
+	
+	const getControl = ( attribute, type ) => {
+		if ( ! inputAttributes[ attribute ] ) {
+			return null;
+		}
+		
+		if ( ! isAllowedAttribute( type, attribute ) ) {
+			return null;
+		}
+		
+		switch ( inputAttributes[ attribute ].controlType ) {
+			case 'number':
+				return (
+					<TextControl
+						className="form-block__block-control"
+						label={ getLabel( attribute ) }
+						onChange={ ( newValue ) => updateValue( newValue, attribute ) }
+						type="number"
+						value={ props.attributes[ attribute ] }
+					/>
+				);
+			case 'select':
+				return (
+					<SelectControl
+						className="form-block__block-control"
+						label={ getLabel( attribute ) }
+						onChange={ ( newValue ) => updateValue( newValue, attribute ) }
+						options={ getOptions( attribute ) }
+						value={ props.attributes[ attribute ] }
+					/>
+				);
+			case 'toggle':
+				return (
+					<ToggleControl
+						checked={ !! props.attributes[ attribute ] }
+						className="form-block__block-control"
+						label={ getLabel( attribute ) }
+						onChange={ ( newValue ) => updateValue( newValue, attribute ) }
+					/>
+				);
+			case 'text':
+			default:
+				return (
+					<TextControl
+						className="form-block__block-control"
+						label={ getLabel( attribute ) }
+						onChange={ ( newValue ) => updateValue( newValue, attribute ) }
+						value={ props.attributes[ attribute ] }
+					/>
+				);
+		}
 	}
 	
 	const getLabel = ( attribute ) => {
 		if ( ! inputAttributes[ attribute ].label ) {
 			return null;
 		}
-		
-		const [ isHelpOpen, setIsHelpOpen ] = useState( false );
 		
 		return (
 			<>
@@ -73,13 +130,21 @@ export default function Controls( props ) {
 						>
 							<Button
 								icon={ help }
-								onClick={ () => setIsHelpOpen( true ) }
+								onClick={ () => {
+									let newState = {};
+									newState[ attribute ] = true;
+									setIsHelpOpen( ( prevState ) => ( { ...prevState, ...newState } ) )
+								} }
 								variant="tertiary"
 							/>
 						</Tooltip>
-						{ isHelpOpen
+						{ isHelpOpen[ attribute ]
 							? <Modal
-								onRequestClose={ () => setIsHelpOpen( false ) }
+								onRequestClose={ () => {
+									let newState = {};
+									newState[ attribute ] = false;
+									setIsHelpOpen( ( prevState ) => ( { ...prevState, ...newState } ) )
+								} }
 								title={ sprintf( __( 'Help for attribute %s', 'form-block' ), attribute ) }
 							>
 								{ getAttributeHelp( attribute ) }
@@ -93,6 +158,15 @@ export default function Controls( props ) {
 		);
 	}
 	
+	const getOptions = ( attribute ) => inputAttributes[ attribute ].options || [];
+	
+	const updateValue = ( newValue, attribute ) => {
+		let value = {};
+		value[ attribute ] = newValue;
+		
+		return setAttributes( value );
+	}
+	
 	return (
 		<InspectorControls>
 			<PanelBody>
@@ -102,24 +176,32 @@ export default function Controls( props ) {
 					options={ getTypes().map( ( type ) => ( { label: type, value: type } ) ) }
 					value={ type }
 				/>
-				{ isAllowedAttribute( type, 'accept' )
-					? <TextControl
-						className="form-block__block-control"
-						label={ getLabel( 'accept' ) }
-						onChange={ ( accept ) => setAttributes( { accept } ) }
-						value={ accept }
-					/>
-					: null
-				}
-				{ isAllowedAttribute( type, 'alt' )
-					? <TextControl
-						className="form-block__block-control"
-						label={ getLabel( 'alt' ) }
-						onChange={ ( accept ) => setAttributes( { accept } ) }
-						value={ accept }
-					/>
-					: null
-				}
+				<TextControl
+					label={ __( 'Name', 'form-block' ) }
+					onChange={ ( name ) => setAttributes( { name } ) /* TODO: only allowed characters */ }
+					value={ name }
+				/>
+				{ getControl( 'accept', type ) }
+				{ getControl( 'alt', type ) }
+				{ getControl( 'autocomplete', type ) }
+				{ getControl( 'capture', type ) }
+				{ getControl( 'checked', type ) }
+				{ getControl( 'dirname', type ) /* TODO: only allowed characters */ }
+				{ getControl( 'disabled', type ) }
+				{ getControl( 'height', type ) }
+				{ getControl( 'max', type ) }
+				{ getControl( 'maxlength', type ) }
+				{ getControl( 'min', type ) }
+				{ getControl( 'minlength', type ) }
+				{ getControl( 'multiple', type ) }
+				{ getControl( 'pattern', type ) }
+				{ getControl( 'placeholder', type ) }
+				{ getControl( 'readonly', type ) }
+				{ getControl( 'required', type ) }
+				{ getControl( 'size', type ) }
+				{ getControl( 'src', type ) }
+				{ getControl( 'step', type ) }
+				{ getControl( 'width', type ) }
 			</PanelBody>
 		</InspectorControls>
 	);

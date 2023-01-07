@@ -9,7 +9,7 @@ import {
 import { useDispatch, useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
-import icon from './icon';
+import { form } from './icon';
 
 export default function FormEdit( props ) {
 	const {
@@ -64,7 +64,7 @@ function Placeholder( { clientId, name, setAttributes } ) {
 		<div { ...blockProps }>
 			<BlockVariationPicker
 				label={ __( 'Form Type', 'form-block' ) }
-				icon={ icon }
+				icon={ form }
 				variations={ variations }
 				onSelect={ ( nextVariation = defaultVariation ) => {
 					if ( nextVariation.attributes ) {
