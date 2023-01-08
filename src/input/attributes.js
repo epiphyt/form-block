@@ -46,6 +46,9 @@ const attributes = {
 	minlength: {
 		type: 'number',
 	},
+	multiple: {
+		type: 'boolean',
+	},
 	name: {
 		type: 'string',
 	},
