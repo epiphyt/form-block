@@ -1,0 +1,9 @@
+[data-type="form-block/select"] {
+	.components-base-control__field {
+		margin-bottom: 0;
+	}
+	
+	.components-button.is-small {
+		height: 30px; // identical height to select
+	}
+}

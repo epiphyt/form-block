@@ -8,3 +8,24 @@
 @import '~@wordpress/base-styles/default-custom-properties';
 
 @import "./input/style.scss";
+@import "./select/style.scss";
+
+[data-type="form-block/input"],
+[data-type="form-block/select"] {
+	.form-block__label-control .components-text-control__input {
+		background-color: rgba(0, 0, 0, 0);
+		border: 0;
+		border-radius: 0;
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
+
+.form-block__flexible-flex-item.form-block__flexible-flex-item {
+	display: flex;
+}
+
+.form-block__inline-block-container {
+	display: inline-flex;
+	gap: $grid-unit-10;
+}
