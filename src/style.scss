@@ -20,6 +20,14 @@
 		padding-left: 0;
 		padding-right: 0;
 	}
+	
+	.components-form-toggle {
+		line-height: 0; // fix vertical alignment
+	}
+	
+	.components-toggle-control {
+		margin-bottom: $grid-unit-10;
+	}
 }
 
 .form-block__flexible-flex-item.form-block__flexible-flex-item {

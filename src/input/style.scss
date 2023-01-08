@@ -1,12 +1,4 @@
 [data-type="form-block/input"] {
-	.components-form-toggle {
-		line-height: 0; // fix vertical alignment
-	}
-	
-	.components-toggle-control {
-		margin-bottom: $grid-unit-10;
-	}
-	
 	.editor-styles-wrapper & {
 		margin-bottom: $grid-unit-20 !important;
 		margin-top: $grid-unit-20 !important;
