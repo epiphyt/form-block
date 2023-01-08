@@ -13,6 +13,8 @@ import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { reset } from '@wordpress/icons';
 
+import Controls from './controls';
+
 export default function SelectEdit( props ) {
 	const {
 		attributes: {
@@ -28,6 +30,8 @@ export default function SelectEdit( props ) {
 	
 	return (
 		<div { ...blockProps }>
+			<Controls { ...props } />
+			
 			<Flex>
 				<FlexBlock>
 					<TextControl

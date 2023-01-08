@@ -1,10 +1,22 @@
 import { __ } from '@wordpress/i18n';
 
 const attributes = {
+	autocomplete: {
+		type: 'boolean',
+	},
 	defaultValue: {
 		type: 'string',
 	},
+	disabled: {
+		type: 'boolean',
+	},
 	label: {
+		type: 'string',
+	},
+	multiple: {
+		type: 'boolean',
+	},
+	name: {
 		type: 'string',
 	},
 	options: {
@@ -15,6 +27,9 @@ const attributes = {
 	},
 	required: {
 		type: 'boolean',
+	},
+	size: {
+		type: 'string',
 	},
 };
 
