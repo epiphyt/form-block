@@ -1,7 +1,6 @@
 import { InspectorControls } from '@wordpress/block-editor';
 import {
 	Button,
-	ExternalLink,
 	Modal,
 	PanelBody,
 	SelectControl,
@@ -15,7 +14,7 @@ import { help } from '@wordpress/icons';
 
 import {
 	attributes as inputAttributes,
-	mdnAttributeLinkBase,
+	getAttributeHelp,
 } from '../data/attributes';
 import {
 	getTypes,
@@ -31,39 +30,6 @@ export default function Controls( props ) {
 		setAttributes,
 	} = props;
 	const [ isHelpOpen, setIsHelpOpen ] = useState( [] );
-	
-	const getAttributeHelp = ( attribute ) => {
-		if ( ! inputAttributes[ attribute ].description ) {
-			return null;
-		}
-		
-		return (
-			<>
-				{ inputAttributes[ attribute ].description
-					? <p>{ inputAttributes[ attribute ].description }</p>
-					: null
-				}
-				{ inputAttributes[ attribute ].examples
-					? <>
-						<h2>{ __( 'Examples', 'form-block' ) }</h2>
-						<ul>
-						{ inputAttributes[ attribute ].examples.map(
-							( example, index ) => <li key={ index }>
-								<code className="form-block__inline-code">
-									{ example }
-								</code>
-							</li>
-						) }
-						</ul>
-					</>
-					: null
-				}
-				<ExternalLink href={ mdnAttributeLinkBase + '#' + attribute }>
-					{ __( 'More information', 'form-block' ) }
-				</ExternalLink>
-			</>
-		);
-	}
 	
 	const getControl = ( attribute, type ) => {
 		if ( ! inputAttributes[ attribute ] ) {

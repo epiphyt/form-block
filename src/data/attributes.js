@@ -1,6 +1,7 @@
+import { ExternalLink } from '@wordpress/components';
 import { __, _x } from '@wordpress/i18n';
 
-export const mdnAttributeLinkBase = 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input';
+const mdnAttributeLinkBase = 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input';
 
 export const attributes = {
 	accept: {
@@ -120,3 +121,36 @@ export const attributes = {
 		label: _x( 'Width', 'HTML attribute name', 'form-block' ),
 	},
 };
+
+export const getAttributeHelp = ( attribute ) => {
+	if ( ! attributes[ attribute ].description ) {
+		return null;
+	}
+	
+	return (
+		<>
+			{ attributes[ attribute ].description
+				? <p>{ attributes[ attribute ].description }</p>
+				: null
+			}
+			{ attributes[ attribute ].examples
+				? <>
+					<h2>{ __( 'Examples', 'form-block' ) }</h2>
+					<ul>
+					{ attributes[ attribute ].examples.map(
+						( example, index ) => <li key={ index }>
+							<code className="form-block__inline-code">
+								{ example }
+							</code>
+						</li>
+					) }
+					</ul>
+				</>
+				: null
+			}
+			<ExternalLink href={ mdnAttributeLinkBase + '#' + attribute }>
+				{ __( 'More information', 'form-block' ) }
+			</ExternalLink>
+		</>
+	);
+}
