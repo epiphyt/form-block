@@ -24,6 +24,12 @@ export const contactForm = [
 		},
 	],
 	[
+		'form-block/textarea',
+		{
+			label: __( 'Message', 'form-block' ),
+		},
+	],
+	[
 		'form-block/input',
 		{
 			type: 'submit',
