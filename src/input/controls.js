@@ -14,10 +14,12 @@ import { __, sprintf } from '@wordpress/i18n';
 import { help } from '@wordpress/icons';
 
 import {
-	getTypes,
-	inputAttributes,
-	isAllowedAttribute,
+	attributes as inputAttributes,
 	mdnAttributeLinkBase,
+} from '../data/attributes';
+import {
+	getTypes,
+	isAllowedAttribute,
 } from './html-data';
 
 export default function Controls( props ) {
