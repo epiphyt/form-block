@@ -26,8 +26,8 @@ export const contactForm = [
 	[
 		'form-block/input',
 		{
-			label: __( 'Submit', 'form-block' ),
 			type: 'submit',
+			value: __( 'Submit', 'form-block' ),
 		},
 	],
 ];
@@ -40,8 +40,8 @@ export const defaultForm = [
 	[
 		'form-block/input',
 		{
-			label: __( 'Submit', 'form-block' ),
 			type: 'submit',
+			value: __( 'Submit', 'form-block' ),
 		},
 	],
 ];
@@ -58,8 +58,8 @@ export const newsletterForm = [
 	[
 		'form-block/input',
 		{
-			label: __( 'Submit', 'form-block' ),
 			type: 'submit',
+			value: __( 'Submit', 'form-block' ),
 		},
 	],
 ];
