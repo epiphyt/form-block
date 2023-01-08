@@ -11,7 +11,8 @@
 @import "./select/style.scss";
 
 [data-type="form-block/input"],
-[data-type="form-block/select"] {
+[data-type="form-block/select"],
+[data-type="form-block/textarea"] {
 	.form-block__label-control .components-text-control__input {
 		background-color: rgba(0, 0, 0, 0);
 		border: 0;

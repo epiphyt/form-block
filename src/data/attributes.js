@@ -100,10 +100,25 @@ export const attributes = {
 		description: __( 'If the form element is set to readonly, it cannot be edited but you can still interact with its value (e.g. mark and copy it).', 'form-block' ),
 		label: _x( 'Readonly', 'HTML attribute name', 'form-block' ),
 	},
+	rows: {
+		controlType: 'number',
+		description: __( 'The number of rows of the form element.', 'form-block' ),
+		label: _x( 'Rows', 'HTML attribute name', 'form-block' ),
+	},
 	size: {
 		controlType: 'number',
 		description: __( 'The size of the form element.', 'form-block' ),
 		label: _x( 'Size', 'HTML attribute name', 'form-block' ),
+	},
+	spellcheck: {
+		controlType: 'select',
+		description: __( 'Whether the browser/OS is allowed to spell checking given input.', 'form-block' ),
+		label: _x( 'Spellcheck', 'HTML attribute name', 'form-block' ),
+		options: [
+			{ label: __( 'Default', 'form-block' ), value: '' },
+			{ label: __( 'Enabled', 'form-block' ), value: 'true' },
+			{ label: __( 'Disabled', 'form-block' ), value: 'false' },
+		],
 	},
 	src: {
 		controlType: 'text',
