@@ -103,12 +103,32 @@ export default function Controls( props ) {
 					label={ getLabel( 'disabled' ) }
 					onChange={ ( disabled ) => setAttributes( { disabled } ) }
 				/>
+				<ToggleControl
+					checked={ !! readonly }
+					className="form-block__block-control"
+					label={ getLabel( 'readonly' ) }
+					onChange={ ( readonly ) => setAttributes( { readonly } ) }
+				/>
 				<TextControl
 					className="form-block__block-control"
-					label={ getLabel( 'maxlength' ) }
-					onChange={ ( maxlength ) => setAttributes( { maxlength } ) }
+					label={ getLabel( 'placeholder' ) }
+					onChange={ ( placeholder ) => setAttributes( { placeholder } ) }
+					value={ placeholder }
+				/>
+				<TextControl
+					className="form-block__block-control"
+					label={ getLabel( 'rows' ) }
+					min="1"
+					onChange={ ( rows ) => setAttributes( { rows } ) }
 					type="number"
-					value={ maxlength }
+					value={ rows }
+				/>
+				<SelectControl
+					className="form-block__block-control"
+					label={ getLabel( 'spellcheck' ) }
+					onChange={ ( spellcheck ) => setAttributes( { spellcheck } ) }
+					options={ getOptions( 'spellcheck' ) }
+					value={ spellcheck }
 				/>
 				<TextControl
 					className="form-block__block-control"
@@ -119,23 +139,10 @@ export default function Controls( props ) {
 				/>
 				<TextControl
 					className="form-block__block-control"
-					label={ getLabel( 'placeholder' ) }
-					onChange={ ( placeholder ) => setAttributes( { placeholder } ) }
-					value={ placeholder }
-				/>
-				<ToggleControl
-					checked={ !! readonly }
-					className="form-block__block-control"
-					label={ getLabel( 'readonly' ) }
-					onChange={ ( readonly ) => setAttributes( { readonly } ) }
-				/>
-				<TextControl
-					className="form-block__block-control"
-					label={ getLabel( 'rows' ) }
-					min="1"
-					onChange={ ( rows ) => setAttributes( { rows } ) }
+					label={ getLabel( 'maxlength' ) }
+					onChange={ ( maxlength ) => setAttributes( { maxlength } ) }
 					type="number"
-					value={ rows }
+					value={ maxlength }
 				/>
 				<TextControl
 					className="form-block__block-control"
@@ -143,13 +150,6 @@ export default function Controls( props ) {
 					onChange={ ( size ) => setAttributes( { size } ) }
 					type="number"
 					value={ size }
-				/>
-				<SelectControl
-					className="form-block__block-control"
-					label={ getLabel( 'spellcheck' ) }
-					onChange={ ( spellcheck ) => setAttributes( { spellcheck } ) }
-					options={ getOptions( 'spellcheck' ) }
-					value={ spellcheck }
 				/>
 			</PanelBody>
 		</InspectorControls>

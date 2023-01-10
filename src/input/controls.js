@@ -150,26 +150,24 @@ export default function Controls( props ) {
 					onChange={ ( name ) => setAttributes( { name: stripSpecialChars( name, false ) } ) }
 					value={ name ? stripSpecialChars( name, false ) : stripSpecialChars( label ) }
 				/>
-				{ getControl( 'accept', type ) }
-				{ getControl( 'alt', type ) }
 				{ getControl( 'autocomplete', type ) }
-				{ getControl( 'capture', type ) }
-				{ getControl( 'checked', type ) }
-				{ getControl( 'dirname', type ) /* TODO: only allowed characters */ }
 				{ getControl( 'disabled', type ) }
-				{ getControl( 'height', type ) }
-				{ getControl( 'max', type ) }
+				{ getControl( 'readonly', type ) }
+				{ getControl( 'multiple', type ) }
+				{ getControl( 'accept', type ) }
+				{ getControl( 'placeholder', type ) }
+				{ getControl( 'pattern', type ) }
+				{ getControl( 'checked', type ) }
+				{ getControl( 'minlength', type ) }
 				{ getControl( 'maxlength', type ) }
 				{ getControl( 'min', type ) }
-				{ getControl( 'minlength', type ) }
-				{ getControl( 'multiple', type ) }
-				{ getControl( 'pattern', type ) }
-				{ getControl( 'placeholder', type ) }
-				{ getControl( 'readonly', type ) }
-				{ getControl( 'required', type ) }
+				{ getControl( 'max', type ) }
+				{ getControl( 'step', type ) }
+				{ getControl( 'capture', type ) }
+				{ getControl( 'alt', type ) }
 				{ getControl( 'size', type ) }
 				{ getControl( 'src', type ) }
-				{ getControl( 'step', type ) }
+				{ getControl( 'height', type ) }
 				{ getControl( 'width', type ) }
 				{ getControl(
 					'dirname',
