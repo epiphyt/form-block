@@ -139,7 +139,7 @@ export default function Controls( props ) {
 		<InspectorControls>
 			<PanelBody>
 				<SelectControl
-					label={ __( 'Type', 'form-block' ) }
+					label={ _x( 'Type', 'HTML attribute name', 'form-block' ) }
 					onChange={ ( type ) => setAttributes( { type } ) }
 					options={ getTypes().map( ( type ) => ( { label: type, value: type } ) ) }
 					value={ type }
