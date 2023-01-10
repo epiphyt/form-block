@@ -14,12 +14,14 @@ import {
 	attributes as textareaAttributes,
 	getAttributeHelp,
 } from '../data/attributes';
+import { stripSpecialChars } from '../data/util';
 
 export default function Controls( props ) {
 	const {
 		attributes: {
 			autocomplete,
 			disabled,
+			label,
 			maxlength,
 			minlength,
 			name,
@@ -84,9 +86,10 @@ export default function Controls( props ) {
 			<PanelBody>
 				<TextControl
 					className="form-block__block-control"
-					label={ _x( 'Name', 'HTML attribute name', 'form-block' ) }
-					onChange={ ( name ) => setAttributes( { name } ) }
-					value={ name }
+					help={ ! name ? __( 'The name is auto-generated from the label.', 'form-block' ) : __( 'The name has been set manually.', 'form-block' ) }
+					label={ _x( 'Name', 'HTML attribute name', 'form-block' )  }
+					onChange={ ( name ) => setAttributes( { name: stripSpecialChars( name, false ) } ) }
+					value={ name ? stripSpecialChars( name, false ) : stripSpecialChars( label ) }
 				/>
 				<ToggleControl
 					checked={ !! autocomplete }

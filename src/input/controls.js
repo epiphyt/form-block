@@ -16,22 +16,21 @@ import {
 	attributes as inputAttributes,
 	getAttributeHelp,
 } from '../data/attributes';
-import {
-	getTypes,
-	isAllowedAttribute,
-} from './html-data';
+import { getSanitizedAttributeValue, stripSpecialChars } from '../data/util';
+import { getTypes, isAllowedAttribute } from './html-data';
 
 export default function Controls( props ) {
 	const {
 		attributes: {
 			name,
+			label,
 			type,
 		},
 		setAttributes,
 	} = props;
 	const [ isHelpOpen, setIsHelpOpen ] = useState( [] );
 	
-	const getControl = ( attribute, type ) => {
+	const getControl = ( attribute, type, settings = {} ) => {
 		if ( ! inputAttributes[ attribute ] ) {
 			return null;
 		}
@@ -46,9 +45,9 @@ export default function Controls( props ) {
 					<TextControl
 						className="form-block__block-control"
 						label={ getLabel( attribute ) }
-						onChange={ ( newValue ) => updateValue( newValue, attribute ) }
+						onChange={ ( newValue ) => updateValue( getSanitizedAttributeValue( newValue, settings ), attribute ) }
 						type="number"
-						value={ props.attributes[ attribute ] }
+						value={ getSanitizedAttributeValue( props.attributes[ attribute ], settings ) }
 					/>
 				);
 			case 'select':
@@ -56,9 +55,9 @@ export default function Controls( props ) {
 					<SelectControl
 						className="form-block__block-control"
 						label={ getLabel( attribute ) }
-						onChange={ ( newValue ) => updateValue( newValue, attribute ) }
+						onChange={ ( newValue ) => updateValue( getSanitizedAttributeValue( newValue, settings ), attribute ) }
 						options={ getOptions( attribute ) }
-						value={ props.attributes[ attribute ] }
+						value={ getSanitizedAttributeValue( props.attributes[ attribute ], settings ) }
 					/>
 				);
 			case 'toggle':
@@ -76,8 +75,8 @@ export default function Controls( props ) {
 					<TextControl
 						className="form-block__block-control"
 						label={ getLabel( attribute ) }
-						onChange={ ( newValue ) => updateValue( newValue, attribute ) }
-						value={ props.attributes[ attribute ] }
+						onChange={ ( newValue ) => updateValue( getSanitizedAttributeValue( newValue, settings ), attribute ) }
+						value={ getSanitizedAttributeValue( props.attributes[ attribute ], settings ) }
 					/>
 				);
 		}
@@ -146,9 +145,10 @@ export default function Controls( props ) {
 					value={ type }
 				/>
 				<TextControl
-					label={ __( 'Name', 'form-block' ) }
-					onChange={ ( name ) => setAttributes( { name } ) /* TODO: only allowed characters */ }
-					value={ name }
+					help={ ! name ? __( 'The name is auto-generated from the label.', 'form-block' ) : __( 'The name has been set manually.', 'form-block' ) }
+					label={ _x( 'Name', 'HTML attribute name', 'form-block' )  }
+					onChange={ ( name ) => setAttributes( { name: stripSpecialChars( name, false ) } ) }
+					value={ name ? stripSpecialChars( name, false ) : stripSpecialChars( label ) }
 				/>
 				{ getControl( 'accept', type ) }
 				{ getControl( 'alt', type ) }
@@ -171,6 +171,14 @@ export default function Controls( props ) {
 				{ getControl( 'src', type ) }
 				{ getControl( 'step', type ) }
 				{ getControl( 'width', type ) }
+				{ getControl(
+					'dirname',
+					type,
+					{
+						stripSpecialChars: true,
+						toLowerCase: true,
+					}
+				) }
 			</PanelBody>
 		</InspectorControls>
 	);
