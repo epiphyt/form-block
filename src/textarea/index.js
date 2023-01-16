@@ -7,6 +7,7 @@ import { __ } from '@wordpress/i18n';
 import attributes from './attributes';
 import TextareaEdit from './edit';
 import { textarea } from './icon';
+import TextareaSave from './save';
 
 registerBlockType( {
 	apiVersion: 2,
@@ -21,7 +22,7 @@ registerBlockType( {
 		__( 'input', 'form-block' ),
 		__( 'paragraph', 'form-block' ),
 	],
-	save: () => null,
+	save: TextareaSave,
 	supports: {
 		html: false,
 	},

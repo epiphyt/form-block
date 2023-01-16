@@ -22,13 +22,13 @@ export default function Controls( props ) {
 			autocomplete,
 			disabled,
 			label,
-			maxlength,
-			minlength,
+			maxLength,
+			minLength,
 			name,
 			placeholder,
-			readonly,
+			readOnly,
 			rows,
-			spellcheck,
+			spellCheck,
 			size,
 		},
 		setAttributes,
@@ -104,10 +104,10 @@ export default function Controls( props ) {
 					onChange={ ( disabled ) => setAttributes( { disabled } ) }
 				/>
 				<ToggleControl
-					checked={ !! readonly }
+					checked={ !! readOnly }
 					className="form-block__block-control"
-					label={ getLabel( 'readonly' ) }
-					onChange={ ( readonly ) => setAttributes( { readonly } ) }
+					label={ getLabel( 'readOnly' ) }
+					onChange={ ( readOnly ) => setAttributes( { readOnly } ) }
 				/>
 				<TextControl
 					className="form-block__block-control"
@@ -125,24 +125,24 @@ export default function Controls( props ) {
 				/>
 				<SelectControl
 					className="form-block__block-control"
-					label={ getLabel( 'spellcheck' ) }
-					onChange={ ( spellcheck ) => setAttributes( { spellcheck } ) }
-					options={ getOptions( 'spellcheck' ) }
-					value={ spellcheck }
+					label={ getLabel( 'spellCheck' ) }
+					onChange={ ( spellCheck ) => setAttributes( { spellCheck } ) }
+					options={ getOptions( 'spellCheck' ) }
+					value={ spellCheck }
 				/>
 				<TextControl
 					className="form-block__block-control"
-					label={ getLabel( 'minlength' ) }
-					onChange={ ( minlength ) => setAttributes( { minlength } ) }
+					label={ getLabel( 'minLength' ) }
+					onChange={ ( minLength ) => setAttributes( { minLength } ) }
 					type="number"
-					value={ minlength }
+					value={ minLength }
 				/>
 				<TextControl
 					className="form-block__block-control"
-					label={ getLabel( 'maxlength' ) }
-					onChange={ ( maxlength ) => setAttributes( { maxlength } ) }
+					label={ getLabel( 'maxLength' ) }
+					onChange={ ( maxLength ) => setAttributes( { maxLength } ) }
 					type="number"
-					value={ maxlength }
+					value={ maxLength }
 				/>
 				<TextControl
 					className="form-block__block-control"

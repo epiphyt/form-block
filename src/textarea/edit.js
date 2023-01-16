@@ -14,13 +14,37 @@ import Controls from './controls';
 export default function TextareaEdit( props ) {
 	const {
 		attributes: {
+			autocomplete,
+			disabled,
 			label,
+			maxLength,
+			minLength,
+			name,
+			placeholder,
+			readOnly,
 			required,
+			rows,
+			spellCheck,
+			size,
 			value,
 		},
 		setAttributes,
 	} = props;
 	const blockProps = useBlockProps();
+	const elementProps = {
+		autocomplete,
+		disabled,
+		maxLength,
+		minLength,
+		name,
+		placeholder,
+		readOnly,
+		required,
+		rows,
+		spellCheck,
+		size,
+		value,
+	}
 	
 	return (
 		<div { ...blockProps }>
@@ -48,7 +72,7 @@ export default function TextareaEdit( props ) {
 			
 			<TextareaControl
 				onChange={ ( defaultValue ) => setAttributes( { defaultValue } ) }
-				value={ value }
+				{ ...elementProps }
 			/>
 		</div>
 	);

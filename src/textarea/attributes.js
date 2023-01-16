@@ -1,46 +1,83 @@
 const attributes = {
 	autocomplete: {
-		type: 'boolean',
+		attribute: 'autocomplete',
+		selector: 'textarea',
+		source: 'attribute',
+		type: 'string',
 	},
 	disabled: {
+		attribute: 'disabled',
+		selector: 'textarea',
+		source: 'attribute',
 		type: 'boolean',
 	},
 	label: {
+		selector: '.form-block__label-content',
+		source: 'text',
 		type: 'string',
 	},
-	maxlength: {
+	maxLength: {
+		attribute: 'maxlength',
+		selector: 'textarea',
+		source: 'attribute',
 		type: 'number',
 	},
-	minlength: {
+	minLength: {
+		attribute: 'minlength',
+		selector: 'textarea',
+		source: 'attribute',
 		type: 'number',
 	},
 	name: {
+		attribute: 'name',
+		selector: 'textarea',
+		source: 'attribute',
 		type: 'string',
 	},
 	placeholder: {
+		attribute: 'placeholder',
+		selector: 'textarea',
+		source: 'attribute',
 		type: 'string',
 	},
-	readonly: {
+	readOnly: {
+		attribute: 'readonly',
+		selector: 'textarea',
+		source: 'attribute',
 		type: 'boolean',
 	},
 	required: {
+		attribute: 'required',
+		selector: 'textarea',
+		source: 'attribute',
 		type: 'boolean',
 	},
 	rows: {
+		attribute: 'rows',
+		selector: 'textarea',
+		source: 'attribute',
 		type: 'number',
 	},
-	spellcheck: {
+	spellCheck: {
+		attribute: 'spellcheck',
 		enum: [
 			'default',
 			'false',
 			'true',
 		],
+		selector: 'textarea',
+		source: 'attribute',
 		type: 'string',
 	},
 	size: {
+		attribute: 'size',
+		selector: 'textarea',
+		source: 'attribute',
 		type: 'string',
 	},
 	value: {
+		selector: 'textarea',
+		source: 'text',
 		type: 'string',
 	},
 };
