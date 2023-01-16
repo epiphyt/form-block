@@ -18,14 +18,28 @@ import Controls from './controls';
 export default function SelectEdit( props ) {
 	const {
 		attributes: {
-			defaultValue,
+			autocomplete,
+			disabled,
 			label,
+			multiple,
+			name,
 			options,
 			required,
+			size,
+			value,
 		},
 		setAttributes,
 	} = props;
 	const blockProps = useBlockProps();
+	const elementProps = {
+		autocomplete,
+		disabled,
+		multiple,
+		name,
+		required,
+		size,
+		value,
+	}
 	const [ isOptionModalOpen, setIsOptionModalOpen ] = useState( false );
 	
 	return (
@@ -55,9 +69,9 @@ export default function SelectEdit( props ) {
 			<Flex align="center">
 				<FlexBlock>
 					<SelectControl
-						onChange={ ( defaultValue ) => setAttributes( { defaultValue } ) }
+						onChange={ ( value ) => setAttributes( { value } ) }
 						options={ options }
-						value={ defaultValue }
+						{ ...elementProps }
 					/>
 				</FlexBlock>
 				

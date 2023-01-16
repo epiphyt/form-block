@@ -18,7 +18,7 @@ export default function TextareaSave( props ) {
 			value,
 		}
 	} = props;
-	const blockProps = useBlockProps.save( { className: 'form-element' } );
+	const blockProps = useBlockProps.save( { className: 'form-block__element' } );
 	const elementProps = {
 		autocomplete,
 		disabled,
@@ -39,7 +39,10 @@ export default function TextareaSave( props ) {
 			<textarea { ...elementProps } />
 			<label
 				className="form-block__label is-textarea-label"
-			><span className="form-block__label-content">{ label }</span>{ required ? <span className="is-required">*</span> : '' }</label>
+			>
+				<span className="form-block__label-content">{ label }</span>
+				{ required ? <span className="is-required">*</span> : '' }
+			</label>
 		</div>
 	);
 }

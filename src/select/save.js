@@ -13,7 +13,7 @@ export default function SelectSave( props ) {
 			size,
 		}
 	} = props;
-	const blockProps = useBlockProps.save( { className: 'form-element' } );
+	const blockProps = useBlockProps.save( { className: 'form-block__element' } );
 	const elementProps = {
 		autocomplete,
 		disabled,
@@ -22,7 +22,6 @@ export default function SelectSave( props ) {
 		required,
 		size,
 	}
-	console.log( {options} );
 	
 	return (
 		<div { ...blockProps }>
@@ -37,8 +36,11 @@ export default function SelectSave( props ) {
 				) ) }
 			</select>
 			<label
-				className="form-block__label is-select-label"
-			><span className="form-block__label-content">{ label }</span>{ required ? <span className="is-required">*</span> : '' }</label>
+				className="form-block__label is-textarea-label"
+			>
+				<span className="form-block__label-content">{ label }</span>
+				{ required ? <span className="is-required">*</span> : '' }
+			</label>
 		</div>
 	);
 }

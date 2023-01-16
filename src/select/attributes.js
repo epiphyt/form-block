@@ -61,6 +61,12 @@ const attributes = {
 		source: 'attribute',
 		type: 'string',
 	},
+	value: {
+		attribute: 'value',
+		selector: 'select',
+		source: 'attribute',
+		type: 'string',
+	},
 };
 
 export default attributes;

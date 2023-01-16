@@ -71,7 +71,7 @@ export default function TextareaEdit( props ) {
 			</Flex>
 			
 			<TextareaControl
-				onChange={ ( defaultValue ) => setAttributes( { defaultValue } ) }
+				onChange={ ( value ) => setAttributes( { value } ) }
 				{ ...elementProps }
 			/>
 		</div>
