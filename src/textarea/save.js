@@ -3,7 +3,7 @@ import { useBlockProps } from '@wordpress/block-editor';
 export default function TextareaSave( props ) {
 	const {
 		attributes: {
-			autocomplete,
+			autoComplete,
 			disabled,
 			label,
 			maxLength,
@@ -20,7 +20,7 @@ export default function TextareaSave( props ) {
 	} = props;
 	const blockProps = useBlockProps.save( { className: 'form-block__element' } );
 	const elementProps = {
-		autocomplete,
+		autoComplete,
 		disabled,
 		maxLength,
 		minLength,

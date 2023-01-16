@@ -15,7 +15,7 @@ export default function InputEdit( props ) {
 		attributes: {
 			accept,
 			alt,
-			autocomplete,
+			autoComplete,
 			capture,
 			checked,
 			dirname,
@@ -45,7 +45,7 @@ export default function InputEdit( props ) {
 	const elementProps = {
 		accept,
 		alt,
-		autocomplete,
+		autoComplete,
 		capture,
 		checked,
 		dirname,

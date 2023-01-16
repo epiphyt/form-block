@@ -18,7 +18,7 @@ import Controls from './controls';
 export default function SelectEdit( props ) {
 	const {
 		attributes: {
-			autocomplete,
+			autoComplete,
 			disabled,
 			label,
 			multiple,
@@ -32,7 +32,7 @@ export default function SelectEdit( props ) {
 	} = props;
 	const blockProps = useBlockProps();
 	const elementProps = {
-		autocomplete,
+		autoComplete,
 		disabled,
 		multiple,
 		name,

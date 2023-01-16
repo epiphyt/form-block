@@ -14,7 +14,7 @@ import Controls from './controls';
 export default function TextareaEdit( props ) {
 	const {
 		attributes: {
-			autocomplete,
+			autoComplete,
 			disabled,
 			label,
 			maxLength,
@@ -32,7 +32,7 @@ export default function TextareaEdit( props ) {
 	} = props;
 	const blockProps = useBlockProps();
 	const elementProps = {
-		autocomplete,
+		autoComplete,
 		disabled,
 		maxLength,
 		minLength,

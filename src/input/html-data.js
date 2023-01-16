@@ -26,14 +26,14 @@ const types = {
 	},
 	color: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'label',
 		],
 	},
 	date: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'label',
 			'max',
@@ -45,7 +45,7 @@ const types = {
 	},
 	'datetime-local': {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'label',
 			'max',
@@ -57,7 +57,7 @@ const types = {
 	},
 	email: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'label',
 			'maxLength',
@@ -73,7 +73,7 @@ const types = {
 	file: {
 		allowedAttributes: [
 			'accept',
-			'autocomplete',
+			'autoComplete',
 			'capture',
 			'disabled',
 			'label',
@@ -84,7 +84,7 @@ const types = {
 	},
 	hidden: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'label',
 		],
@@ -92,7 +92,7 @@ const types = {
 	image: {
 		allowedAttributes: [
 			'alt',
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'height',
 			'label',
@@ -104,7 +104,7 @@ const types = {
 	},
 	month: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'label',
 			'max',
@@ -116,7 +116,7 @@ const types = {
 	},
 	number: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'label',
 			'max',
@@ -129,7 +129,7 @@ const types = {
 	},
 	password: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'label',
 			'maxLength',
@@ -151,7 +151,7 @@ const types = {
 	},
 	range: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'label',
 			'max',
@@ -161,7 +161,7 @@ const types = {
 	},
 	reset: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'label',
 			'readOnly',
@@ -170,7 +170,7 @@ const types = {
 	},
 	search: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'dirname',
 			'disabled',
 			'label',
@@ -190,7 +190,7 @@ const types = {
 	},
 	tel: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'label',
 			'maxLength',
@@ -204,7 +204,7 @@ const types = {
 	},
 	text: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'dirname',
 			'disabled',
 			'label',
@@ -219,7 +219,7 @@ const types = {
 	},
 	time: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'label',
 			'max',
@@ -231,7 +231,7 @@ const types = {
 	},
 	url: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'label',
 			'maxLength',
@@ -245,7 +245,7 @@ const types = {
 	},
 	week: {
 		allowedAttributes: [
-			'autocomplete',
+			'autoComplete',
 			'disabled',
 			'label',
 			'max',

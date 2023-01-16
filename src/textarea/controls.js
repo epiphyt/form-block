@@ -19,7 +19,7 @@ import { stripSpecialChars } from '../data/util';
 export default function Controls( props ) {
 	const {
 		attributes: {
-			autocomplete,
+			autoComplete,
 			disabled,
 			label,
 			maxLength,
@@ -92,10 +92,10 @@ export default function Controls( props ) {
 					value={ name ? stripSpecialChars( name, false ) : stripSpecialChars( label ) }
 				/>
 				<ToggleControl
-					checked={ !! autocomplete }
+					checked={ !! autoComplete }
 					className="form-block__block-control"
-					label={ getLabel( 'autocomplete' ) }
-					onChange={ ( autocomplete ) => setAttributes( { autocomplete } ) }
+					label={ getLabel( 'autoComplete' ) }
+					onChange={ ( autoComplete ) => setAttributes( { autoComplete } ) }
 				/>
 				<ToggleControl
 					checked={ !! disabled }

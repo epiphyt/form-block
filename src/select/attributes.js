@@ -1,11 +1,11 @@
 import { __ } from '@wordpress/i18n';
 
 const attributes = {
-	autocomplete: {
+	autoComplete: {
 		attribute: 'autocomplete',
 		selector: 'select',
 		source: 'attribute',
-		type: 'string',
+		type: 'boolean',
 	},
 	disabled: {
 		attribute: 'disabled',

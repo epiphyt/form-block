@@ -3,7 +3,7 @@ import { useBlockProps } from '@wordpress/block-editor';
 export default function SelectSave( props ) {
 	const {
 		attributes: {
-			autocomplete,
+			autoComplete,
 			disabled,
 			label,
 			multiple,
@@ -15,7 +15,7 @@ export default function SelectSave( props ) {
 	} = props;
 	const blockProps = useBlockProps.save( { className: 'form-block__element' } );
 	const elementProps = {
-		autocomplete,
+		autoComplete,
 		disabled,
 		multiple,
 		name,

@@ -13,11 +13,11 @@ const attributes = {
 		source: 'attribute',
 		type: 'string',
 	},
-	autocomplete: {
+	autoComplete: {
 		attribute: 'autocomplete',
 		selector: 'input',
 		source: 'attribute',
-		type: 'string',
+		type: 'boolean',
 	},
 	capture: {
 		attribute: 'capture',
@@ -156,7 +156,7 @@ const attributes = {
 		attribute: 'width',
 		selector: 'input',
 		source: 'attribute',
-		type: 'number',
+		type: 'string',
 	},
 };
 

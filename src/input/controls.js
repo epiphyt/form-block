@@ -158,7 +158,7 @@ export default function Controls( props ) {
 					onChange={ ( name ) => setAttributes( { name: stripSpecialChars( name, false ) } ) }
 					value={ name ? stripSpecialChars( name, false ) : stripSpecialChars( label ) }
 				/>
-				{ getControl( 'autocomplete', type ) }
+				{ getControl( 'autoComplete', type ) }
 				{ getControl( 'disabled', type ) }
 				{ getControl( 'readOnly', type ) }
 				{ getControl( 'multiple', type ) }

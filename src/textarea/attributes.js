@@ -1,9 +1,9 @@
 const attributes = {
-	autocomplete: {
+	autoComplete: {
 		attribute: 'autocomplete',
 		selector: 'textarea',
 		source: 'attribute',
-		type: 'string',
+		type: 'boolean',
 	},
 	disabled: {
 		attribute: 'disabled',

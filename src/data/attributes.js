@@ -20,7 +20,7 @@ export const attributes = {
 		description: __( 'An alternative text that is displayed when the image could not be loaded or if a screen reader is used.', 'form-block' ),
 		label: _x( 'Alternative Text', 'HTML attribute name', 'form-block' ),
 	},
-	autocomplete: {
+	autoComplete: {
 		controlType: 'toggle',
 		description: __( 'Whether the browser\'s autofill functionality should be enabled for this form element to suggest values.', 'form-block' ),
 		label: _x( 'Autocomplete', 'HTML attribute name', 'form-block' ),
