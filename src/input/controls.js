@@ -9,6 +9,7 @@ import {
 	Tooltip,
 } from '@wordpress/components';
 import { useState } from '@wordpress/element';
+import { addFilter } from '@wordpress/hooks';
 import { __, _x, sprintf } from '@wordpress/i18n';
 import { help } from '@wordpress/icons';
 
@@ -38,6 +39,13 @@ export default function Controls( props ) {
 		if ( ! isAllowedAttribute( type, attribute ) ) {
 			return null;
 		}
+		
+		addFilter( 'formBlock.input.elementProps', 'formBlock/input-controls/element-props', ( elementProps, blockProps ) => {
+			let newProps = { ...elementProps };
+			newProps[ attribute ] = blockProps[ attribute ];
+			
+			return newProps;
+		} );
 		
 		switch ( inputAttributes[ attribute ].controlType ) {
 			case 'number':

@@ -1,62 +1,23 @@
 import { useBlockProps } from '@wordpress/block-editor';
+import { applyFilters } from '@wordpress/hooks';
 
 export default function InputSave( props ) {
 	const {
 		attributes: {
-			accept,
-			alt,
-			autocomplete,
-			capture,
-			checked,
-			dirname,
-			disabled,
-			height,
 			label,
-			max,
-			maxLength,
-			min,
-			minLength,
-			multiple,
-			name,
-			pattern,
-			placeholder,
-			readOnly,
 			required,
-			size,
-			src,
-			step,
 			type,
-			value,
-			width,
 		}
 	} = props;
 	const blockProps = useBlockProps.save( { className: 'form-block__element' } );
-	const elementProps = {
-		accept,
-		alt,
-		autocomplete,
-		capture,
-		checked,
-		dirname,
-		disabled,
-		height,
-		max,
-		maxLength,
-		min,
-		minLength,
-		multiple,
-		name,
-		pattern,
-		placeholder,
-		readOnly,
-		required,
-		size,
-		src,
-		step,
-		type,
-		value,
-		width,
-	}
+	const elementProps = applyFilters(
+		'formBlock.input.elementProps',
+		{
+			required,
+			type,
+		},
+		props.attributes,
+	);
 	
 	return (
 		<div { ...blockProps }>
