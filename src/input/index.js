@@ -7,6 +7,7 @@ import { overlayText } from '@wordpress/icons';
 
 import attributes from './attributes';
 import InputEdit from './edit';
+import InputSave from './save';
 
 registerBlockType( {
 	apiVersion: 2,
@@ -21,7 +22,7 @@ registerBlockType( {
 		__( 'text', 'form-block' ),
 		__( 'number', 'form-block' ),
 	],
-	save: () => null,
+	save: InputSave,
 	supports: {
 		html: false,
 	},

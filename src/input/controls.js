@@ -152,14 +152,14 @@ export default function Controls( props ) {
 				/>
 				{ getControl( 'autocomplete', type ) }
 				{ getControl( 'disabled', type ) }
-				{ getControl( 'readonly', type ) }
+				{ getControl( 'readOnly', type ) }
 				{ getControl( 'multiple', type ) }
 				{ getControl( 'accept', type ) }
 				{ getControl( 'placeholder', type ) }
 				{ getControl( 'pattern', type ) }
 				{ getControl( 'checked', type ) }
-				{ getControl( 'minlength', type ) }
-				{ getControl( 'maxlength', type ) }
+				{ getControl( 'minLength', type ) }
+				{ getControl( 'maxLength', type ) }
 				{ getControl( 'min', type ) }
 				{ getControl( 'max', type ) }
 				{ getControl( 'step', type ) }

@@ -13,14 +13,61 @@ import { isAllowedAttribute } from './html-data';
 export default function InputEdit( props ) {
 	const {
 		attributes: {
+			accept,
+			alt,
+			autocomplete,
+			capture,
+			checked,
+			dirname,
+			disabled,
+			height,
 			label,
+			max,
+			maxLength,
+			min,
+			minLength,
+			multiple,
+			name,
+			pattern,
+			placeholder,
+			readOnly,
 			required,
+			size,
+			src,
+			step,
 			type,
 			value,
+			width,
 		},
 		setAttributes,
 	} = props;
 	const blockProps = useBlockProps();
+	const elementProps = {
+		accept,
+		alt,
+		autocomplete,
+		capture,
+		checked,
+		dirname,
+		disabled,
+		height,
+		max,
+		maxLength,
+		min,
+		minLength,
+		multiple,
+		name,
+		pattern,
+		placeholder,
+		readOnly,
+		required,
+		size,
+		src,
+		step,
+		type,
+		value,
+		width,
+	}
 	
 	return (
 		<div { ...blockProps }>
@@ -56,8 +103,7 @@ export default function InputEdit( props ) {
 			
 			<TextControl
 				onChange={ ( value ) => setAttributes( { value } ) }
-				type={ type }
-				value={ value }
+				{ ...elementProps }
 			/>
 		</div>
 	);
