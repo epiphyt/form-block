@@ -60,7 +60,7 @@ export const attributes = {
 		description: __( 'The maximum value of the form element.', 'form-block' ),
 		label: _x( 'Max', 'HTML attribute name', 'form-block' ),
 	},
-	maxlength: {
+	maxLength: {
 		controlType: 'number',
 		description: __( 'The maximum length (number of characters) of the value.', 'form-block' ),
 		label: _x( 'Maxlength', 'HTML attribute name', 'form-block' ),
@@ -70,7 +70,7 @@ export const attributes = {
 		description: __( 'The minimum value of the form element.', 'form-block' ),
 		label: _x( 'Min', 'HTML attribute name', 'form-block' ),
 	},
-	minlength: {
+	minLength: {
 		controlType: 'number',
 		description: __( 'The minimum length (number of characters) of the value.', 'form-block' ),
 		label: _x( 'Minlength', 'HTML attribute name', 'form-block' ),
@@ -95,9 +95,9 @@ export const attributes = {
 		description: __( 'A placeholder is displayed in the form element before any value is added to it.', 'form-block' ),
 		label: _x( 'Placeholder', 'HTML attribute name', 'form-block' ),
 	},
-	readonly: {
+	readOnly: {
 		controlType: 'toggle',
-		description: __( 'If the form element is set to readonly, it cannot be edited but you can still interact with its value (e.g. mark and copy it).', 'form-block' ),
+		description: __( 'If the form element is set to readOnly, it cannot be edited but you can still interact with its value (e.g. mark and copy it).', 'form-block' ),
 		label: _x( 'Readonly', 'HTML attribute name', 'form-block' ),
 	},
 	rows: {
@@ -110,7 +110,7 @@ export const attributes = {
 		description: __( 'The size of the form element.', 'form-block' ),
 		label: _x( 'Size', 'HTML attribute name', 'form-block' ),
 	},
-	spellcheck: {
+	spellCheck: {
 		controlType: 'select',
 		description: __( 'Whether the browser/OS is allowed to spell checking given input.', 'form-block' ),
 		label: _x( 'Spellcheck', 'HTML attribute name', 'form-block' ),
