@@ -7,6 +7,7 @@ import { __ } from '@wordpress/i18n';
 import attributes from './attributes';
 import FormEdit from './edit';
 import { form } from './icon';
+import FormSave from './save';
 import variations from './variations';
 
 registerBlockType( {
@@ -23,7 +24,7 @@ registerBlockType( {
 		__( 'mail', 'form-block' ),
 		// TODO: add third keywords
 	],
-	save: () => null,
+	save: FormSave,
 	supports: {
 		align: [
 			'full',
