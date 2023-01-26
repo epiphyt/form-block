@@ -1,6 +1,7 @@
 <?php
 /** @noinspection PhpMissingFieldTypeInspection */
 namespace epiphyt\Form_Block;
+
 use function add_action;
 use function plugin_dir_path;
 use function plugin_dir_url;
@@ -9,7 +10,7 @@ use function wp_enqueue_style;
 use const EPI_FORM_BLOCK_FILE;
 
 /**
- * Form Block main class.
+ * Form Block admin class.
  * 
  * @author	Epiphyt
  * @license	GPL2
@@ -34,8 +35,8 @@ final class Admin {
 	public function block_assets(): void {
 		$asset_file = include plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'build/index.asset.php';
 		
-		wp_enqueue_script( 'form-block', plugin_dir_url( EPI_FORM_BLOCK_FILE ) . '/build/index.js', $asset_file['dependencies'], $asset_file['version'] );
-		wp_enqueue_style( 'form-block', plugin_dir_url( EPI_FORM_BLOCK_FILE ) . '/build/style-index.css', [], $asset_file['version'] );
+		wp_enqueue_script( 'form-block', plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'build/index.js', $asset_file['dependencies'], $asset_file['version'] );
+		wp_enqueue_style( 'form-block', plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'build/style-index.css', [], $asset_file['version'] );
 	}
 	
 	/**
