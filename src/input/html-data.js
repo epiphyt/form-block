@@ -1,3 +1,7 @@
+export const getAllowedAttributes = ( type ) => {
+	return types[ type ].allowedAttributes;
+}
+
 export const getTypes = () => Object.keys( types );
 
 export const isAllowedAttribute = ( type, attribute ) => {
