@@ -1,6 +1,7 @@
 import { useBlockProps } from '@wordpress/block-editor';
 import {
-	Flex, FlexBlock,
+	Flex,
+	FlexBlock,
 	FlexItem,
 	TextControl,
 	ToggleControl
