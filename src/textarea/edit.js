@@ -44,7 +44,7 @@ export default function TextareaEdit( props ) {
 		spellCheck,
 		size,
 		value,
-	}
+	};
 	
 	return (
 		<div { ...blockProps }>

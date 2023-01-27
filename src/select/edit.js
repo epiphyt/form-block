@@ -39,7 +39,7 @@ export default function SelectEdit( props ) {
 		required,
 		size,
 		value,
-	}
+	};
 	const [ isOptionModalOpen, setIsOptionModalOpen ] = useState( false );
 	
 	return (

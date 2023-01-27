@@ -68,7 +68,7 @@ export default function InputEdit( props ) {
 		type,
 		value,
 		width,
-	}
+	};
 	
 	return (
 		<div { ...blockProps }>
