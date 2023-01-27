@@ -48,7 +48,19 @@ final class Form_Block {
 		if ( $context !== 'post' ) {
 			return $tags;
 		}
-		
+
+		$tags['form'] = [
+			'action' => true,
+			'accept' => true,
+			'accept-charset' => true,
+			'class' => true,
+			'data-*' => true,
+			'enctype' => true,
+			'id' => true,
+			'method' => true,
+			'name' => true,
+			'target' => true,
+		];
 		$tags['input'] = [
 			'autocomplete' => true,
 			'class' => true,
