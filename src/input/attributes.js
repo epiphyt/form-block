@@ -1,47 +1,11 @@
 import { getTypes } from './html-data';
 
 const attributes = {
-	accept: {
-		attribute: 'accept',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	alt: {
-		attribute: 'alt',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	autoComplete: {
-		attribute: 'autocomplete',
-		selector: 'input',
-		source: 'attribute',
-		type: 'boolean',
-	},
-	capture: {
-		attribute: 'capture',
-		default: '',
-		enum: [
-			'',
-			'environment',
-			'user',
-		],
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
 	checked: {
 		attribute: 'checked',
 		selector: 'input',
 		source: 'attribute',
 		type: 'boolean',
-	},
-	dirname: {
-		attribute: 'dirname',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
 	},
 	disabled: {
 		attribute: 'disabled',
@@ -49,46 +13,10 @@ const attributes = {
 		source: 'attribute',
 		type: 'boolean',
 	},
-	height: {
-		attribute: 'height',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
 	label: {
 		selector: '.form-block__label-content',
 		source: 'text',
 		type: 'string',
-	},
-	max: {
-		attribute: 'max',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	maxLength: {
-		attribute: 'maxlength',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	min: {
-		attribute: 'min',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	minLength: {
-		attribute: 'minlength',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	multiple: {
-		attribute: 'multiple',
-		selector: 'input',
-		source: 'attribute',
-		type: 'boolean',
 	},
 	name: {
 		attribute: 'name',
@@ -120,24 +48,6 @@ const attributes = {
 		source: 'attribute',
 		type: 'boolean',
 	},
-	size: {
-		attribute: 'size',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	src: {
-		attribute: 'src',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	step: {
-		attribute: 'step',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
 	type: {
 		attribute: 'type',
 		default: 'text',
@@ -148,12 +58,6 @@ const attributes = {
 	},
 	value: {
 		attribute: 'value',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	width: {
-		attribute: 'width',
 		selector: 'input',
 		source: 'attribute',
 		type: 'string',

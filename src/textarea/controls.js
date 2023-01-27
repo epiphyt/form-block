@@ -9,6 +9,7 @@ import {
 	Tooltip
 } from '@wordpress/components';
 import { useState } from '@wordpress/element';
+import { applyFilters } from '@wordpress/hooks';
 import { __, _x, sprintf } from '@wordpress/i18n';
 import { help } from '@wordpress/icons';
 
@@ -16,26 +17,88 @@ import {
 	attributes as textareaAttributes,
 	getAttributeHelp,
 } from '../data/attributes';
-import { stripSpecialChars } from '../data/util';
+import { getSanitizedAttributeValue } from '../data/util';
 
 export default function Controls( props ) {
 	const {
 		attributes: {
-			autoComplete,
-			disabled,
-			label,
-			maxLength,
-			minLength,
 			name,
-			placeholder,
-			readOnly,
-			rows,
-			spellCheck,
-			size,
 		},
 		setAttributes,
 	} = props;
 	const [ isHelpOpen, setIsHelpOpen ] = useState( [] );
+	const controls = applyFilters(
+		'formBlock.textarea.controlTypes',
+		[
+			{
+				attributeName: 'name',
+				attributes: {
+					help: ! name ? __( 'The name is auto-generated from the label.', 'form-block' ) : __( 'The name has been set manually.', 'form-block' ),
+					label: _x( 'Name', 'HTML attribute name', 'form-block' ),
+					stripSpecialChars: true,
+					toLowerCase: true,
+					type: 'text',
+				},
+			},
+			{
+				attributeName: 'disabled',
+				attributes: {
+					type: 'toggle',
+				},
+			},
+		],
+		props.attributes,
+	);
+	
+	const getControl = ( control, key ) => {
+		const {
+			attributeName,
+			attributes: {
+				help,
+				label,
+				inputType,
+				type,
+			},
+		} = control;
+		
+		switch ( type ) {
+			case 'select':
+				return (
+					<SelectControl
+						className="form-block__block-control"
+						key={ key }
+						label={ getLabel( attributeName ) }
+						onChange={ ( newValue ) => updateValue( getSanitizedAttributeValue( newValue, control.attributes ), attributeName ) }
+						options={ getOptions( attributeName ) }
+						value={ getSanitizedAttributeValue( props.attributes[ attributeName ], control.attributes ) }
+					/>
+				);
+			case 'toggle':
+				return (
+					<ToggleControl
+						checked={ !! props.attributes[ attributeName ] }
+						className="form-block__block-control"
+						help={ help || null }
+						key={ key }
+						label={ label || getLabel( attributeName ) }
+						onChange={ ( newValue ) => updateValue( newValue, attributeName ) }
+					/>
+				);
+			case 'text':
+			default:
+				return (
+					<TextControl
+						className="form-block__block-control"
+						help={ help || null }
+						key={ key }
+						label={ label || getLabel( attributeName ) }
+						onChange={ ( newValue ) => updateValue( getSanitizedAttributeValue( newValue, control.attributes ), attributeName ) }
+						type={ inputType || 'text' }
+						value={ getSanitizedAttributeValue( props.attributes[ attributeName ], control.attributes ) }
+					/>
+				);
+		}
+	}
 	
 	const getLabel = ( attribute ) => {
 		if (  ! textareaAttributes[ attribute ].label ) {
@@ -83,76 +146,17 @@ export default function Controls( props ) {
 	
 	const getOptions = ( attribute ) => textareaAttributes[ attribute ].options || [];
 	
+	const updateValue = ( newValue, attribute ) => {
+		let value = {};
+		value[ attribute ] = newValue;
+		
+		return setAttributes( value );
+	}
+	
 	return (
 		<InspectorControls>
 			<PanelBody>
-				<TextControl
-					className="form-block__block-control"
-					help={ ! name ? __( 'The name is auto-generated from the label.', 'form-block' ) : __( 'The name has been set manually.', 'form-block' ) }
-					label={ _x( 'Name', 'HTML attribute name', 'form-block' )  }
-					onChange={ ( name ) => setAttributes( { name: stripSpecialChars( name, false ) } ) }
-					value={ name ? stripSpecialChars( name, false ) : stripSpecialChars( label ) }
-				/>
-				<ToggleControl
-					checked={ !! autoComplete }
-					className="form-block__block-control"
-					label={ getLabel( 'autoComplete' ) }
-					onChange={ ( autoComplete ) => setAttributes( { autoComplete } ) }
-				/>
-				<ToggleControl
-					checked={ !! disabled }
-					className="form-block__block-control"
-					label={ getLabel( 'disabled' ) }
-					onChange={ ( disabled ) => setAttributes( { disabled } ) }
-				/>
-				<ToggleControl
-					checked={ !! readOnly }
-					className="form-block__block-control"
-					label={ getLabel( 'readOnly' ) }
-					onChange={ ( readOnly ) => setAttributes( { readOnly } ) }
-				/>
-				<TextControl
-					className="form-block__block-control"
-					label={ getLabel( 'placeholder' ) }
-					onChange={ ( placeholder ) => setAttributes( { placeholder } ) }
-					value={ placeholder }
-				/>
-				<TextControl
-					className="form-block__block-control"
-					label={ getLabel( 'rows' ) }
-					min="1"
-					onChange={ ( rows ) => setAttributes( { rows } ) }
-					type="number"
-					value={ rows }
-				/>
-				<SelectControl
-					className="form-block__block-control"
-					label={ getLabel( 'spellCheck' ) }
-					onChange={ ( spellCheck ) => setAttributes( { spellCheck } ) }
-					options={ getOptions( 'spellCheck' ) }
-					value={ spellCheck }
-				/>
-				<TextControl
-					className="form-block__block-control"
-					label={ getLabel( 'minLength' ) }
-					onChange={ ( minLength ) => setAttributes( { minLength } ) }
-					type="number"
-					value={ minLength }
-				/>
-				<TextControl
-					className="form-block__block-control"
-					label={ getLabel( 'maxLength' ) }
-					onChange={ ( maxLength ) => setAttributes( { maxLength } ) }
-					type="number"
-					value={ maxLength }
-				/>
-				<TextControl
-					className="form-block__block-control"
-					label={ getLabel( 'size' ) }
-					onChange={ ( size ) => setAttributes( { size } ) }
-					type="number"
-					value={ size }
-				/>
+			{ controls.map( ( control, index ) => getControl( control, index ) ) }
 			</PanelBody>
 		</InspectorControls>
 	);

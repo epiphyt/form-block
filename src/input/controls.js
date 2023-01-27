@@ -9,7 +9,7 @@ import {
 	Tooltip,
 } from '@wordpress/components';
 import { useState } from '@wordpress/element';
-import { addFilter } from '@wordpress/hooks';
+import { addFilter, applyFilters } from '@wordpress/hooks';
 import { __, _x, sprintf } from '@wordpress/i18n';
 import { help } from '@wordpress/icons';
 
@@ -30,8 +30,33 @@ export default function Controls( props ) {
 		setAttributes,
 	} = props;
 	const [ isHelpOpen, setIsHelpOpen ] = useState( [] );
+	const controls = applyFilters(
+		'formBlock.input.controlTypes',
+		[
+			{
+				attributeName: 'disabled',
+				attributes: {},
+			},
+			{
+				attributeName: 'readOnly',
+				attributes: {},
+			},
+			{
+				attributeName: 'placeholder',
+				attributes: {},
+			},
+			{
+				attributeName: 'pattern',
+				attributes: {},
+			},
+			{
+				attributeName: 'checked',
+				attributes: {},
+			},
+		],
+	);
 	
-	const getControl = ( attribute, type, settings = {} ) => {
+	const getControl = ( attribute, type, key, settings = {} ) => {
 		if ( ! inputAttributes[ attribute ] ) {
 			return null;
 		}
@@ -52,6 +77,7 @@ export default function Controls( props ) {
 				return (
 					<TextControl
 						className="form-block__block-control"
+						key={ key }
 						label={ getLabel( attribute ) }
 						onChange={ ( newValue ) => updateValue( getSanitizedAttributeValue( newValue, settings ), attribute ) }
 						type="number"
@@ -62,6 +88,7 @@ export default function Controls( props ) {
 				return (
 					<SelectControl
 						className="form-block__block-control"
+						key={ key }
 						label={ getLabel( attribute ) }
 						onChange={ ( newValue ) => updateValue( getSanitizedAttributeValue( newValue, settings ), attribute ) }
 						options={ getOptions( attribute ) }
@@ -73,6 +100,7 @@ export default function Controls( props ) {
 					<ToggleControl
 						checked={ !! props.attributes[ attribute ] }
 						className="form-block__block-control"
+						key={ key }
 						label={ getLabel( attribute ) }
 						onChange={ ( newValue ) => updateValue( newValue, attribute ) }
 					/>
@@ -82,6 +110,7 @@ export default function Controls( props ) {
 				return (
 					<TextControl
 						className="form-block__block-control"
+						key={ key }
 						label={ getLabel( attribute ) }
 						onChange={ ( newValue ) => updateValue( getSanitizedAttributeValue( newValue, settings ), attribute ) }
 						value={ getSanitizedAttributeValue( props.attributes[ attribute ], settings ) }
@@ -158,33 +187,7 @@ export default function Controls( props ) {
 					onChange={ ( name ) => setAttributes( { name: stripSpecialChars( name, false ) } ) }
 					value={ name ? stripSpecialChars( name, false ) : stripSpecialChars( label ) }
 				/>
-				{ getControl( 'autoComplete', type ) }
-				{ getControl( 'disabled', type ) }
-				{ getControl( 'readOnly', type ) }
-				{ getControl( 'multiple', type ) }
-				{ getControl( 'accept', type ) }
-				{ getControl( 'placeholder', type ) }
-				{ getControl( 'pattern', type ) }
-				{ getControl( 'checked', type ) }
-				{ getControl( 'minLength', type ) }
-				{ getControl( 'maxLength', type ) }
-				{ getControl( 'min', type ) }
-				{ getControl( 'max', type ) }
-				{ getControl( 'step', type ) }
-				{ getControl( 'capture', type ) }
-				{ getControl( 'alt', type ) }
-				{ getControl( 'size', type ) }
-				{ getControl( 'src', type ) }
-				{ getControl( 'height', type ) }
-				{ getControl( 'width', type ) }
-				{ getControl(
-					'dirname',
-					type,
-					{
-						stripSpecialChars: true,
-						toLowerCase: true,
-					}
-				) }
+				{ controls.map( ( control, index ) => getControl( control.attributeName, type, index, control.attributes ) ) }
 			</PanelBody>
 		</InspectorControls>
 	);

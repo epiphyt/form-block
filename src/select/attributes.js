@@ -1,12 +1,6 @@
 import { __ } from '@wordpress/i18n';
 
 const attributes = {
-	autoComplete: {
-		attribute: 'autocomplete',
-		selector: 'select',
-		source: 'attribute',
-		type: 'boolean',
-	},
 	disabled: {
 		attribute: 'disabled',
 		selector: 'select',
@@ -17,12 +11,6 @@ const attributes = {
 		selector: '.form-block__label-content',
 		source: 'text',
 		type: 'string',
-	},
-	multiple: {
-		attribute: 'multiple',
-		selector: 'select',
-		source: 'attribute',
-		type: 'boolean',
 	},
 	name: {
 		attribute: 'name',
@@ -54,12 +42,6 @@ const attributes = {
 		selector: 'select',
 		source: 'attribute',
 		type: 'boolean',
-	},
-	size: {
-		attribute: 'size',
-		selector: 'select',
-		source: 'attribute',
-		type: 'string',
 	},
 	value: {
 		attribute: 'value',

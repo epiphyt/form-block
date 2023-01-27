@@ -1,10 +1,4 @@
 const attributes = {
-	autoComplete: {
-		attribute: 'autocomplete',
-		selector: 'textarea',
-		source: 'attribute',
-		type: 'boolean',
-	},
 	disabled: {
 		attribute: 'disabled',
 		selector: 'textarea',
@@ -15,18 +9,6 @@ const attributes = {
 		selector: '.form-block__label-content',
 		source: 'text',
 		type: 'string',
-	},
-	maxLength: {
-		attribute: 'maxlength',
-		selector: 'textarea',
-		source: 'attribute',
-		type: 'number',
-	},
-	minLength: {
-		attribute: 'minlength',
-		selector: 'textarea',
-		source: 'attribute',
-		type: 'number',
 	},
 	name: {
 		attribute: 'name',
@@ -51,29 +33,6 @@ const attributes = {
 		selector: 'textarea',
 		source: 'attribute',
 		type: 'boolean',
-	},
-	rows: {
-		attribute: 'rows',
-		selector: 'textarea',
-		source: 'attribute',
-		type: 'number',
-	},
-	spellCheck: {
-		attribute: 'spellcheck',
-		enum: [
-			'default',
-			'false',
-			'true',
-		],
-		selector: 'textarea',
-		source: 'attribute',
-		type: 'string',
-	},
-	size: {
-		attribute: 'size',
-		selector: 'textarea',
-		source: 'attribute',
-		type: 'string',
 	},
 	value: {
 		selector: 'textarea',
