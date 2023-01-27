@@ -150,7 +150,10 @@ export default function Controls( props ) {
 									newState[ attribute ] = false;
 									setIsHelpOpen( ( prevState ) => ( { ...prevState, ...newState } ) )
 								} }
-								title={ sprintf( __( 'Help for attribute %s', 'form-block' ), attribute ) }
+								title={
+									/* translators: attribute name */
+									sprintf( __( 'Help for attribute %s', 'form-block' ), inputAttributes[ attribute ].label )
+								}
 							>
 								{ getAttributeHelp( attribute ) }
 							</Modal>
