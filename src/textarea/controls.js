@@ -1,7 +1,9 @@
 import { InspectorControls } from '@wordpress/block-editor';
 import {
-	Button, Modal,
-	PanelBody, SelectControl,
+	Button,
+	Modal,
+	PanelBody,
+	SelectControl,
 	TextControl,
 	ToggleControl,
 	Tooltip
