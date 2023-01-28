@@ -70,10 +70,11 @@ export default function InputEdit( props ) {
 		width,
 	};
 	
+	blockProps.className += ' is-type-' + type;
+	
 	if ( type === 'hidden' ) {
 		elementProps.help = __( 'This input is hidden in the frontend.', 'form-block' );
 		elementProps.type = 'text';
-		blockProps.className += ' is-type-hidden';
 	}
 	
 	return (

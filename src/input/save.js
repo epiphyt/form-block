@@ -25,6 +25,8 @@ export default function InputSave( props ) {
 		elementProps[ allowedAttribute ] = props.attributes[ allowedAttribute ];
 	}
 	
+	blockProps.className += ' is-type-' + type;
+	
 	return (
 		<div { ...blockProps }>
 			<input { ...elementProps } />

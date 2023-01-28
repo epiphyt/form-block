@@ -10,7 +10,7 @@ const jsFiles = {
 	//'smooth-scroll': path.resolve( process.cwd(), 'assets/js', 'smooth-scroll.js' ),
 };
 const scssFiles = {
-	//'style': path.resolve( process.cwd(), 'assets/style/scss', 'style.scss' ),
+	'form': path.resolve( process.cwd(), 'assets/style', 'form.scss' ),
 };
 
 module.exports = [
@@ -23,7 +23,7 @@ module.exports = [
 		entry: jsFiles,
 		output: {
 			filename: '[name].min.js',
-			path: path.resolve( process.cwd(), 'assets/js' ),
+			path: path.resolve( process.cwd(), 'assets/js/build' ),
 		},
 		optimization: {
 			minimize: true,
@@ -36,7 +36,7 @@ module.exports = [
 		devtool: ! isProduction ? 'source-map' : 'hidden-source-map',
 		entry: scssFiles,
 		output: {
-			path: path.resolve( process.cwd(), 'assets/style' ),
+			path: path.resolve( process.cwd(), 'assets/style/build' ),
 		},
 		module: {
 			rules: [
@@ -76,7 +76,7 @@ module.exports = [
 		devtool: ! isProduction ? 'source-map' : 'hidden-source-map',
 		entry: scssFiles,
 		output: {
-			path: path.resolve( process.cwd(), 'assets/style' ),
+			path: path.resolve( process.cwd(), 'assets/style/build' ),
 		},
 		module: {
 			rules: [

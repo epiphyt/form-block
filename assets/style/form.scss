@@ -1,0 +1,27 @@
+.form-block__element {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 20px;
+	
+	.form-block__label {
+		order: -1;
+	}
+	
+	&.is-type-checkbox,
+	&.is-type-radio {
+		align-items: flex-start;
+		flex-direction: row;
+		
+		> input {
+			flex: 0 0 auto;
+		}
+		
+		.form-block__label {
+			order: 0;
+		}
+	}
+	
+	&:last-child {
+		margin-bottom: 0;
+	}
+}

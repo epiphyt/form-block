@@ -18,6 +18,7 @@ final class Form {
 	 * Initialize the class.
 	 */
 	public function init(): void {
+		add_action( 'init', [ $this, 'enqueue_block_styles' ] );
 		add_action( 'render_block_form-block/form', [ $this, 'add_honeypot' ], 10, 2 );
 	}
 	
@@ -41,6 +42,24 @@ final class Form {
 		$honeypot = apply_filters( 'form_block_honeypot_code', $honeypot , $block_content, $block );
 		
 		return str_replace( '</form>', $honeypot . '</form>', $block_content );
+	}
+	
+	/**
+	 * Enqueue block styles.
+	 */
+	public function enqueue_block_styles(): void {
+		$is_debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
+		$suffix = ( $is_debug ? '' : '.min' );
+		
+		wp_enqueue_block_style(
+			'form-block/form',
+			[
+				'handle' => 'form-block',
+				'src' => plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/form' . $suffix . '.css',
+				'deps' => [],
+				'ver' =>  defined( 'WP_DEBUG' ) && WP_DEBUG ? filemtime( plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/form' . $suffix . '.css' ) : FORM_BLOCK_VERSION,
+			]
+		);
 	}
 	
 	/**
