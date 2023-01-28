@@ -70,12 +70,25 @@ export default function InputEdit( props ) {
 		width,
 	};
 	
+	if ( type === 'hidden' ) {
+		elementProps.help = __( 'This input is hidden in the frontend.', 'form-block' );
+		elementProps.type = 'text';
+		blockProps.className += ' is-type-hidden';
+	}
+	
 	return (
 		<div { ...blockProps }>
 			<Controls { ...props } />
 			
-			{ isAllowedAttribute( type, 'label' ) || isAllowedAttribute( type, 'required' )
+			{ type === 'checkbox' || type === 'radio'
 				? <Flex>
+					<FlexItem>
+						<TextControl
+							onChange={ ( value ) => setAttributes( { value } ) }
+							{ ...elementProps }
+						/>
+					</FlexItem>
+					
 					{ isAllowedAttribute( type, 'label' )
 						? <FlexBlock>
 							<TextControl
@@ -87,6 +100,7 @@ export default function InputEdit( props ) {
 						</FlexBlock>
 						: null
 					}
+					
 					{ isAllowedAttribute( type, 'required' )
 						? <FlexItem>
 							<ToggleControl
@@ -99,13 +113,41 @@ export default function InputEdit( props ) {
 						: null
 					}
 				</Flex>
-				: null
+				: <>
+					{ isAllowedAttribute( type, 'label' ) || isAllowedAttribute( type, 'required' )
+						? <Flex>
+							{ isAllowedAttribute( type, 'label' )
+								? <FlexBlock>
+									<TextControl
+										className="form-block__label-control"
+										onChange={ ( label ) => setAttributes( { label } ) }
+										placeholder={ __( 'Label', 'form-block' ) }
+										value={ label }
+									/>
+								</FlexBlock>
+								: null
+							}
+							{ isAllowedAttribute( type, 'required' )
+								? <FlexItem>
+									<ToggleControl
+										checked={ !! required }
+										label={ __( 'Required', 'form-block' ) }
+										onChange={ ( required ) => setAttributes( { required } ) }
+										value={ required }
+									/>
+								</FlexItem>
+								: null
+							}
+						</Flex>
+						: null
+					}
+					
+					<TextControl
+						onChange={ ( value ) => setAttributes( { value } ) }
+						{ ...elementProps }
+					/>
+				</>
 			}
-			
-			<TextControl
-				onChange={ ( value ) => setAttributes( { value } ) }
-				{ ...elementProps }
-			/>
 		</div>
 	);
 }

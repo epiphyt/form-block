@@ -34,8 +34,13 @@ export const attributes = applyFilters(
 		},
 		readOnly: {
 			controlType: 'toggle',
-			description: __( 'If the form element is set to readOnly, it cannot be edited but you can still interact with its value (e.g. mark and copy it).', 'form-block' ),
+			description: __( 'If the form element is set to readonly, it cannot be edited but you can still interact with its value (e.g. mark and copy it).', 'form-block' ),
 			label: _x( 'Readonly', 'HTML attribute name', 'form-block' ),
+		},
+		value: {
+			controlType: 'text',
+			description: __( 'The value of the input.', 'form-block' ),
+			label: _x( 'Value', 'HTML attribute name', 'form-block' ),
 		},
 	},
 );

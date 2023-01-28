@@ -75,16 +75,14 @@ const types = applyFilters(
 		},
 		reset: {
 			allowedAttributes: [
-				'autoComplete',
 				'disabled',
-				'label',
-				'readOnly',
-				'required',
+				'value',
 			],
 		},
 		submit: {
 			allowedAttributes: [
 				'disabled',
+				'value',
 			],
 		},
 		tel: {
