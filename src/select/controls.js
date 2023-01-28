@@ -16,11 +16,12 @@ import {
 	attributes as selectAttributes,
 	getAttributeHelp,
 } from '../data/attributes';
-import { getSanitizedAttributeValue } from '../data/util';
+import { getSanitizedAttributeValue, stripSpecialChars } from '../data/util';
 
 export default function Controls( props ) {
 	const {
 		attributes: {
+			label,
 			name,
 		},
 		setAttributes,
@@ -29,16 +30,6 @@ export default function Controls( props ) {
 	const controls = applyFilters(
 		'formBlock.select.controlTypes',
 		[
-			{
-				attributeName: 'name',
-				attributes: {
-					help: ! name ? __( 'The name is auto-generated from the label.', 'form-block' ) : __( 'The name has been set manually.', 'form-block' ),
-					label: _x( 'Name', 'HTML attribute name', 'form-block' ),
-					stripSpecialChars: true,
-					toLowerCase: true,
-					type: 'text',
-				},
-			},
 			{
 				attributeName: 'disabled',
 				attributes: {
@@ -145,6 +136,12 @@ export default function Controls( props ) {
 	return (
 		<InspectorControls>
 			<PanelBody>
+				<TextControl
+					help={ ! name ? __( 'The name is auto-generated from the label.', 'form-block' ) : __( 'The name has been set manually.', 'form-block' ) }
+					label={ _x( 'Name', 'HTML attribute name', 'form-block' )  }
+					onChange={ ( name ) => setAttributes( { name: stripSpecialChars( name, false ) } ) }
+					value={ name ? stripSpecialChars( name, false ) : stripSpecialChars( label ) }
+				/>
 				{ controls.map( ( control, index ) => getControl( control, index ) ) }
 			</PanelBody>
 		</InspectorControls>
