@@ -1,12 +1,16 @@
 import {
-	__experimentalBlockVariationPicker as BlockVariationPicker, InnerBlocks,
-	store as blockEditorStore, useBlockProps,
+	__experimentalBlockVariationPicker as BlockVariationPicker,
+	InnerBlocks,
+	store as blockEditorStore,
+	useBlockProps,
 } from '@wordpress/block-editor';
 import {
 	createBlocksFromInnerBlocksTemplate,
 	store as blocksStore,
 } from '@wordpress/blocks';
+import { select } from '@wordpress/data';
 import { useDispatch, useSelect } from '@wordpress/data';
+import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 import { form } from './icon';
@@ -14,7 +18,7 @@ import { form } from './icon';
 export default function FormEdit( props ) {
 	const {
 		attributes: {
-			
+			formId,
 		},
 		clientId,
 		name,
@@ -26,6 +30,50 @@ export default function FormEdit( props ) {
 			select( blockEditorStore ).getBlocks( clientId ).length > 0,
 		[ clientId ]
 	);
+	
+	const isFormIdInUse = ( clientId, formId, blocks ) => {
+		let hasFormId = false;
+		
+		for ( const block of blocks ) {
+			if ( block.clientId === clientId ) {
+				continue;
+			}
+			
+			if ( block.innerBlocks ) {
+				hasFormId = isFormIdInUse( clientId, formId, block.innerBlocks );
+			}
+			
+			if ( hasFormId ) {
+				return true;
+			}
+			
+			hasFormId = block.attributes.formId === formId;
+			
+			if ( hasFormId ) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	const setFormId = () => {
+		if ( ! formId ) {
+			setAttributes( { formId: clientId } );
+			
+			return;
+		}
+		
+		const allBlocks = select( blockEditorStore ).getBlocks();
+		
+		if ( isFormIdInUse( clientId, formId, allBlocks ) ) {
+			setAttributes( { formId: clientId } );
+			
+			return;
+		}
+	}
+	
+	useEffect( () => setFormId, [] );
 	
 	if ( ! hasInnerBlocks ) {
 		return <Placeholder
