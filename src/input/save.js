@@ -28,12 +28,15 @@ export default function InputSave( props ) {
 	return (
 		<div { ...blockProps }>
 			<input { ...elementProps } />
-			<label
-				className="form-block__label is-input-label"
-			>
-				<span className="form-block__label-content">{ label }</span>
-				{ required ? <span className="is-required">*</span> : '' }
-			</label>
+			{ type !== 'hidden' && type !== 'reset' && type !== 'submit'
+				? <label
+					className="form-block__label is-input-label"
+				>
+					<span className="form-block__label-content">{ label }</span>
+					{ required ? <span className="is-required">*</span> : '' }
+				</label>
+				: null
+			}
 		</div>
 	);
 }
