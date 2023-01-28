@@ -25,7 +25,7 @@ final class Admin {
 	/**
 	 * Initialize the class.
 	 */
-	public function init() {
+	public function init(): void {
 		add_action( 'enqueue_block_editor_assets', [ $this, 'block_assets' ] );
 	}
 	
