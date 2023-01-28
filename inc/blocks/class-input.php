@@ -1,17 +1,18 @@
 <?php
-/** @noinspection PhpMissingFieldTypeInspection */
-namespace epiphyt\Form_Block;
+namespace epiphyt\Form_Block\blocks;
+
+use epiphyt\Form_Block\Form_Block;
 
 /**
  * Input block class.
  * 
  * @author	Epiphyt
  * @license	GPL2
- * @package	epiphyt\Input_Block
+ * @package	epiphyt\Input
  */
-final class Input_Block {
+final class Input {
 	/**
-	 * @var		\epiphyt\Form_Block\Input_Block
+	 * @var		\epiphyt\Form_Block\blocks\Input
 	 */
 	public static $instance;
 	
@@ -25,9 +26,9 @@ final class Input_Block {
 	/**
 	 * Get a unique instance of the class.
 	 * 
-	 * @return	\epiphyt\Form_Block\Input_Block The single instance of this class
+	 * @return	\epiphyt\Form_Block\blocks\Input The single instance of this class
 	 */
-	public static function get_instance(): Input_Block {
+	public static function get_instance(): Input {
 		if ( self::$instance === null ) {
 			self::$instance = new self();
 		}

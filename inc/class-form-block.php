@@ -2,6 +2,9 @@
 namespace epiphyt\Form_Block;
 
 use DOMDocument;
+use epiphyt\Form_Block\blocks\Input;
+use epiphyt\Form_Block\blocks\Select;
+use epiphyt\Form_Block\blocks\Textarea;
 
 /**
  * Form Block main class.
@@ -25,9 +28,9 @@ final class Form_Block {
 		add_filter( 'wp_kses_allowed_html', [ $this, 'set_allow_tags' ], 10, 2 );
 		
 		Admin::get_instance()->init();
-		Input_Block::get_instance()->init();
-		Select_Block::get_instance()->init();
-		Textarea_Block::get_instance()->init();
+		Input::get_instance()->init();
+		Select::get_instance()->init();
+		Textarea::get_instance()->init();
 	}
 	
 	/**

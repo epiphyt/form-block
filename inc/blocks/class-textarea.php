@@ -1,17 +1,18 @@
 <?php
-/** @noinspection PhpMissingFieldTypeInspection */
-namespace epiphyt\Form_Block;
+namespace epiphyt\Form_Block\blocks;
+
+use epiphyt\Form_Block\Form_Block;
 
 /**
  * Textarea block class.
  * 
  * @author	Epiphyt
  * @license	GPL2
- * @package	epiphyt\Textarea_Block
+ * @package	epiphyt\Textarea
  */
-final class Textarea_Block {
+final class Textarea {
 	/**
-	 * @var		\epiphyt\Form_Block\Textarea_Block
+	 * @var		\epiphyt\Form_Block\blocks\Textarea
 	 */
 	public static $instance;
 	
@@ -25,9 +26,9 @@ final class Textarea_Block {
 	/**
 	 * Get a unique instance of the class.
 	 * 
-	 * @return	\epiphyt\Form_Block\Textarea_Block The single instance of this class
+	 * @return	\epiphyt\Form_Block\blocks\Textarea The single instance of this class
 	 */
-	public static function get_instance(): Textarea_Block {
+	public static function get_instance(): Textarea {
 		if ( self::$instance === null ) {
 			self::$instance = new self();
 		}
