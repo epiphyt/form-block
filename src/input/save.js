@@ -5,6 +5,7 @@ export default function InputSave( props ) {
 	const {
 		attributes: {
 			label,
+			name,
 			required,
 			type,
 		}
@@ -12,6 +13,7 @@ export default function InputSave( props ) {
 	const blockProps = useBlockProps.save( { className: 'form-block__element' } );
 	const allowedAttributes = getAllowedAttributes( type );
 	let elementProps = {
+		name,
 		type,
 	};
 	
