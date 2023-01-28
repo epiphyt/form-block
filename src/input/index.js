@@ -7,6 +7,7 @@ import { overlayText } from '@wordpress/icons';
 
 import attributes from './attributes';
 import InputEdit from './edit';
+import { input } from './icon';
 import InputSave from './save';
 
 registerBlockType( {
@@ -14,7 +15,7 @@ registerBlockType( {
 	name: 'form-block/input',
 }, {
 	title: __( 'Input', 'form-block' ),
-	icon: overlayText,
+	icon: input,
 	category: 'formatting',
 	attributes,
 	edit: InputEdit,
