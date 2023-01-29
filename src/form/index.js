@@ -35,3 +35,5 @@ registerBlockType( {
 	},
 	variations,
 } );
+
+import './form-id-update';
