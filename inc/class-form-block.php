@@ -109,6 +109,23 @@ final class Form_Block {
 	}
 	
 	/**
+	 * Get the current request URL.
+	 *
+	 * @return	string The current request URL
+	 */
+	public function get_current_request_url(): string {
+		$current_path = $_SERVER['REQUEST_URI'] ?? '/';
+		$home_path = home_url( '', 'relative' );
+		$home_path_position = strpos( $current_path, $home_path );
+		
+		if ( $home_path_position !== false ) {
+			$current_path = substr_replace( $current_path, '', $home_path_position, strlen( $home_path ) );
+		}
+		
+		return home_url( $current_path );
+	}
+	
+	/**
 	 * Get a unique instance of the class.
 	 * 
 	 * @return	\epiphyt\Form_Block\Form_Block The single instance of this class

@@ -1,6 +1,8 @@
 <?php
 namespace epiphyt\Form_Block\blocks;
 
+use epiphyt\Form_Block\Form_Block;
+
 /**
  * Form block class.
  * 
@@ -19,7 +21,31 @@ final class Form {
 	 */
 	public function init(): void {
 		add_action( 'init', [ $this, 'enqueue_block_styles' ] );
+		add_action( 'render_block_form-block/form', [ $this, 'add_action' ], 10, 2 );
 		add_action( 'render_block_form-block/form', [ $this, 'add_honeypot' ], 10, 2 );
+		add_action( 'render_block_form-block/form', [ $this, 'add_method' ], 10, 2 );
+	}
+	
+	/**
+	 * Add the form action.
+	 *
+	 * @param	string	$block_content The block content
+	 * @param	array	$block Block attributes
+	 * @return	string Updated block content
+	 */
+	public function add_action( string $block_content, array $block ): string {
+		$url = Form_Block::get_instance()->get_current_request_url();
+		
+		/**
+		 * Filter the form action URL.
+		 * 
+		 * @param	string	$url The action URL
+		 * @param	string	$block_content The block content
+		 * @param	array	$block Block attributes
+		 */
+		$url = apply_filters( 'form_block_form_action', $url, $block_content, $block );
+		
+		return str_replace( '<form', '<form action="' . esc_url( $url ) . '"', $block_content );
 	}
 	
 	/**
@@ -39,9 +65,29 @@ final class Form {
 		 * @param	string	$block_content The block content
 		 * @param	array	$block Block attributes
 		 */
-		$honeypot = apply_filters( 'form_block_honeypot_code', $honeypot , $block_content, $block );
+		$honeypot = apply_filters( 'form_block_honeypot_code', $honeypot, $block_content, $block );
 		
 		return str_replace( '</form>', $honeypot . '</form>', $block_content );
+	}
+	
+	/**
+	 * Add the form method.
+	 *
+	 * @param	string	$block_content The block content
+	 * @param	array	$block Block attributes
+	 * @return	string Updated block content
+	 */
+	public function add_method( string $block_content, array $block ): string {
+		/**
+		 * Filter the form method.
+		 * 
+		 * @param	string	$method The form method
+		 * @param	string	$block_content The block content
+		 * @param	array	$block Block attributes
+		 */
+		$method = apply_filters( 'form_block_form_method', 'POST', $block_content, $block );
+		
+		return str_replace( '<form', '<form method="' . esc_attr( $method ) . '"', $block_content );
 	}
 	
 	/**
