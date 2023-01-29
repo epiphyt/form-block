@@ -83,6 +83,16 @@ final class Data {
 						break;
 				}
 				
+				/**
+				 * Filter the field data.
+				 * 
+				 * @param	array	$field_data The field data
+				 * @param	array	$blocks Blocks from parsed_blocks()
+				 * @param	array	$data Current form data
+				 * @param	string	$form_id The form ID
+				 */
+				$field_data = add_filter( 'form_block_get_form_data', $field_data, $block, $data, $form_id );
+				
 				if ( ! empty( $field_data ) ) {
 					$data[ $form_id ]['fields'][] = $field_data;
 					
@@ -105,7 +115,7 @@ final class Data {
 	 * @param	string	$tag_name The tag name
 	 * @return	array List of attributes
 	 */
-	private function get_attributes( string $element, string $tag_name ): array {
+	public function get_attributes( string $element, string $tag_name ): array {
 		$dom = new DOMDocument();
 		$dom->loadHTML(
 			mb_convert_encoding(
