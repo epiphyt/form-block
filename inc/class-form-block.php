@@ -2,6 +2,7 @@
 namespace epiphyt\Form_Block;
 
 use DOMDocument;
+use epiphyt\Form_Block\form_data\Data;
 use epiphyt\Form_Block\blocks\Form;
 use epiphyt\Form_Block\blocks\Input;
 use epiphyt\Form_Block\blocks\Select;
@@ -31,6 +32,7 @@ final class Form_Block {
 		add_filter( 'wp_kses_allowed_html', [ $this, 'set_allow_tags' ], 10, 2 );
 		
 		Admin::get_instance()->init();
+		Data::get_instance()->init();
 		Form::get_instance()->init();
 		Input::get_instance()->init();
 		Select::get_instance()->init();
