@@ -51,6 +51,8 @@ final class Data {
 					return $data;
 				}
 				
+				$field_data = [];
+				
 				switch ( $block['blockName'] ) {
 					case 'form-block/form':
 						if ( empty( $block['attrs']['formId'] ) ) {
@@ -91,7 +93,7 @@ final class Data {
 				 * @param	array	$data Current form data
 				 * @param	string	$form_id The form ID
 				 */
-				$field_data = add_filter( 'form_block_get_form_data', $field_data, $block, $data, $form_id );
+				$field_data = apply_filters( 'form_block_get_form_data', $field_data, $block, $data, $form_id );
 				
 				if ( ! empty( $field_data ) ) {
 					$data[ $form_id ]['fields'][] = $field_data;
