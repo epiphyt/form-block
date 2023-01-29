@@ -8,7 +8,7 @@ use epiphyt\Form_Block\Form_Block;
  * 
  * @author	Epiphyt
  * @license	GPL2
- * @package	epiphyt\Input
+ * @package	epiphyt\Form_Block
  */
 final class Input {
 	/**

@@ -6,7 +6,7 @@ namespace epiphyt\Form_Block\blocks;
  * 
  * @author	Epiphyt
  * @license	GPL2
- * @package	epiphyt\Form
+ * @package	epiphyt\Form_Block
  */
 final class Form {
 	/**
