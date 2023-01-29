@@ -100,6 +100,15 @@ final class Data {
 					
 					unset( $field_data );
 				}
+				
+				/**
+				 * Filter the form data.
+				 * 
+				 * @param	array	$data Current form data
+				 * @param	array	$blocks Blocks from parsed_blocks()
+				 * @param	string	$form_id The form ID
+				 */
+				$data = apply_filters( 'form_block_get_data', $data, $block, $form_id );
 			}
 			
 			if ( ! empty( $block['innerBlocks'] ) ) {
