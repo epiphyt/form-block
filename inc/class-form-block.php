@@ -2,11 +2,12 @@
 namespace epiphyt\Form_Block;
 
 use DOMDocument;
-use epiphyt\Form_Block\form_data\Data;
+use epiphyt\Form_Block\block_data\Data as BlockDataData;
 use epiphyt\Form_Block\blocks\Form;
 use epiphyt\Form_Block\blocks\Input;
 use epiphyt\Form_Block\blocks\Select;
 use epiphyt\Form_Block\blocks\Textarea;
+use epiphyt\Form_Block\form_data\Data as FormDataData;
 
 /**
  * Form Block main class.
@@ -16,6 +17,9 @@ use epiphyt\Form_Block\blocks\Textarea;
  * @package	epiphyt\Form_Block
  */
 final class Form_Block {
+	/**
+	 * @var		array List of block name attributes
+	 */
 	private $block_name_attributes = [
 		'_town',
 	];
@@ -32,8 +36,9 @@ final class Form_Block {
 		add_filter( 'wp_kses_allowed_html', [ $this, 'set_allow_tags' ], 10, 2 );
 		
 		Admin::get_instance()->init();
-		Data::get_instance()->init();
+		BlockDataData::get_instance()->init();
 		Form::get_instance()->init();
+		FormDataData::get_instance()->init();
 		Input::get_instance()->init();
 		Select::get_instance()->init();
 		Textarea::get_instance()->init();
@@ -97,6 +102,13 @@ final class Form_Block {
 	 * @return	string A valid name attribute
 	 */
 	public function get_block_name_attribute( array $block ): string {
+		// if we only have field data, there is no 'attrs' key
+		if ( ! isset( $block['attrs'] ) ) {
+			$block = [
+				'attrs' => $block,
+			];
+		}
+		
 		if ( ! empty( $block['attrs']['name'] ) ) {
 			return $this->get_unique_block_name_attribute( $block['attrs']['name'] );
 		}
