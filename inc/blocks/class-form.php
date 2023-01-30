@@ -23,6 +23,7 @@ final class Form {
 		add_action( 'init', [ $this, 'enqueue_block_styles' ] );
 		add_action( 'init', [ $this, 'register_frontend_assets' ] );
 		add_action( 'render_block_form-block/form', [ $this, 'add_action' ], 10, 2 );
+		add_action( 'render_block_form-block/form', [ $this, 'add_form_id_input' ], 10, 2 );
 		add_action( 'render_block_form-block/form', [ $this, 'add_honeypot' ], 10, 2 );
 		add_action( 'render_block_form-block/form', [ $this, 'add_method' ], 10, 2 );
 		
@@ -60,6 +61,42 @@ final class Form {
 	}
 	
 	/**
+	 * Add the form ID input field.
+	 *
+	 * @param	string	$block_content The block content
+	 * @param	array	$block Block attributes
+	 * @return	string Updated block content
+	 */
+	public function add_form_id_input( string $block_content, array $block ): string {
+		if ( empty( $block['attrs']['formId'] ) ) {
+			return $block_content;
+		}
+		
+		/**
+		 * Filter the form ID.
+		 * 
+		 * @param	string	$form_id The form ID
+		 * @param	string	$block_content The block content
+		 * @param	array	$block Block attributes
+		 */
+		$form_id = apply_filters( 'form_block_form_form_id', $block['attrs']['formId'], $block_content, $block );
+		
+		$form_id_input = '<input type="hidden" name="_form_id" value="' . esc_attr( $form_id ) . '" />';
+		
+		/**
+		 * Filter the form ID input.
+		 * 
+		 * @param	string	$form_id_input The form ID input
+		 * @param	string	$form_id The form ID
+		 * @param	string	$block_content The block content
+		 * @param	array	$block Block attributes
+		 */
+		$form_id_input = apply_filters( 'form_block_form_id_input', $form_id_input, $form_id, $block_content, $block );
+		
+		return str_replace( 'enctype="multipart/form-data">', 'enctype="multipart/form-data">' . PHP_EOL . $form_id_input, $block_content );
+	}
+	
+	/**
 	 * Add the honeypot code.
 	 *
 	 * @param	string	$block_content The block content
@@ -67,7 +104,7 @@ final class Form {
 	 * @return	string Updated block content
 	 */
 	public function add_honeypot( string $block_content, array $block ): string {
-		$honeypot = '<div class="wp-block-form-block-input form-block__element"><input name="_town" id="id-_town" type="text"aria-hidden="true" autocomplete="new-password" style="padding: 0; clip: rect(1px, 1px, 1px, 1px); position: absolute !important; white-space: nowrap; height: 1px; width: 1px; overflow: hidden;" tabindex="-1"/></div>';
+		$honeypot = '<div class="wp-block-form-block-input form-block__element"><input name="_town" id="id-_town" type="text"aria-hidden="true" autocomplete="new-password" style="padding: 0; clip: rect(1px, 1px, 1px, 1px); position: absolute !important; white-space: nowrap; height: 1px; width: 1px; overflow: hidden;" tabindex="-1" /></div>';
 		
 		/**
 		 * Filter the honeypot code.
