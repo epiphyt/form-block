@@ -5,7 +5,7 @@ use DOMDocument;
 use WP_Post;
 
 /**
- * Form data class.
+ * Block data class.
  * 
  * @author	Epiphyt
  * @license	GPL2
@@ -72,7 +72,7 @@ final class Data {
 						 * @param	array	$block The original block data
 						 * @param	string	$form_id The form ID
 						 */
-						$data[ $form_id ] = apply_filters( 'form_form_data_form', $data[ $form_id ], $block, $form_id );
+						$data[ $form_id ] = apply_filters( 'form_block_data_form', $data[ $form_id ], $block, $form_id );
 						break;
 					case 'form-block/input':
 						$field_data = $this->get_attributes( $block['innerHTML'], 'input' );
@@ -277,7 +277,7 @@ final class Data {
 				
 				// completely delete only if it's not used anywhere else
 				if ( empty( $post_ids ) ) {
-					delete_option( 'form_form_data_' . $form_id );
+					delete_option( 'form_block_data_' . $form_id );
 					unset( $form_ids[ $form_id ] );
 				}
 			}
@@ -319,7 +319,7 @@ final class Data {
 			}
 			
 			// store form data
-			update_option( 'form_form_data_' . $form_id, $form );
+			update_option( 'form_block_data_' . $form_id, $form );
 		}
 		
 		if ( $form_ids !== $new_form_ids ) {

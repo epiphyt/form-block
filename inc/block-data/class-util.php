@@ -4,7 +4,7 @@ namespace epiphyt\Form_Block\block_data;
 use WP_Post;
 
 /**
- * Form data util class.
+ * Block data util class.
  * 
  * @author	Epiphyt
  * @license	GPL2
