@@ -72,7 +72,7 @@ final class Form_Block {
 				continue;
 			}
 			
-			$label = $span->textContent;
+			$label = $span->textContent; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		}
 		
 		// get name attribute
@@ -126,7 +126,8 @@ final class Form_Block {
 	 * @return	string The current request URL
 	 */
 	public function get_current_request_url(): string {
-		$current_path = $_SERVER['REQUEST_URI'] ?? '/';
+		$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) );
+		$current_path = $request_uri ?: '/';
 		$home_path = home_url( '', 'relative' );
 		$home_path_position = strpos( $current_path, $home_path );
 		

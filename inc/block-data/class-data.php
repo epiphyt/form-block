@@ -212,11 +212,11 @@ final class Data {
 			}
 			
 			foreach ( $tag->attributes as $attribute ) {
-				$attributes[ $iteration ][ $attribute->nodeName ] = $attribute->nodeValue;
+				$attributes[ $iteration ][ $attribute->nodeName ] = $attribute->nodeValue; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			}
 			
 			if ( $arguments['get_text_content'] ) {
-				$attributes[ $iteration ]['textContent'] = $tag->textContent;
+				$attributes[ $iteration ]['textContent'] = $tag->textContent; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			}
 			
 			$iteration++;
