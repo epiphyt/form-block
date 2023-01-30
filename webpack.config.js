@@ -7,7 +7,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 const mode = isProduction ? 'production' : 'development';
 
 const jsFiles = {
-	//'smooth-scroll': path.resolve( process.cwd(), 'assets/js', 'smooth-scroll.js' ),
+	'form': path.resolve( process.cwd(), 'assets/js', 'form.js' ),
 };
 const scssFiles = {
 	'form': path.resolve( process.cwd(), 'assets/style', 'form.scss' ),

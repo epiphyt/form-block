@@ -21,9 +21,20 @@ final class Form {
 	 */
 	public function init(): void {
 		add_action( 'init', [ $this, 'enqueue_block_styles' ] );
+		add_action( 'init', [ $this, 'register_frontend_assets' ] );
 		add_action( 'render_block_form-block/form', [ $this, 'add_action' ], 10, 2 );
 		add_action( 'render_block_form-block/form', [ $this, 'add_honeypot' ], 10, 2 );
 		add_action( 'render_block_form-block/form', [ $this, 'add_method' ], 10, 2 );
+		
+		register_block_type(
+			'form-block/form',
+			[
+				'view_script' => 'form-block-form', // WP 5.9
+				'view_script_handles' => [ // since WP 6.1
+					'form-block-form',
+				],
+			],
+		);
 	}
 	
 	/**
@@ -101,9 +112,9 @@ final class Form {
 			'form-block/form',
 			[
 				'handle' => 'form-block',
-				'src' => plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/form' . $suffix . '.css',
+				'src' => plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/style/' . ( $is_debug ? 'build/' : '' ) . 'form' . $suffix . '.css',
 				'deps' => [],
-				'ver' =>  defined( 'WP_DEBUG' ) && WP_DEBUG ? filemtime( plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/form' . $suffix . '.css' ) : FORM_BLOCK_VERSION,
+				'ver' => $is_debug ? filemtime( plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/style/' . ( $is_debug ? 'build/' : '' ) . 'form' . $suffix . '.css' ) : FORM_BLOCK_VERSION,
 			]
 		);
 	}
@@ -119,5 +130,20 @@ final class Form {
 		}
 		
 		return self::$instance;
+	}
+	
+	/**
+	 * Register frontend assets.
+	 */
+	public function register_frontend_assets(): void {
+		$is_debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
+		$suffix = ( $is_debug ? '' : '.min' );
+		$file_path = plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'form' . $suffix . '.js';
+		$file_url = plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'form' . $suffix . '.js';
+		
+		wp_register_script( 'form-block-form', $file_url, [], $is_debug ? filemtime( $file_path ) : FORM_BLOCK_VERSION, true );
+		wp_localize_script( 'form-block-form', 'formBlockData', [
+			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+		] );
 	}
 }
