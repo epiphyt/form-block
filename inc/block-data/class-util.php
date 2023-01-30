@@ -1,5 +1,5 @@
 <?php
-namespace epiphyt\Form_Block\form_data;
+namespace epiphyt\Form_Block\block_data;
 
 use WP_Post;
 

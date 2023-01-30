@@ -1,5 +1,5 @@
 <?php
-namespace epiphyt\Form_Block\form_data;
+namespace epiphyt\Form_Block\block_data;
 
 use DOMDocument;
 use WP_Post;
@@ -13,7 +13,7 @@ use WP_Post;
  */
 final class Data {
 	/**
-	 * @var		\epiphyt\Form_Block\form_data\Data
+	 * @var		\epiphyt\Form_Block\block_data\Data
 	 */
 	public static $instance;
 	
@@ -232,7 +232,7 @@ final class Data {
 	/**
 	 * Get a unique instance of the class.
 	 * 
-	 * @return	\epiphyt\Form_Block\form_data\Data The single instance of this class
+	 * @return	\epiphyt\Form_Block\block_data\Data The single instance of this class
 	 */
 	public static function get_instance(): Data {
 		if ( self::$instance === null ) {
