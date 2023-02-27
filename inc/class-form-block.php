@@ -92,7 +92,59 @@ final class Form_Block {
 		
 		$block_content = str_replace( '<label', '<label for="id-' . esc_attr( $name ) . '"', $block_content );
 		
-		return $block_content;
+		$dom->loadHTML(
+			mb_convert_encoding(
+				'<html>' . $block_content . '</html>',
+				'HTML-ENTITIES',
+				'UTF-8'
+			),
+			LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+		);
+		
+		$element = $dom->getElementById( 'id-' . esc_attr( $name ) );
+		
+		if (
+			! $element->hasAttribute( 'required' )
+			&& ! $element->hasAttribute( 'disabled' )
+			&& ! $element->hasAttribute( 'readonly' )
+		) {
+			$element->setAttribute( 'class', trim( $element->getAttribute( 'class' ) . ' optional' ) );
+		}
+		
+		// make sure staring and ending slashes are available
+		if ( $element->hasAttribute( 'pattern' ) ) {
+			$element->setAttribute( 'pattern', '/' . trim( $element->getAttribute( 'pattern' ) ) . '/' );
+		}
+		
+		if ( $element->hasAttribute( 'min' ) || $element->hasAttribute( 'max' ) ) {
+			$value = '';
+			
+			if ( $element->hasAttribute( 'min' ) ) {
+				$value .= $element->getAttribute( 'min' );
+			}
+			
+			if ( $element->hasAttribute( 'max' ) ) {
+				$value .= ',' . $element->getAttribute( 'max' );
+			}
+			
+			$element->setAttribute( 'data-validate-minmax', $value );
+		}
+		
+		if ( $element->hasAttribute( 'minlength' ) || $element->hasAttribute( 'maxlength' ) ) {
+			$value = '';
+			
+			if ( $element->hasAttribute( 'minlength' ) ) {
+				$value .= $element->getAttribute( 'minlength' );
+			}
+			
+			if ( $element->hasAttribute( 'maxlength' ) ) {
+				$value .= ',' . $element->getAttribute( 'maxlength' );
+			}
+			
+			$element->setAttribute( 'data-validate-length-range', $value );
+		}
+		
+		return str_replace( [ '<html>', '</html>' ], '', $dom->saveHTML( $dom->documentElement ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
 	
 	/**
