@@ -182,18 +182,26 @@ final class Form {
 		
 		$file_path = plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'validation' . $suffix . '.js';
 		$file_url = plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'validation' . $suffix . '.js';
+		$maximum_file_size = wp_convert_hr_to_bytes( ini_get( 'upload_max_filesize' ) );
+		$maximum_post_size = wp_convert_hr_to_bytes( ini_get( 'post_max_size' ) );
+		$maximum_upload_size = max( $maximum_file_size, $maximum_post_size );
 		
 		wp_register_script( 'form-block-validation', $file_url, [ 'form-block-validator' ], $is_debug ? filemtime( $file_path ) : FORM_BLOCK_VERSION, true );
 		wp_localize_script( 'form-block-validation', 'formBlockValidationData', [
+			'validatorAllFilesTooBig' => esc_js( __( 'The uploaded files are too big.', 'form-block' ) ),
 			'validatorChecked' => esc_js( __( 'This field must be checked.', 'form-block' ) ),
 			'validatorDate' => esc_js( __( 'This field has an invalid date.', 'form-block' ) ),
 			'validatorEmail' => esc_js( __( 'This email address is invalid.', 'form-block' ) ),
 			'validatorEmpty' => esc_js( __( 'This field must not be empty.', 'form-block' ) ),
+			'validatorFileTooBig' => esc_js( __( 'The uploaded file is too big.', 'form-block' ) ),
 			'validatorInvalid' => esc_js( __( 'This field is invalid.', 'form-block' ) ),
 			'validatorLong' => esc_js( __( 'This field is too long.', 'form-block' ) ),
+			'validatorMaxFilesize' => esc_js( $maximum_upload_size ),
+			'validatorMaxFilesizePerFile' => esc_js( wp_max_upload_size() ),
 			'validatorNumber' => esc_js( __( 'This field does not contain a number.', 'form-block' ) ),
 			'validatorNumberMax' => esc_js( __( 'This value is too low.', 'form-block' ) ),
 			'validatorNumberMin' => esc_js( __( 'This value is too high.', 'form-block' ) ),
+			'validatorOneFileTooBig' => esc_js( __( 'At least one of the uploaded files is too big.', 'form-block' ) ),
 			'validatorRadio' => esc_js( __( 'One option must be selected.', 'form-block' ) ),
 			'validatorShort' => esc_js( __( 'This field is too short.', 'form-block' ) ),
 			'validatorSelect' => esc_js( __( 'You must select an option.', 'form-block' ) ),

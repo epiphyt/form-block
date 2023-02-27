@@ -29,6 +29,45 @@ FormValidator.prototype.tests.radio = function( field, data ) {
 	return this.texts.radio;
 };
 
+// add file check
+FormValidator.prototype.tests.file = function( field, data ) {
+	const files = field.files;
+	let tooBig = false;
+	let fileSizeCombined = 0;
+	let tooBigCombined = false;
+	
+	// test each file
+	for ( var j = 0; j < files.length; j++ ) {
+		fileSizeCombined += files[ j ].size;
+		
+		if ( fileSizeCombined > formBlockValidationData.validatorMaxFilesize ) {
+			tooBigCombined = true;
+			break;
+		}
+		
+		if ( files[ j ].size > formBlockValidationData.validatorMaxFilesizePerFile ) {
+			tooBig = true;
+			break;
+		}
+	}
+	
+	let errorMessage = formBlockValidationData.validatorFileTooBig;
+	
+	if ( field.multiple ) {
+		errorMessage = formBlockValidationData.validatorOneFileTooBig;
+		
+		if ( tooBigCombined ) {
+			errorMessage = formBlockValidationData.validatorAllFilesTooBig;
+		}
+	}
+	
+	if ( tooBig || tooBigCombined ) {
+		return { valid: false, error: errorMessage };
+	}
+	
+	return { valid: true, error: '' };
+}
+
 // add proper URL check
 FormValidator.prototype.tests.url = function( field, data ) {
 	if ( data.pattern ) {

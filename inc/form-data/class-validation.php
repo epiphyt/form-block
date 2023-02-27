@@ -260,6 +260,19 @@ final class Validation {
 			return $validated;
 		}
 		
+		$maximum_file_size = wp_convert_hr_to_bytes( ini_get( 'upload_max_filesize' ) );
+		$maximum_post_size = wp_convert_hr_to_bytes( ini_get( 'post_max_size' ) );
+		$maximum_upload_size = max( $maximum_file_size, $maximum_post_size );
+		
+		if ( isset( $_SERVER['CONTENT_LENGTH'] ) || isset( $_SERVER['HTTP_CONTENT_LENGTH'] ) ) {
+			$content_length = (int) sanitize_text_field( wp_unslash( $_SERVER['CONTENT_LENGTH'] ?? $_SERVER['HTTP_CONTENT_LENGTH'] ?? $maximum_upload_size ) );
+			
+			if ( $content_length >= $maximum_upload_size ) {
+				wp_die( esc_html__( 'The uploaded file(s) are too big.', 'form-block' ) );
+			}
+		}
+		
+		
 		foreach ( $_FILES as $files ) {
 			if ( is_array( $files['name'] ) ) {
 				// if multiple files, resort
@@ -270,7 +283,9 @@ final class Validation {
 						continue;
 					}
 					
-					$this->by_allowed_names( $file['name'], $form_data );
+					if ( $file['size'] > wp_max_upload_size() ) {
+						wp_die( esc_html__( 'The uploaded file is too big.', 'form-block' ) );
+					}
 					
 					// phpcs:disable WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 					$file_content = file_get_contents( $file['tmp_name'] );
@@ -284,7 +299,9 @@ final class Validation {
 				}
 			}
 			else if ( ! empty( $files['tmp_name'] ) ) {
-				$this->by_allowed_names( $files['name'], $form_data );
+				if ( $files['size'] > wp_max_upload_size() ) {
+					wp_die( esc_html__( 'The uploaded file is too big.', 'form-block' ) );
+				}
 				
 				// phpcs:disable WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 				$file_content = file_get_contents( $files['tmp_name'] );
