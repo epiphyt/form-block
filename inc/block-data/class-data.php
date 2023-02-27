@@ -76,12 +76,15 @@ final class Data {
 						break;
 					case 'form-block/input':
 						$field_data = $this->get_attributes( $block['innerHTML'], 'input' );
+						$field_data['block_type'] = 'input';
 						break;
 					case 'form-block/select':
 						$field_data = $this->get_attributes( $block['innerHTML'], 'select' );
+						$field_data['block_type'] = 'select';
 						break;
 					case 'form-block/textarea':
 						$field_data = $this->get_attributes( $block['innerHTML'], 'textarea' );
+						$field_data['block_type'] = 'textarea';
 						break;
 				}
 				
@@ -302,7 +305,7 @@ final class Data {
 			return $post;
 		}
 		
-		if ( ! Util::has_block('form-block/form', $post->ID ) ) {
+		if ( ! Util::has_block( 'form-block/form', $post->ID ) ) {
 			return $post;
 		}
 		
