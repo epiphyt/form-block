@@ -107,6 +107,8 @@ final class Form_Block {
 			! $element->hasAttribute( 'required' )
 			&& ! $element->hasAttribute( 'disabled' )
 			&& ! $element->hasAttribute( 'readonly' )
+			&& $element->getAttribute( 'type' ) !== 'checkbox'
+			&& $element->getAttribute( 'type' ) !== 'radio'
 		) {
 			$element->setAttribute( 'class', trim( $element->getAttribute( 'class' ) . ' optional' ) );
 		}
