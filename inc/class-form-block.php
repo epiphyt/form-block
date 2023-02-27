@@ -220,6 +220,15 @@ final class Form_Block {
 	}
 	
 	/**
+	 * Reset the block name attributes.
+	 */
+	public function reset_block_name_attributes(): void {
+		$this->block_name_attributes = [
+			'_town',
+		];
+	}
+	
+	/**
 	 * Add some used HTML elements to the allowed tags.
 	 * 
 	 * @param	array[]|string	$tags The allowed HTML tags

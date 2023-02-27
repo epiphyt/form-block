@@ -1,7 +1,5 @@
 <?php
 namespace epiphyt\Form_Block\form_data;
-
-use epiphyt\Form_Block\block_data\Data as BlockDataData;
 use epiphyt\Form_Block\Form_Block;
 
 /**
@@ -32,7 +30,7 @@ final class Data {
 	
 	/**
 	 * Get form data.
-	 *
+	 * 
 	 * @param	string	$form_id Current form ID
 	 * @return	array Form data
 	 */
@@ -55,7 +53,9 @@ final class Data {
 	 * @param	array	$fields The fields to search in
 	 * @return	string The field title or the field name, if title cannot be found
 	 */
-	private function get_field_title_by_name( string $name, array $fields ): string {
+	public function get_field_title_by_name( string $name, array $fields ): string {
+		Form_Block::get_instance()->reset_block_name_attributes();
+		
 		foreach ( $fields as $field ) {
 			$field_name = Form_Block::get_instance()->get_block_name_attribute( $field );
 			
@@ -65,6 +65,15 @@ final class Data {
 		}
 		
 		return $name;
+	}
+	
+	/**
+	 * Get the form ID.
+	 * 
+	 * @return	string The form ID
+	 */
+	public function get_form_id(): string {
+		return $this->form_id;
 	}
 	
 	/**
@@ -113,8 +122,8 @@ final class Data {
 		 */
 		do_action( 'form_block_pre_validated_data', $this->form_id );
 		
-		$fields = $this->validate_fields();
-		$files = $this->validate_files();
+		$fields = Validation::get_instance()->fields();
+		$files = Validation::get_instance()->files();
 		
 		/**
 		 * Fires after data has been validated.
@@ -131,7 +140,7 @@ final class Data {
 	
 	/**
 	 * Get all required fields of a form.
-	 *
+	 * 
 	 * @param	string	$form_id Current form ID
 	 * @return	array List of required field names
 	 */
@@ -143,6 +152,8 @@ final class Data {
 		if ( ! $form_id ) {
 			return [];
 		}
+		
+		Form_Block::get_instance()->reset_block_name_attributes();
 		
 		$data = $this->get( $form_id );
 		$required = [];
@@ -160,7 +171,7 @@ final class Data {
 	
 	/**
 	 * Check whether the honeypot is filled.
-	 *
+	 * 
 	 * @return	boolean Wether the honeypot is filled
 	 */
 	private function is_honeypot_filled(): bool {
@@ -192,7 +203,7 @@ final class Data {
 	 * @param	array	$file_post The $_FILES-formatted array
 	 * @return	array The new formatted array
 	 */
-	private function unify_files_array( array $file_post ): array {
+	public function unify_files_array( array $file_post ): array {
 		$file_ary = [];
 		$file_count = count( $file_post['name'] );
 		$file_keys = array_keys( $file_post );
@@ -204,150 +215,5 @@ final class Data {
 		}
 		
 		return $file_ary;
-	}
-	
-	/**
-	 * Validate all POST fields.
-	 * 
-	 * @return	array The validated fields
-	 */
-	private function validate_fields(): array {
-		$form_data = get_option( 'form_block_data_' . $this->form_id, [] );
-		$validated = [];
-		
-		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		foreach ( $_POST as $key => $value ) {
-			// sanitize_key() but with support for uppercase
-			$key = preg_replace( '/[^A-Za-z0-9_\-]/', '', wp_unslash( $key ) );
-			
-			// iterate through an array to sanitize its fields
-			if ( is_array( $value ) ) {
-				foreach ( $value as $item_key => &$item ) {
-					// if it's not a string, die with an error message
-					if ( ! is_string( $item ) ) {
-						/* translators: 1: the value name, 2: the field name */
-						wp_die( sprintf( esc_html__( 'Wrong item format of value %1$s in field %2$s.', 'form-block' ), esc_html( $item_key ), esc_html( $this->get_field_title_by_name( $key, $form_data['fields'] ) ) ) );
-					}
-					
-					$item = sanitize_textarea_field( wp_unslash( $item ) );
-				}
-			}
-			else {
-				// if it's not a string, die with an error message
-				if ( ! is_string( $value ) ) {
-					/* translators: the field name */
-					wp_die( sprintf( esc_html__( 'Wrong item format in field %s.', 'form-block' ), esc_html( $this->get_field_title_by_name( $key, $form_data['fields'] ) ) ) );
-				}
-				
-				$value = sanitize_textarea_field( wp_unslash( $value ) );
-			}
-			
-			$validated[ $key ] = $value;
-		}
-		// phpcs:enable
-		
-		unset( $validated['_form_id'], $validated['action'], $validated['_town'] );
-		
-		// remove empty fields
-		foreach ( $validated as $key => $value ) {
-			if ( ! empty( $value ) ) {
-				continue;
-			}
-			
-			unset( $validated[ $key ] );
-		}
-		
-		// TODO: validate according to attributes
-		
-		/**
-		 * Filter the validated fields.
-		 * 
-		 * @param	array	$validated The validated fields
-		 * @param	string	$form_id The form ID
-		 * @param	array	$form_data The form data
-		 */
-		$validated = apply_filters( 'form_block_validated_fields', $validated, $this->form_id, $form_data );
-		
-		$required_fields = $this->get_required_fields( $this->form_id );
-		
-		// check all required fields
-		$missing_fields = [];
-		
-		// iterate through all required
-		foreach ( $required_fields as $field_name ) {
-			// check if a field with this identifier is empty
-			// and if it's not a file upload
-			if (
-				(
-					empty( $_FILES[ $field_name ]['tmp_name'] )
-					|| is_array( $_FILES[ $field_name ]['tmp_name'] ) && empty( array_filter( $_FILES[ $field_name ]['tmp_name'] ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-				)
-				&& empty( $validated[ $field_name ] )
-			) {
-				$missing_fields[] = $this->get_field_title_by_name( $field_name, $form_data['fields'] );
-			}
-		}
-		
-		// output error if there are missing fields
-		if ( ! empty( $missing_fields ) ) {
-			wp_die(
-				sprintf(
-					/* translators: missing fields */
-					esc_html( _n( 'The following field is missing: %s', 'The following fields are missing: %s', count( $missing_fields ), 'form-block' ) ),
-					esc_html( implode( ', ', $missing_fields ) )
-				)
-			);
-		}
-		
-		return $validated;
-	}
-	
-	/**
-	 * Validate all files.
-	 * 
-	 * @return	array The validated files
-	 */
-	private function validate_files(): array {
-		$validated = [];
-		
-		if ( empty( $_FILES ) ) {
-			return $validated;
-		}
-		
-		foreach ( $_FILES as $files ) {
-			if ( is_array( $files['name'] ) ) {
-				// if multiple files, resort
-				$files = $this->unify_files_array( $files );
-				
-				foreach ( $files as $file ) {
-					if ( empty( $file['tmp_name'] ) ) {
-						continue;
-					}
-					
-					// phpcs:disable WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-					$file_content = file_get_contents( $file['tmp_name'] );
-					// phpcs:enable
-					$validated[] = [
-						'name' => $file['name'],
-						// phpcs:disable WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-						'content' => base64_encode( $file_content ),
-						// phpcs:enable
-					];
-				}
-			}
-			else if ( ! empty( $files['tmp_name'] ) ) {
-				// phpcs:disable WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-				$file_content = file_get_contents( $files['tmp_name'] );
-				// phpcs:enable
-				$validated[] = [
-					'name' => $files['name'],
-					// phpcs:disable WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-					'content' => base64_encode( $file_content ),
-					// phpcs:enable
-				];
-			}
-		}
-		
-		return $validated;
 	}
 }
