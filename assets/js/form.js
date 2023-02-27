@@ -23,7 +23,6 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		formData.set( 'action', 'form-block-submit' ) 
 		
 		xhr.open( 'POST', formBlockData.ajaxUrl, true );
-		//xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
 		xhr.send( formData );
 		xhr.onreadystatechange = () => {
 			if ( xhr.readyState === 4 ) {
