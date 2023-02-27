@@ -93,7 +93,7 @@ final class Form {
 		 */
 		$form_id_input = apply_filters( 'form_block_form_id_input', $form_id_input, $form_id, $block_content, $block );
 		
-		return str_replace( 'enctype="multipart/form-data">', 'enctype="multipart/form-data">' . PHP_EOL . $form_id_input, $block_content );
+		return str_replace( 'enctype="multipart/form-data" novalidate>', 'enctype="multipart/form-data" novalidate>' . PHP_EOL . $form_id_input, $block_content );
 	}
 	
 	/**
