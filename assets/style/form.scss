@@ -1,10 +1,15 @@
 .form-block__element {
 	display: flex;
 	flex-direction: column;
+	flex-wrap: wrap;
 	margin-bottom: 20px;
 	
 	.form-block__label {
 		order: -1;
+	}
+	
+	.inline-error {
+		flex: 0 0 100%;
 	}
 	
 	&.is-type-checkbox,
