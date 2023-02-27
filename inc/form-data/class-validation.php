@@ -23,6 +23,7 @@ final class Validation {
 	 */
 	private function by_allowed_names( string $name, array $form_data ): void {
 		$allowed_names = $this->get_allowed_names( $form_data );
+		$name = preg_replace( '/-\d+$/', '', $name );
 		
 		if ( in_array( $name, $allowed_names, true ) ) {
 			return;
@@ -117,6 +118,12 @@ final class Validation {
 		return $errors;
 	}
 	
+	/**
+	 * Get all allowed name attributes without their unique -\d+ part.
+	 *
+	 * @param	array	$form_data Current form data to validate
+	 * @return	array List of allowed name attributes
+	 */
 	private function get_allowed_names( array $form_data ): array {
 		Form_Block::get_instance()->reset_block_name_attributes();
 		
@@ -127,7 +134,8 @@ final class Validation {
 		];
 		
 		foreach ( $form_data['fields'] as $field ) {
-			$allowed_names[] = Form_Block::get_instance()->get_block_name_attribute( $field );
+			$field_name = Form_Block::get_instance()->get_block_name_attribute( $field );
+			$allowed_names[] = preg_replace( '/-\d+$/', '', $field_name );
 		}
 		
 		return $allowed_names;
