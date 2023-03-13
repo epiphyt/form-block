@@ -118,32 +118,52 @@ final class Form_Block {
 			$element->setAttribute( 'pattern', '/' . trim( $element->getAttribute( 'pattern' ) ) . '/' );
 		}
 		
+		if ( $element->hasAttribute( 'min' ) && empty( $element->getAttribute( 'min' ) ) ) {
+			$element->removeAttribute( 'min' );
+		}
+		
+		if ( $element->hasAttribute( 'nax' ) && empty( $element->getAttribute( 'nax' ) ) ) {
+			$element->removeAttribute( 'nax' );
+		}
+		
+		if ( $element->hasAttribute( 'minlength' ) && empty( $element->getAttribute( 'minlength' ) ) ) {
+			$element->removeAttribute( 'minlength' );
+		}
+		
+		if ( $element->hasAttribute( 'maxlength' ) && empty( $element->getAttribute( 'maxlength' ) ) ) {
+			$element->removeAttribute( 'maxlength' );
+		}
+		
 		if ( $element->hasAttribute( 'min' ) || $element->hasAttribute( 'max' ) ) {
 			$value = '';
 			
-			if ( $element->hasAttribute( 'min' ) ) {
+			if ( $element->hasAttribute( 'min' ) && ! empty( $element->getAttribute( 'min' ) ) ) {
 				$value .= $element->getAttribute( 'min' );
 			}
 			
-			if ( $element->hasAttribute( 'max' ) ) {
+			if ( $element->hasAttribute( 'max' ) && ! empty( $element->getAttribute( 'max' ) ) ) {
 				$value .= ',' . $element->getAttribute( 'max' );
 			}
 			
-			$element->setAttribute( 'data-validate-minmax', $value );
+			if ( $value ) {
+				$element->setAttribute( 'data-validate-minmax', $value );
+			}
 		}
 		
 		if ( $element->hasAttribute( 'minlength' ) || $element->hasAttribute( 'maxlength' ) ) {
 			$value = '';
 			
-			if ( $element->hasAttribute( 'minlength' ) ) {
+			if ( $element->hasAttribute( 'minlength' ) && ! empty( $element->getAttribute( 'minlength' ) ) ) {
 				$value .= $element->getAttribute( 'minlength' );
 			}
 			
-			if ( $element->hasAttribute( 'maxlength' ) ) {
+			if ( $element->hasAttribute( 'maxlength' ) && ! empty( $element->getAttribute( 'maxlength' ) ) ) {
 				$value .= ',' . $element->getAttribute( 'maxlength' );
 			}
 			
-			$element->setAttribute( 'data-validate-length-range', $value );
+			if ( $value ) {
+				$element->setAttribute( 'data-validate-length-range', $value );
+			}
 		}
 		
 		return str_replace( [ '<html>', '</html>' ], '', $dom->saveHTML( $dom->documentElement ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
