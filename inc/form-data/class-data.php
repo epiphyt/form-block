@@ -134,8 +134,7 @@ final class Data {
 		 */
 		do_action( 'form_block_validated_data', $this->form_id, $fields, $files );
 		
-		// TODO: send data
-		die( var_dump( $_POST ) );
+		$this->send( $fields, $files );
 	}
 	
 	/**
@@ -195,6 +194,115 @@ final class Data {
 		$is_filled = apply_filters( 'form_block_is_honeypot_filled', $is_filled );
 		
 		return $is_filled;
+	}
+	
+	/**
+	 * Send form submission to the recipients.
+	 * 
+	 * @param	array	$fields The validated fields
+	 * @param	array	$files The validated files
+	 */
+	public function send( array $fields, array $files ): void {
+		$recipients = [
+			get_option( 'admin_email' ),
+		];
+		
+		/**
+		 * Filter the form recipients.
+		 * 
+		 * @param	array	$recipients The recipients
+		 * @param	int		$form_id The form ID
+		 * @param	array	$fields The validated fields
+		 * @param	array	$files The validated files
+		 */
+		$recipients = apply_filters( 'form_block_recipients', $recipients, $this->form_id, $fields, $files );
+		
+		$field_data = $this->get( $this->form_id );
+		$field_output = [];
+		
+		foreach ( $fields as $name => $value ) {
+			$output = $this->get_field_title_by_name( $name, $field_data['fields'] ) . ': ';
+			
+			if ( strpos( $value, PHP_EOL ) !== false ) {
+				$output .= PHP_EOL;
+			}
+			
+			$output .= $value;
+			$field_output[] = $output;
+		}
+		
+		$email_text = sprintf(
+			/* translators: 1: blog title, 2: form fields */
+			__( 'Hello,
+
+you have just received a new form submission with the following data from "%1$s":
+
+%2$s
+
+Your "%1$s" WordPress', 'form-block' ),
+			get_bloginfo( 'name' ),
+			implode( PHP_EOL, $field_output )
+		);
+		
+		/**
+		 * Filter the email text.
+		 * 
+		 * @param	string	$email_text The email text
+		 * @param	string	$field_output The field text output
+		 * @param	string	$form_id The form ID
+		 * @param	array	$fields The validated fields
+		 */
+		$email_text = apply_filters( 'form_block_email_text', $email_text, $field_output, $this->form_id, $fields );
+		
+		$attachments = [];
+		
+		if ( ! empty( $files ) ) {
+			foreach ( $files as $file ) {
+				$new_path = sys_get_temp_dir() . '/' . $file['name'];
+				$attachments[] = $new_path;
+				
+				move_uploaded_file( $file['path'], $new_path );
+			}
+		}
+		
+		/* translators: blog name */
+		$subject = sprintf( __( 'New form submission via "%s"', 'form-block' ), get_bloginfo( 'name' ) );
+		$success = [];
+		
+		/**
+		 * Filter the email subject.
+		 * 
+		 * @param	string	$subject The email subject
+		 */
+		$subject = apply_filters( 'form_block_mail_subject', $subject );
+		
+		foreach ( $recipients as $recipient ) {
+			if ( ! filter_var( $recipient, FILTER_VALIDATE_EMAIL ) ) {
+				continue;
+			}
+			
+			$sent = wp_mail( $recipient, $subject, $email_text, [], $attachments );
+			
+			$success[ $recipient ] = $sent;
+		}
+		
+		/**
+		 * Runs after sending emails with a status per recipient.
+		 * If status is true, the email was sent.
+		 * 
+		 * @param	array	$success List of emails and whether they were sent
+		 * @param	string	$email_text The sent email text
+		 * @param	array	$attachments The  sentattachments
+		 */
+		add_action( 'form_block_sent_emails', $success, $email_text, $attachments );
+		
+		if ( in_array( false, array_values( $success ), true ) ) {
+			wp_send_json_error( [
+				'message' => esc_html__( 'Form submission failed for at least one recipient.', 'form-block' ),
+			] );
+		}
+		
+		wp_send_json_success();
 	}
 	
 	/**

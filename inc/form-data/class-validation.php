@@ -1,5 +1,6 @@
 <?php
 namespace epiphyt\Form_Block\form_data;
+
 use epiphyt\Form_Block\Form_Block;
 
 /**
@@ -295,14 +296,9 @@ final class Validation {
 						wp_die( esc_html__( 'The uploaded file is too big.', 'form-block' ) );
 					}
 					
-					// phpcs:disable WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-					$file_content = file_get_contents( $file['tmp_name'] );
-					// phpcs:enable
 					$validated[] = [
 						'name' => $file['name'],
-						// phpcs:disable WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-						'content' => base64_encode( $file_content ),
-						// phpcs:enable
+						'path' => $file['tmp_name'],
 					];
 				}
 			}
@@ -311,14 +307,9 @@ final class Validation {
 					wp_die( esc_html__( 'The uploaded file is too big.', 'form-block' ) );
 				}
 				
-				// phpcs:disable WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-				$file_content = file_get_contents( $files['tmp_name'] );
-				// phpcs:enable
 				$validated[] = [
 					'name' => $files['name'],
-					// phpcs:disable WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
-					'content' => base64_encode( $file_content ),
-					// phpcs:enable
+					'path' => $files['tmp_name'],
 				];
 			}
 		}
