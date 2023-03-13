@@ -215,6 +215,11 @@ final class Form {
 		wp_register_script( 'form-block-form', $file_url, [ 'form-block-validator', 'form-block-validation' ], $is_debug ? filemtime( $file_path ) : FORM_BLOCK_VERSION, true );
 		wp_localize_script( 'form-block-form', 'formBlockData', [
 			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			'i18n' => [
+				'backendError' => esc_js( __( 'There was a problem with the backend. Please contact the administrator otherwise.', 'form-block' ) ),
+				'requestError' => esc_js( __( 'There was a problem with your request. Please try again.', 'form-block' ) ),
+				'requestSuccess' => esc_js( __( 'The form has been submitted successfully.', 'form-block' ) ),
+			],
 		] );
 	}
 }

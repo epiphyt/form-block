@@ -30,13 +30,13 @@ final class Validation {
 			return;
 		}
 		
-		wp_die(
-			sprintf(
+		wp_send_json_error( [
+			'message' => sprintf(
 				/* translators: field title */
 				esc_html__( 'The following field is not allowed: %s', 'form-block' ),
 				esc_html( Data::get_instance()->get_field_title_by_name( $name, $form_data['fields'] ) )
-			)
-		);
+			),
+		] );
 	}
 	
 	/**
@@ -163,8 +163,14 @@ final class Validation {
 				foreach ( $value as $item_key => &$item ) {
 					// if it's not a string, die with an error message
 					if ( ! is_string( $item ) ) {
-						/* translators: 1: the value name, 2: the field name */
-						wp_die( sprintf( esc_html__( 'Wrong item format of value %1$s in field %2$s.', 'form-block' ), esc_html( $item_key ), esc_html( Data::get_instance()->get_field_title_by_name( $key, $form_data['fields'] ) ) ) );
+						wp_send_json_error( [
+							'message' => sprintf(
+								/* translators: 1: the value name, 2: the field name */
+								esc_html__( 'Wrong item format of value %1$s in field %2$s.', 'form-block' ),
+								esc_html( $item_key ),
+								esc_html( Data::get_instance()->get_field_title_by_name( $key, $form_data['fields'] ) )
+							),
+						] );
 					}
 					
 					$item = sanitize_textarea_field( wp_unslash( $item ) );
@@ -173,8 +179,13 @@ final class Validation {
 			else {
 				// if it's not a string, die with an error message
 				if ( ! is_string( $value ) ) {
-					/* translators: the field name */
-					wp_die( sprintf( esc_html__( 'Wrong item format in field %s.', 'form-block' ), esc_html( Data::get_instance()->get_field_title_by_name( $key, $form_data['fields'] ) ) ) );
+					wp_send_json_error( [
+						'message' => sprintf(
+							/* translators: the field name */
+							esc_html__( 'Wrong item format in field %s.', 'form-block' ),
+							esc_html( Data::get_instance()->get_field_title_by_name( $key, $form_data['fields'] ) )
+						),
+					] );
 				}
 				
 				$value = sanitize_textarea_field( wp_unslash( $value ) );
@@ -226,13 +237,13 @@ final class Validation {
 		
 		// output error if there are missing fields
 		if ( ! empty( $missing_fields ) ) {
-			wp_die(
-				sprintf(
+			wp_send_json_error( [
+				'message' => sprintf(
 					/* translators: missing fields */
 					esc_html( _n( 'The following field is missing: %s', 'The following fields are missing: %s', count( $missing_fields ), 'form-block' ) ),
 					esc_html( implode( ', ', $missing_fields ) )
-				)
-			);
+				),
+			] );
 		}
 		
 		$field_data_errors = $this->by_field_data( Data::get_instance()->get_form_id(), $validated );
@@ -247,10 +258,12 @@ final class Validation {
 					$message .= esc_html( $error['message'] );
 				}
 				
-				$message .= '<br />';
+				$message .= PHP_EOL;
 			}
 			
-			wp_die( $message ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			wp_send_json_error( [
+				'message' => $message,
+			] );
 		}
 		
 		return $validated;
@@ -277,7 +290,9 @@ final class Validation {
 			$content_length = (int) sanitize_text_field( wp_unslash( $_SERVER['CONTENT_LENGTH'] ?? $_SERVER['HTTP_CONTENT_LENGTH'] ?? $maximum_upload_size ) );
 			
 			if ( $content_length >= $maximum_upload_size ) {
-				wp_die( esc_html__( 'The uploaded file(s) are too big.', 'form-block' ) );
+				wp_send_json_error( [
+					'message' => esc_html__( 'The uploaded file(s) are too big.', 'form-block' ),
+				] );
 			}
 		}
 		
@@ -293,7 +308,9 @@ final class Validation {
 					}
 					
 					if ( $file['size'] > wp_max_upload_size() ) {
-						wp_die( esc_html__( 'The uploaded file is too big.', 'form-block' ) );
+						wp_send_json_error( [
+							'message' => esc_html__( 'The uploaded file is too big.', 'form-block' ),
+						] );
 					}
 					
 					$validated[] = [
@@ -304,7 +321,9 @@ final class Validation {
 			}
 			else if ( ! empty( $files['tmp_name'] ) ) {
 				if ( $files['size'] > wp_max_upload_size() ) {
-					wp_die( esc_html__( 'The uploaded file is too big.', 'form-block' ) );
+					wp_send_json_error( [
+						'message' => esc_html__( 'The uploaded file is too big.', 'form-block' ),
+					] );
 				}
 				
 				$validated[] = [
