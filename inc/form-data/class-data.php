@@ -59,7 +59,7 @@ final class Data {
 		foreach ( $fields as $field ) {
 			$field_name = Form_Block::get_instance()->get_block_name_attribute( $field );
 			
-			if ( $field_name === $name ) {
+			if ( $field_name === $name || preg_match( '/' . preg_quote( $field_name, '/' ) . '-\d+/', $name ) ) {
 				return $field['label'] ?? $name;
 			}
 		}
