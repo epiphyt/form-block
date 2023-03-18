@@ -55,6 +55,7 @@ final class Form_Block {
 		$dom = new DOMDocument();
 		$element_type = str_replace( 'form-block/', '', $block['blockName'] );
 		$label = '';
+		$multiple_regex = '/<input([^>]+)\s+multiple\s*/';
 		$name_regex = '/name="(?<attribute>[^"]*)"/';
 		
 		$dom->loadHTML(
@@ -77,11 +78,13 @@ final class Form_Block {
 		
 		// get name attribute
 		preg_match( $name_regex, $block_content, $matches );
+		// get multiple attribute
+		preg_match( $multiple_regex, $block_content, $multiple_matches );
 		
 		$block['attrs']['label'] = $label;
 		$block['attrs']['name'] = $matches['attribute'] ?? '';
 		$name = $this->get_block_name_attribute( $block );
-		$attribute_replacement = 'name="' . esc_attr( $name ) . '" id="id-' . esc_attr( $name ) . '"';
+		$attribute_replacement = 'name="' . esc_attr( $name ) . ( ! empty( $multiple_matches ) ? '[]' : '' ) . '" id="id-' . esc_attr( $name ) . '"';
 		
 		if ( preg_match( $name_regex, $block_content ) ) {
 			$block_content = preg_replace( $name_regex, $attribute_replacement, $block_content );

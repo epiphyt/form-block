@@ -282,6 +282,7 @@ final class Validation {
 			return $validated;
 		}
 		
+		$filesize = 0;
 		$maximum_file_size = wp_convert_hr_to_bytes( ini_get( 'upload_max_filesize' ) );
 		$maximum_post_size = wp_convert_hr_to_bytes( ini_get( 'post_max_size' ) );
 		$maximum_upload_size = max( $maximum_file_size, $maximum_post_size );
@@ -314,6 +315,7 @@ final class Validation {
 						] );
 					}
 					
+					$filesize += $file['size'];
 					$validated[] = [
 						'name' => $file['name'],
 						'path' => $file['tmp_name'],
@@ -327,11 +329,18 @@ final class Validation {
 					] );
 				}
 				
+				$filesize += $files['size'];
 				$validated[] = [
 					'name' => $files['name'],
 					'path' => $files['tmp_name'],
 				];
 			}
+		}
+		
+		if ( $filesize > wp_max_upload_size() ) {
+			wp_send_json_error( [
+				'message' => esc_html__( 'The uploaded file(s) are too big.', 'form-block' ),
+			] );
 		}
 		
 		return $validated;
