@@ -18,6 +18,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		event.preventDefault();
 		
 		const form = event.currentTarget;
+		setSubmitMessage( form, 'loading', formBlockData.i18n.isLoading );
 		const messageContainer = form.querySelector( '.form-block__message-container' );
 		
 		if ( messageContainer ) {
@@ -85,7 +86,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	 * Set a submit message.
 	 * 
 	 * @param	{HTMLElement}	form Form element
-	 * @param	{String}		messageType 'error' or 'success'
+	 * @param	{String}		messageType 'error', 'loading' or 'success'
 	 * @param	{String}		message Message
 	 */
 	function setSubmitMessage( form, messageType, message ) {
@@ -105,6 +106,13 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		messageContainer.textContent = message;
 		// then replace all newlines with <br />
 		messageContainer.innerHTML = nl2br( messageContainer.innerHTML );
+		
+		if ( messageType === 'loading' ) {
+			const loadingIndicator = document.createElement( 'span' );
+			
+			loadingIndicator.classList.add( 'form-block__loading-indicator' );
+			messageContainer.prepend( loadingIndicator );
+		}
 		
 		// scroll error message into viewport
 		if ( ! isElementInViewport( messageContainer ) ) {

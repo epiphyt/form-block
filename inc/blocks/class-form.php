@@ -224,6 +224,7 @@ final class Form {
 			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 			'i18n' => [
 				'backendError' => esc_js( __( 'There was a problem with the backend. Please contact the administrator otherwise.', 'form-block' ) ),
+				'isLoading' => esc_js( __( 'Loading …', 'form-block' ) ),
 				'requestError' => esc_js( __( 'There was a problem with your request. Please try again.', 'form-block' ) ),
 				'requestSuccess' => esc_js( __( 'The form has been submitted successfully.', 'form-block' ) ),
 			],
