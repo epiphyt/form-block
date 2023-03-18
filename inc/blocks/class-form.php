@@ -11,6 +11,8 @@ use epiphyt\Form_Block\Form_Block;
  * @package	epiphyt\Form_Block
  */
 final class Form {
+	const MAX_INT = 2147483647;
+	
 	/**
 	 * @var		\epiphyt\Form_Block\blocks\Form
 	 */
@@ -182,9 +184,14 @@ final class Form {
 		
 		$file_path = plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'validation' . $suffix . '.js';
 		$file_url = plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'validation' . $suffix . '.js';
-		$maximum_file_size = wp_convert_hr_to_bytes( ini_get( 'upload_max_filesize' ) );
-		$maximum_post_size = wp_convert_hr_to_bytes( ini_get( 'post_max_size' ) );
-		$maximum_upload_size = max( $maximum_file_size, $maximum_post_size );
+		$maximum_upload_size = (float) get_option( 'form_block_maximum_upload_size', self::MAX_INT );
+		
+		if ( $maximum_upload_size && $maximum_upload_size !== self::MAX_INT ) {
+			$maximum_upload_size = floor( $maximum_upload_size * 1024 * 1024 );
+		}
+		else {
+			$maximum_upload_size = self::MAX_INT;
+		}
 		
 		wp_register_script( 'form-block-validation', $file_url, [ 'form-block-validator' ], $is_debug ? filemtime( $file_path ) : FORM_BLOCK_VERSION, true );
 		wp_localize_script( 'form-block-validation', 'formBlockValidationData', [
@@ -196,8 +203,8 @@ final class Form {
 			'validatorFileTooBig' => esc_js( __( 'The uploaded file is too big.', 'form-block' ) ),
 			'validatorInvalid' => esc_js( __( 'This field is invalid.', 'form-block' ) ),
 			'validatorLong' => esc_js( __( 'This field is too long.', 'form-block' ) ),
-			'validatorMaxFilesize' => esc_js( $maximum_upload_size ),
-			'validatorMaxFilesizePerFile' => esc_js( wp_max_upload_size() ),
+			'validatorMaxFilesize' => esc_js( min( wp_max_upload_size(), $maximum_upload_size ) ),
+			'validatorMaxFilesizePerFile' => esc_js( min( wp_max_upload_size(), $maximum_upload_size ) ),
 			'validatorNumber' => esc_js( __( 'This field does not contain a number.', 'form-block' ) ),
 			'validatorNumberMax' => esc_js( __( 'This value is too low.', 'form-block' ) ),
 			'validatorNumberMin' => esc_js( __( 'This value is too high.', 'form-block' ) ),
