@@ -296,8 +296,9 @@ final class Validation {
 			}
 		}
 		
-		
-		foreach ( $_FILES as $files ) {
+		foreach ( $_FILES as $field_name => $files ) {
+			$this->by_allowed_names( $field_name, $form_data );
+			
 			if ( is_array( $files['name'] ) ) {
 				// if multiple files, resort
 				$files = Data::get_instance()->unify_files_array( $files );
