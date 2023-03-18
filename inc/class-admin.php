@@ -104,6 +104,11 @@ final class Admin {
 	 * @return	string The validated value
 	 */
 	public function validate_maximum_upload_size( string $value ): string {
+		// allow empty value to reset
+		if ( empty( $value ) ) {
+			return '';
+		}
+		
 		if ( ! is_numeric( $value ) ) {
 			add_settings_error(
 				'form_block_maximum_upload_size',
