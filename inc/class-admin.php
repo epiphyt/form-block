@@ -71,6 +71,20 @@ final class Admin {
 	}
 	
 	/**
+	 * Get the input for preserve data on uninstall option.
+	 */
+	public function get_preserve_data_on_uninstall_input(): void {
+		$option_value = get_option( 'form_block_preserve_data_on_uninstall' );
+		?>
+		<label>
+			<input type="checkbox" id="form_block_preserve_data_on_uninstall" name="form_block_preserve_data_on_uninstall" value="yes"<?php checked( $option_value, 'yes' ) ?>/>
+			<?php esc_html_e( 'Preserve data on uninstall', 'form-block' ); ?>
+		</label>
+		<p><?php esc_html_e( 'By enabling this option, all plugin data is preserved on uninstall.', 'form-block' ); ?></p>
+		<?php
+	}
+	
+	/**
 	 * Register options.
 	 */
 	public function register_options(): void {
@@ -86,6 +100,9 @@ final class Admin {
 			[ $this, 'get_maximum_upload_size_input' ],
 			'writing',
 			'form_block',
+			[
+				'label_for' => 'form_block_maximum_upload_size',
+			]
 		);
 		register_setting(
 			'writing',
@@ -93,6 +110,21 @@ final class Admin {
 			[
 				'sanitize_callback' => [ $this, 'validate_maximum_upload_size' ],
 				'type' => 'number',
+			]
+		);
+		add_settings_field(
+			'form_block_preserve_data_on_uninstall',
+			__( 'Data handling', 'form-block' ),
+			[ $this, 'get_preserve_data_on_uninstall_input' ],
+			'writing',
+			'form_block',
+		);
+		register_setting(
+			'writing',
+			'form_block_preserve_data_on_uninstall',
+			[
+				'sanitize_callback' => [ $this, 'validate_preserve_data_on_uninstall' ],
+				'type' => 'string',
 			]
 		);
 	}
@@ -129,6 +161,33 @@ final class Admin {
 				'invalid_value',
 				/* translators: setting name */
 				sprintf( esc_html__( '%s: The value must not be greater than the maximum upload size the server is capable of.', 'form-block' ), esc_html__( 'Maximum form upload size', 'form-block' ),
+				)
+			);
+			
+			return '';
+		}
+		
+		return $value;
+	}
+	
+	/**
+	 * Validate preserve data on uninstall setting.
+	 * 
+	 * @param	null|string	$value The saved value
+	 * @return	string The validated value
+	 */
+	public function validate_preserve_data_on_uninstall( ?string $value ): string {
+		// allow empty value to reset
+		if ( empty( $value ) ) {
+			return '';
+		}
+		
+		if ( $value !== 'yes' ) {
+			add_settings_error(
+				'form_block_preserve_data_on_uninstall',
+				'invalid_value',
+				/* translators: setting name */
+				sprintf( esc_html__( '%s: The value is invalid.', 'form-block' ), esc_html__( 'Preserve data on uninstall', 'form-block' ),
 				)
 			);
 			
