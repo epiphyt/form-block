@@ -294,7 +294,7 @@ Your "%1$s" WordPress', 'form-block' ),
 		 * @param	string	$email_text The sent email text
 		 * @param	array	$attachments The  sentattachments
 		 */
-		add_action( 'form_block_sent_emails', $success, $email_text, $attachments );
+		do_action( 'form_block_sent_emails', $success, $email_text, $attachments );
 		
 		if ( in_array( false, array_values( $success ), true ) ) {
 			wp_send_json_error( [
