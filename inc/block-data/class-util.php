@@ -51,6 +51,37 @@ final class Util {
 	}
 	
 	/**
+	 * Check if a block is inside a content string.
+	 * 
+	 * @param	string	$block_name The name of the block you're looking for
+	 * @param	string	$content The content to search for the block in
+	 * @return	bool Whether the content contains the block
+	 */
+	public static function has_block_in_content( string $block_name, string $content ): bool {
+		if ( strpos( $content, '<!-- wp:' . $block_name . ' ' ) !== false ) {
+			return true;
+		}
+		
+		if ( strpos( $content, '<!-- wp:block ' ) === false ) {
+			return false;
+		}
+		
+		$blocks = parse_blocks( $content );
+		
+		if ( ! is_array( $blocks ) || empty( $blocks ) ) {
+			return false;
+		}
+		
+		foreach ( $blocks as $block ) {
+			if ( self::has_block_recursive( $block_name, $block ) ) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * Check if a block is inside widget areas.
 	 * 
 	 * @param	string	$block_name Full block type to look for

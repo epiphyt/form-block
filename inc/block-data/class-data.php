@@ -3,6 +3,7 @@ namespace epiphyt\Form_Block\block_data;
 
 use DOMDocument;
 use WP_Post;
+use WP_Widget;
 
 /**
  * Block data class.
@@ -22,6 +23,7 @@ final class Data {
 	 */
 	public function init(): void {
 		add_action( 'save_post', [ $this, 'set' ], 20, 2 );
+		add_action( 'update_option_widget_block', [ $this, 'set_for_widget' ], 20, 2 );
 	}
 	
 	/**
@@ -248,15 +250,32 @@ final class Data {
 	/**
 	 * Maybe delete old form data.
 	 * 
-	 * @param	int		$post_id Current post ID
-	 * @param	array	$data Form data
+	 * @param	int]string	$id Current object ID
+	 * @param	array		$data Form data
+	 * @param	string		$type The object type
 	 */
-	private function maybe_delete( int $post_id, array $data ): void {
+	private function maybe_delete( $id, array $data, string $type = 'post' ): void {
 		$data_ids = array_keys( $data );
 		$form_ids = get_option( 'form_block_form_ids', [] );
+		$original_id = $id;
+		$widgets = [];
+		$widgets_unset = [];
 		
-		foreach ( $form_ids as $form_id => &$post_ids ) {
-			if ( ! in_array( $post_id, $post_ids, true ) ) {
+		if ( $type !== 'post' ) {
+			$id = $type . '-' . $id;
+		}
+		
+		if ( $type === 'widget' ) {
+			$widgets = get_option( 'widget_block', [] );
+			$widget_content = $widgets[ $original_id ]['content'];
+			
+			if ( empty( $widget_content ) || ! Util::has_block_in_content( 'form-block/form', $widget_content ) ) {
+				$widgets_unset[] = $id;
+			}
+		}
+		
+		foreach ( $form_ids as $form_id => &$ids ) {
+			if ( ! in_array( $id, $ids, true ) ) {
 				continue;
 			}
 			
@@ -270,16 +289,16 @@ final class Data {
 				$keep = true;
 			}
 			
-			if ( ! $keep ) {
-				// delete post ID from array
-				$key = array_search( $post_id, $post_ids, true );
+			if ( ! $keep || in_array( $id, $widgets_unset, true ) ) {
+				// delete object ID from array
+				$key = array_search( $id, $ids, true );
 				
 				if ( $key !== false ) {
-					unset( $post_ids[ $key ] );
+					unset( $ids[ $key ] );
 				}
 				
 				// completely delete only if it's not used anywhere else
-				if ( empty( $post_ids ) ) {
+				if ( empty( $ids ) ) {
 					delete_option( 'form_block_data_' . $form_id );
 					unset( $form_ids[ $form_id ] );
 				}
@@ -310,15 +329,63 @@ final class Data {
 		}
 		
 		$data = $this->get( parse_blocks( $post->post_content ) );
+		
+		$this->set_form_block_data( $data, $post_id );
+		
+		if ( $post->post_type !== 'wp_block' ) {
+			$this->maybe_delete( $post_id, $data );
+		}
+		
+		return $post;
+	}
+	
+	/**
+	 * Set form data for widgets.
+	 * 
+	 * @param	mixed	$old_value The old option value
+	 * @param	mixed	$new_value The new option value
+	 * @return	mixed The new option value
+	 */
+	public function set_for_widget( $old_value, $new_value ) {
+		if ( ! is_array( $new_value ) ) {
+			return $new_value;
+		}
+		
+		foreach ( $new_value as $widget_id => $widget_data ) {
+			if ( empty( $widget_data['content'] ) ) {
+				continue;
+			}
+			
+			$data = $this->get( parse_blocks( $widget_data['content'] ) );
+			
+			$this->set_form_block_data( $data, $widget_id, 'widget' );
+			$this->maybe_delete( $widget_id, $data, 'widget' );
+		}
+		
+		return $new_value;
+	}
+	
+	/**
+	 * Set form block data.
+	 * 
+	 * @param	array	$data Array of form data
+	 * @param	int		$id The object ID
+	 * @param	string	$type The object type
+	 */
+	public function set_form_block_data( array $data, int $id, string $type = 'post' ): void {
 		$form_ids = get_option( 'form_block_form_ids', [] );
 		$new_form_ids = $form_ids;
 		
+		if ( $type !== 'post' ) {
+			$id = $type . '-' . $id;
+		}
+		
 		foreach ( $data as $form_id => $form ) {
 			if ( empty( $new_form_ids[ $form_id ] ) ) {
-				$new_form_ids[ $form_id ] = [ $post_id ];
+				$new_form_ids[ $form_id ] = [ $id ];
 			}
-			else if ( ! in_array( $post_id, $new_form_ids[ $form_id ], true ) ) {
-				$new_form_ids[ $form_id ][] = $post_id;
+			else if ( ! in_array( $id, $new_form_ids[ $form_id ], true ) ) {
+				$new_form_ids[ $form_id ][] = $id;
 			}
 			
 			// store form data
@@ -328,11 +395,5 @@ final class Data {
 		if ( $form_ids !== $new_form_ids ) {
 			update_option( 'form_block_form_ids', $new_form_ids );
 		}
-		
-		if ( $post->post_type !== 'wp_block' ) {
-			$this->maybe_delete( $post_id, $data );
-		}
-		
-		return $post;
 	}
 }
