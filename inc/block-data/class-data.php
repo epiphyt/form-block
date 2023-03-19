@@ -26,7 +26,7 @@ final class Data {
 	
 	/**
 	 * Get form data from blocks.
-	 *
+	 * 
 	 * @param	array	$blocks Blocks from parsed_blocks()
 	 * @param	array	$data Current form data
 	 * @param	string	$form_id The form ID
@@ -124,7 +124,7 @@ final class Data {
 	
 	/**
 	 * Get all attributes from a HTML element.
-	 *
+	 * 
 	 * @param	string	$element The HTML element
 	 * @param	string	$tag_name The tag name
 	 * @return	array List of attributes
@@ -186,7 +186,7 @@ final class Data {
 	
 	/**
 	 * Get all attributes of an element.
-	 *
+	 * 
 	 * @param	DOMDocument	$dom The DOMDocument instance
 	 * @param	string		$tag_name The tag name
 	 * @param	array		$arguments {
