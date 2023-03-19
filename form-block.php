@@ -17,6 +17,7 @@ use const WP_PLUGIN_DIR;
 
 /*
 Plugin Name:	Form Block
+Plugin URI:		https://formblock.pro/en/
 Description:	An extensive yet user-friendly form block.
 Version:		1.0.0-dev
 Author:			Epiphyt

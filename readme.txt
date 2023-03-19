@@ -12,7 +12,7 @@ An extensive yet user-friendly form block.
 
 == Description ==
 
-
+WordPress offers several (contact) form plugins, but most of them are not up-to-date anymore when it comes to creating forms. Form Block tackles this problem by utilizing the block editor's power. It enables you to create a form effortlessly within the block editor itself, which makes the process of creating a form much more enjoyable and similar to creating other types of blocks. This innovative approach to form creation ensures that Form Block stands out from other WordPress form plugins.
 
 
 == Installation ==
@@ -24,9 +24,17 @@ An extensive yet user-friendly form block.
 
 == Frequently Asked Questions ==
 
-= Question? =
+= Where can I find the settings? =
 
-Answer.
+The settings can be found in **Settings > Writing > Form Block**.
+
+= Is there a Pro version? =
+
+There will be a Pro version with enhanced functionality in the feature. Lean more at https://formblock.pro/en/.
+
+= How can I contribute? =
+
+The code is open source and hosted on [GitHub](https://github.com/epiphyt/form-block). Read the [contributing guide](https://github.com/epiphyt/form-block/blob/main/CONTRIBUTING.md) for detailed information.
 
 = Who are you, folks? =
 
@@ -42,4 +50,6 @@ We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin
 == Upgrade Notice ==
 
 == Screenshots ==
-1. First screenshot description
+1. The form in the frontend
+2. The form block in the backend
+3. THe form block settings
