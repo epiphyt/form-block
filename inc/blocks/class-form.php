@@ -151,9 +151,9 @@ final class Form {
 			'form-block/form',
 			[
 				'handle' => 'form-block',
-				'src' => plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/style/' . ( $is_debug ? 'build/' : '' ) . 'form' . $suffix . '.css',
+				'src' => plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/form' . $suffix . '.css',
 				'deps' => [],
-				'ver' => $is_debug ? filemtime( plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/style/' . ( $is_debug ? 'build/' : '' ) . 'form' . $suffix . '.css' ) : FORM_BLOCK_VERSION,
+				'ver' => $is_debug ? filemtime( plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/form' . $suffix . '.css' ) : FORM_BLOCK_VERSION,
 			]
 		);
 	}
