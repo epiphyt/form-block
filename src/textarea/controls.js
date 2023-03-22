@@ -37,6 +37,12 @@ export default function Controls( props ) {
 					type: 'toggle',
 				},
 			},
+			{
+				attributeName: 'placeholder',
+				attributes: {
+					type: 'text',
+				},
+			},
 		],
 		props.attributes,
 	);
