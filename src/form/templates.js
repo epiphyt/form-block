@@ -32,6 +32,15 @@ export const contactForm = [
 	[
 		'form-block/input',
 		{
+			label: __( 'I agree that my data will be stored and processed for the purpose of contacting me. You can find more information in our privacy policy.', 'form-block' ),
+			name: 'data-processing',
+			required: true,
+			type: 'checkbox',
+		},
+	],
+	[
+		'form-block/input',
+		{
 			type: 'submit',
 			value: __( 'Submit', 'form-block' ),
 		},
@@ -59,6 +68,15 @@ export const newsletterForm = [
 			label: __( 'Email Address', 'form-block' ),
 			required: true,
 			type: 'email',
+		},
+	],
+	[
+		'form-block/input',
+		{
+			label: __( 'I agree that my data will be stored and processed for the purpose of sending me a newsletter. You can find more information in our privacy policy.', 'form-block' ),
+			name: 'data-processing',
+			required: true,
+			type: 'checkbox',
 		},
 	],
 	[
