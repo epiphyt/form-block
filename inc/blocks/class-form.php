@@ -43,7 +43,7 @@ final class Form {
 	
 	/**
 	 * Add the form action.
-	 *
+	 * 
 	 * @param	string	$block_content The block content
 	 * @param	array	$block Block attributes
 	 * @return	string Updated block content
@@ -65,7 +65,7 @@ final class Form {
 	
 	/**
 	 * Add the form ID input field.
-	 *
+	 * 
 	 * @param	string	$block_content The block content
 	 * @param	array	$block Block attributes
 	 * @return	string Updated block content
@@ -101,7 +101,7 @@ final class Form {
 	
 	/**
 	 * Add the honeypot code.
-	 *
+	 * 
 	 * @param	string	$block_content The block content
 	 * @param	array	$block Block attributes
 	 * @return	string Updated block content
@@ -123,7 +123,7 @@ final class Form {
 	
 	/**
 	 * Add the form method.
-	 *
+	 * 
 	 * @param	string	$block_content The block content
 	 * @param	array	$block Block attributes
 	 * @return	string Updated block content
@@ -143,7 +143,7 @@ final class Form {
 	
 	/**
 	 * Add a required notice.
-	 *
+	 * 
 	 * @param	string	$block_content The block content
 	 * @param	array	$block Block attributes
 	 * @return	string Updated block content
