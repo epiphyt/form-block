@@ -28,6 +28,7 @@ final class Form {
 		add_action( 'render_block_form-block/form', [ $this, 'add_form_id_input' ], 10, 2 );
 		add_action( 'render_block_form-block/form', [ $this, 'add_honeypot' ], 10, 2 );
 		add_action( 'render_block_form-block/form', [ $this, 'add_method' ], 10, 2 );
+		add_action( 'render_block_form-block/form', [ $this, 'add_required_notice' ], 10, 2 );
 		
 		register_block_type(
 			'form-block/form',
@@ -138,6 +139,29 @@ final class Form {
 		$method = apply_filters( 'form_block_form_method', 'POST', $block_content, $block );
 		
 		return str_replace( '<form', '<form method="' . esc_attr( $method ) . '"', $block_content );
+	}
+	
+	/**
+	 * Add a required notice.
+	 *
+	 * @param	string	$block_content The block content
+	 * @param	array	$block Block attributes
+	 * @return	string Updated block content
+	 */
+	public function add_required_notice( string $block_content, array $block ): string {
+		/* translators: an asterisk sign */
+		$notice = '<p>' . sprintf( esc_html__( 'Required fields are marked with %s', 'form-block' ), '<span class="is-required">*</span>' ) . '</p>';
+		
+		/**
+		 * Filter the form required notice.
+		 * 
+		 * @param	string	$notice The form required notice
+		 * @param	string	$block_content The block content
+		 * @param	array	$block Block attributes
+		 */
+		$notice = apply_filters( 'form_block_form_required_notice', $notice, $block_content, $block );
+		
+		return str_replace( '</form>', '</form>' . $notice, $block_content );
 	}
 	
 	/**
