@@ -107,7 +107,7 @@ final class Form {
 	 * @return	string Updated block content
 	 */
 	public function add_honeypot( string $block_content, array $block ): string {
-		$honeypot = '<div class="wp-block-form-block-input form-block__element"><input name="_town" id="id-_town" type="text"aria-hidden="true" autocomplete="new-password" style="padding: 0; clip: rect(1px, 1px, 1px, 1px); position: absolute !important; white-space: nowrap; height: 1px; width: 1px; overflow: hidden;" tabindex="-1" /></div>';
+		$honeypot = '<div class="wp-block-form-block-input form-block__element"><input name="_town" type="text" aria-hidden="true" autocomplete="new-password" style="padding: 0; clip: rect(1px, 1px, 1px, 1px); position: absolute !important; white-space: nowrap; height: 1px; width: 1px; overflow: hidden;" tabindex="-1" /></div>';
 		
 		/**
 		 * Filter the honeypot code.

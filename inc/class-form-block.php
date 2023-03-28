@@ -116,6 +116,10 @@ final class Form_Block {
 			$element->setAttribute( 'class', trim( $element->getAttribute( 'class' ) . ' optional' ) );
 		}
 		
+		if ( $element->hasAttribute( 'capture' ) && empty( $element->getAttribute( 'capture' ) ) ) {
+			$element->removeAttribute( 'capture' );
+		}
+		
 		// make sure staring and ending slashes are available
 		if ( $element->hasAttribute( 'pattern' ) ) {
 			$element->setAttribute( 'pattern', '/' . trim( $element->getAttribute( 'pattern' ) ) . '/' );
