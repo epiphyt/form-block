@@ -12,14 +12,13 @@ use function strlen;
 use function strrpos;
 use function strtolower;
 use function substr_replace;
-use const EPI_FORM_BLOCK_FILE;
 use const WP_PLUGIN_DIR;
 
 /*
 Plugin Name:	Form Block
 Plugin URI:		https://formblock.pro/en/
 Description:	An extensive yet user-friendly form block.
-Version:		1.0.0-dev
+Version:		1.0.0
 Author:			Epiphyt
 Author URI:		https://epiph.yt
 License:		GPL2
@@ -81,7 +80,7 @@ spl_autoload_register( function( string $class ) {
 	$maybe_file = __DIR__ . '/inc/' . $class . '.php';
 	
 	if ( file_exists( $maybe_file ) ) {
-		require_once __DIR__ . '/inc/' . $class . '.php';
+		require_once $maybe_file;
 	}
 } );
 
