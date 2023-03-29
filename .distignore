@@ -1,0 +1,11 @@
+.distignore
+.git
+.github
+.wordpress-org
+node_modules/
+src/
+package-lock.json
+package.json
+ruleset.xml
+webpack.config.js
+*scss/
