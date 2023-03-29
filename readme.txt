@@ -52,4 +52,4 @@ We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin
 == Screenshots ==
 1. The form in the frontend
 2. The form block in the backend
-3. THe form block settings
+3. The form block settings
