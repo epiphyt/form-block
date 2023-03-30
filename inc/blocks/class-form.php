@@ -239,6 +239,7 @@ final class Form {
 			'validatorTime' => esc_js( __( 'This field has an invalid time.', 'form-block' ) ),
 			'validatorUrl' => esc_js( __( 'This field has an invalid URL.', 'form-block' ) ),
 		] );
+		wp_add_inline_script( 'form-block-validation', 'let formBlockIsValidated = false;', 'before' );
 		
 		$file_path = plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'form' . $suffix . '.js';
 		$file_url = plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'form' . $suffix . '.js';
