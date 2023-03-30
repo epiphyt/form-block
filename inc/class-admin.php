@@ -38,6 +38,7 @@ final class Admin {
 		
 		wp_enqueue_script( 'form-block-editor', plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'build/index.js', $asset_file['dependencies'], $asset_file['version'] );
 		wp_enqueue_style( 'form-block', plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'build/style-index.css', [], $asset_file['version'] );
+		wp_set_script_translations( 'form-block-editor', 'form-block' );
 	}
 	
 	/**

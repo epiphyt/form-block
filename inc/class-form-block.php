@@ -33,7 +33,6 @@ final class Form_Block {
 	 * Initialize the class.
 	 */
 	public function init(): void {
-		add_action( 'init', [ $this, 'register_translations' ] );
 		add_filter( 'wp_kses_allowed_html', [ $this, 'set_allow_tags' ], 10, 2 );
 		
 		Admin::get_instance()->init();
@@ -299,13 +298,6 @@ final class Form_Block {
 		$this->block_name_attributes[] = $new_block_name;
 		
 		return $new_block_name;
-	}
-	
-	/**
-	 * Register translations.
-	 */
-	public function register_translations(): void {
-		wp_set_script_translations( 'form-block-editor', 'form-block' );
 	}
 	
 	/**
