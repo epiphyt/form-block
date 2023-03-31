@@ -1,7 +1,6 @@
 /**
  * Form validation related functions.
  */
-let formBlockIsValidated = false;
 
 // add checkbox check
 FormValidator.prototype.tests.checkbox = function( field, data ) {
