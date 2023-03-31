@@ -18,12 +18,13 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		event.preventDefault();
 		
 		const form = event.currentTarget;
-		setSubmitMessage( form, 'loading', formBlockData.i18n.isLoading );
 		const messageContainer = form.querySelector( '.form-block__message-container' );
 		
 		if ( messageContainer ) {
 			messageContainer.remove();
 		}
+		
+		setSubmitMessage( form, 'loading', formBlockData.i18n.isLoading );
 		
 		let intervalCount = 0;
 		const interval = setInterval( () => {
@@ -98,7 +99,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			form.appendChild( messageContainer );
 		}
 		else {
-			messageContainer.classList.remove( 'is-type-error', 'is-type-success' );
+			messageContainer.classList.remove( 'is-type-error', 'is-type-loading', 'is-type-success' );
 		}
 		
 		messageContainer.classList.add( 'is-type-' + messageType );
