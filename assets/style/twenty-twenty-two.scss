@@ -1,0 +1,61 @@
+.form-block__element {
+	input:not([type="submit"]),
+	textarea {
+		border: 1px solid #949494;
+		font-family: inherit;
+		font-size: 1em;
+	}
+	
+	input:not([type="checkbox"]):not([type="radio"]):not([type="reset"]):not([type="submit"]),
+	textarea {
+		box-sizing: border-box;
+		display: block;
+		padding: calc(.667em + 2px);
+		width: 100%;
+	}
+	
+	input[type="reset"],
+	input[type="submit"] {
+		align-self: flex-start;
+		-moz-appearance: none;
+		-webkit-appearance: none;
+		appearance: none;
+		background-color: var(--wp--preset--color--primary);
+		border-radius: 0;
+		border-width: 0;
+		color: var(--wp--preset--color--background);
+		cursor: pointer;
+		font-family: inherit;
+		font-size: var(--wp--preset--font-size--medium);
+		line-height: inherit;
+		padding: calc(.667em + 2px) calc(1.333em + 2px);
+		text-decoration: none;
+		
+		&:hover {
+			opacity: .9;
+		}
+	}
+	
+	select {
+		-moz-appearance: none;
+		-webkit-appearance: none;
+		appearance: none;
+		background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='currentColor'><polygon points='0,0 10,0 5,5'/></svg>") no-repeat right calc(.667em + 2px) top 56%;
+		border: 1px solid #949494;
+		border-radius: 0;
+		font-size: 1em;
+		line-height: 1.6;
+		padding: calc(.667em + 2px) calc(1.333em + 12px) calc(.667em + 2px) calc(.667em + 2px);
+	}
+	
+	&.is-type-checkbox,
+	&.is-type-radio {
+		input {
+			margin-top: .35em;
+		}
+		
+		.form-block__label {
+			margin-left: .3em;
+		}
+	}
+}
