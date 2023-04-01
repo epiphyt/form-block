@@ -30,9 +30,19 @@ final class Form {
 		add_action( 'render_block_form-block/form', [ $this, 'add_method' ], 10, 2 );
 		add_action( 'render_block_form-block/form', [ $this, 'add_required_notice' ], 10, 2 );
 		
+		/**
+		 * Filter form block style before register the block type.
+		 * 
+		 * @since	1.0.1
+		 * 
+		 * @param	array	$style Current block style
+		 */
+		$block_style = apply_filters( 'form_block_form_style', 'form-block' );
+		
 		register_block_type(
 			'form-block/form',
 			[
+				'style' => $block_style, // WP < 6.1
 				'view_script' => 'form-block-form', // WP 5.9
 				'view_script_handles' => [ // since WP 6.1
 					'form-block-form',

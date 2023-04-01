@@ -37,6 +37,8 @@ final class Form_Block {
 		
 		Admin::get_instance()->init();
 		BlockDataData::get_instance()->init();
+		// initialize before any block
+		Theme_Styles::get_instance()->init();
 		Form::get_instance()->init();
 		FormDataData::get_instance()->init();
 		Input::get_instance()->init();
