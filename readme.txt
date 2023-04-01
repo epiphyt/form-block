@@ -2,7 +2,7 @@
 Contributors: epiphyt, kittmedia
 Tags: contact, form, contact form, gutenberg, block editor
 Requires at least: 6.0
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 Tested up to: 6.2
 Requires PHP: 7.4
 License: GPL2
@@ -42,6 +42,12 @@ We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin
 
 
 == Changelog ==
+
+= 1.0.1 =
+* Added: Missing loading information/animation after submit
+* Fixed: Potential PHP warning on uninstallation
+* Fixed: Design for Twenty Twenty-Three
+* Fixed: Design for Twenty Twenty-Two
 
 = 1.0.0 =
 * Initial release
