@@ -12,6 +12,8 @@ const jsFiles = {
 };
 const scssFiles = {
 	'form': path.resolve( process.cwd(), 'assets/style', 'form.scss' ),
+	'twenty-twenty-three': path.resolve( process.cwd(), 'assets/style', 'twenty-twenty-three.scss' ),
+	'twenty-twenty-two': path.resolve( process.cwd(), 'assets/style', 'twenty-twenty-two.scss' ),
 };
 
 module.exports = [
