@@ -18,7 +18,7 @@ use const WP_PLUGIN_DIR;
 Plugin Name:	Form Block
 Plugin URI:		https://formblock.pro/en/
 Description:	An extensive yet user-friendly form block.
-Version:		1.0.1
+Version:		1.0.2
 Author:			Epiphyt
 Author URI:		https://epiph.yt
 License:		GPL2
@@ -43,7 +43,7 @@ along with Form Block. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
 // exit if ABSPATH is not defined
 defined( 'ABSPATH' ) || exit;
 
-define( 'FORM_BLOCK_VERSION', '1.0.1' );
+define( 'FORM_BLOCK_VERSION', '1.0.2' );
 
 if ( ! defined( 'EPI_FORM_BLOCK_BASE' ) ) {
 	define( 'EPI_FORM_BLOCK_BASE', WP_PLUGIN_DIR . '/form-block/' );
