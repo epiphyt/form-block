@@ -59,6 +59,7 @@ final class Form_Block {
 		$label = '';
 		$multiple_regex = '/<input([^>]+)\s+multiple\s*/';
 		$name_regex = '/name="(?<attribute>[^"]*)"/';
+		$type_regex = '/type="(?<attribute>[^"]*)"/';
 		
 		$dom->loadHTML(
 			mb_convert_encoding(
@@ -78,16 +79,25 @@ final class Form_Block {
 			$label = $span->textContent; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		}
 		
-		// get name attribute
-		preg_match( $name_regex, $block_content, $matches );
 		// get multiple attribute
 		preg_match( $multiple_regex, $block_content, $multiple_matches );
+		// get name attribute
+		preg_match( $name_regex, $block_content, $name_matches );
+		
+		// get type attribute only if not yet set
+		if ( empty( $block['attrs']['type'] ) ) {
+			preg_match( $type_regex, $block_content, $type_matches );
+			
+			$block['attrs']['type'] = $type_matches['attribute'] ?? '';
+		}
 		
 		$block['attrs']['label'] = $label;
-		$block['attrs']['name'] = $matches['attribute'] ?? '';
-		$name = $this->get_block_name_attribute( $block );
+		$block['attrs']['name'] = $name_matches['attribute'] ?? '';
+		$name = $this->get_block_name_attribute( $block, 'non-unique' );
+		$name_unique = $this->get_block_name_attribute( $block );
 		$value_as_array = ! empty( $multiple_matches ) && ( empty( $block['attrs']['type'] ) || $block['attrs']['type'] !== 'email' );
-		$attribute_replacement = 'name="' . esc_attr( $name ) . ( $value_as_array ? '[]' : '' ) . '" id="id-' . esc_attr( $name ) . '"';
+		$is_radio = $block['attrs']['type'] === 'radio';
+		$attribute_replacement = 'name="' . esc_attr( $is_radio ? $name : $name_unique ) . ( $value_as_array ? '[]' : '' ) . '" id="id-' . esc_attr( $name_unique ) . '"';
 		
 		if ( preg_match( $name_regex, $block_content ) ) {
 			$block_content = preg_replace( $name_regex, $attribute_replacement, $block_content );
@@ -96,7 +106,7 @@ final class Form_Block {
 			$block_content = str_replace( '<' . $element_type, '<' . $element_type . ' ' . $attribute_replacement, $block_content );
 		}
 		
-		$block_content = str_replace( '<label', '<label for="id-' . esc_attr( $name ) . '"', $block_content );
+		$block_content = str_replace( '<label', '<label for="id-' . esc_attr( $name_unique ) . '"', $block_content );
 		
 		$dom->loadHTML(
 			mb_convert_encoding(
@@ -107,7 +117,7 @@ final class Form_Block {
 			LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
 		);
 		
-		$element = $dom->getElementById( 'id-' . esc_attr( $name ) );
+		$element = $dom->getElementById( 'id-' . esc_attr( $name_unique ) );
 		
 		if (
 			! $element->hasAttribute( 'required' )
@@ -183,9 +193,10 @@ final class Form_Block {
 	 * Get a valid name attribute of a form element.
 	 *
 	 * @param	array	$block Block attributes
+	 * @param	string	$uniqueness 'unique' or 'non-unique'
 	 * @return	string A valid name attribute
 	 */
-	public function get_block_name_attribute( array $block ): string {
+	public function get_block_name_attribute( array $block, string $uniqueness = 'unique' ): string {
 		// if we only have field data, there is no 'attrs' key
 		if ( ! isset( $block['attrs'] ) ) {
 			$block = [
@@ -194,14 +205,14 @@ final class Form_Block {
 		}
 		
 		if ( ! empty( $block['attrs']['name'] ) ) {
-			return $this->get_unique_block_name_attribute( $block['attrs']['name'] );
+			return $this->get_unique_block_name_attribute( $block['attrs']['name'], $uniqueness );
 		}
 		
 		if ( ! empty( $block['attrs']['label'] ) ) {
-			return $this->get_unique_block_name_attribute( $this->get_name_by_label( $block['attrs']['label'] ) );
+			return $this->get_unique_block_name_attribute( $this->get_name_by_label( $block['attrs']['label'] ), $uniqueness );
 		}
 		
-		return $this->get_unique_block_name_attribute( 'unknown' );
+		return $this->get_unique_block_name_attribute( 'unknown', $uniqueness );
 	}
 	
 	/**
@@ -279,10 +290,15 @@ final class Form_Block {
 	 * Similar to wp_unique_post(), which has been the inspiration for this. 
 	 *
 	 * @param	string	$block_name The block name
+	 * @param	string	$uniqueness 'unique' or 'non-unique'
 	 * @return	string A unique name attribute
 	 */
-	private function get_unique_block_name_attribute( string $block_name ): string {
+	private function get_unique_block_name_attribute( string $block_name, string $uniqueness = 'unique' ): string {
 		$block_name_check = in_array( $block_name, $this->block_name_attributes, true );
+		
+		if ( $uniqueness === 'non-unique' ) {
+			$block_name_check = false;
+		}
 		
 		if ( ! $block_name_check ) {
 			$this->block_name_attributes[] = $block_name;
