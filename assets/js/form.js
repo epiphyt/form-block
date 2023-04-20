@@ -92,8 +92,6 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			messageContainer.remove();
 		}
 		
-		setSubmitMessage( form, 'loading', formBlockData.i18n.isLoading );
-		
 		let intervalCount = 0;
 		const interval = setInterval( () => {
 			intervalCount++;
@@ -106,7 +104,9 @@ document.addEventListener( 'DOMContentLoaded', () => {
 				return;
 			}
 			
+			setSubmitMessage( form, 'loading', formBlockData.i18n.isLoading );
 			clearInterval( interval );
+			
 			const formData = new FormData( form );
 			const xhr = new XMLHttpRequest();
 			
