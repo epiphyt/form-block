@@ -6,7 +6,75 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	const forms = document.querySelectorAll( '.wp-block-form-block-form' );
 	
 	for ( const form of forms ) {
+		getNonce( form );
 		form.addEventListener( 'submit', submitForm );
+	}
+	
+	/**
+	 * Get a nonce via Ajax.
+	 * 
+	 * @since	1.0.2
+	 * @param {HTMLElement} form 
+	 */
+	function getNonce( form ) {
+		const formData = new FormData();
+		const xhr = new XMLHttpRequest();
+		
+		formData.set( 'action', 'form-block-create-nonce' );
+		formData.set( 'form_id', form.querySelector( '[name="_form_id"]' ).value );
+		
+		xhr.open( 'POST', formBlockData.ajaxUrl, true );
+		xhr.send( formData );
+		xhr.onreadystatechange = () => {
+			if ( xhr.readyState !== 4 ) {
+				return;
+			}
+			
+			if ( xhr.status === 200 || xhr.status === 201 ) {
+				try {
+					const response = JSON.parse( xhr.responseText );
+					
+					if ( response.success ) {
+						let nonceField = form.querySelector( '[name="_wpnonce"]' );
+						
+						if ( ! nonceField ) {
+							nonceField = document.createElement( 'input' );
+							nonceField.name = '_wpnonce';
+							nonceField.type = 'hidden';
+							
+							form.appendChild( nonceField );
+						}
+						
+						nonceField.value = response?.data?.nonce;
+					}
+					else if ( response?.data?.message ) {
+						// server-side error message
+						setSubmitMessage( form, 'error', response?.data?.message );
+						
+						// disable submit button if nonce creation was not successful
+						const submitButton = form.querySelector( '[type="submit"]' );
+						
+						if ( submitButton ) {
+							submitButton.disabled = true;
+						}
+					}
+					else {
+						// generic error message
+						setSubmitMessage( form, 'error', formBlockData.i18n.backendError );
+					}
+				}
+				catch ( error ) {
+					// invalid data from server
+					setSubmitMessage( form, 'error', formBlockData.i18n.backendError );
+					console.error( error );
+				}
+			}
+			else {
+				// request completely failed
+				setSubmitMessage( form, 'error', formBlockData.i18n.requestError );
+				console.error( xhr.responseText );
+			}
+		}
 	}
 	
 	/**
@@ -73,6 +141,9 @@ document.addEventListener( 'DOMContentLoaded', () => {
 						setSubmitMessage( form, 'error', formBlockData.i18n.backendError );
 						console.error( error );
 					}
+					
+					// get a new nonce for another request
+					getNonce( form );
 				}
 				else {
 					// request completely failed

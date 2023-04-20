@@ -24,8 +24,38 @@ final class Data {
 	 * Initialize the class.
 	 */
 	public function init(): void {
+		add_action( 'wp_ajax_form-block-create-nonce', [ $this, 'create_nonce' ] );
 		add_action( 'wp_ajax_form-block-submit', [ $this, 'get_request' ] );
+		add_action( 'wp_ajax_nopriv_form-block-create-nonce', [ $this, 'create_nonce' ] );
 		add_action( 'wp_ajax_nopriv_form-block-submit', [ $this, 'get_request' ] );
+	}
+	
+	/**
+	 * Create a nonce via Ajax.
+	 * 
+	 * @since	1.0.2
+	 */
+	public function create_nonce(): void {
+		if ( empty( $_POST['form_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			wp_send_json_error(
+				[
+					'message' => __( 'The form could not be prepared to submit requests. Please reload the page.', 'form-block' ),
+				]
+			);
+		}
+		
+		$id = sanitize_text_field( wp_unslash( $_POST['form_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		
+		if ( ! $this->is_valid_form_id( $id ) ) {
+			wp_send_json_error();
+		}
+		
+		wp_send_json_success(
+			[
+				'nonce' => wp_create_nonce( 'form_block_submit_' . $id ),
+			],
+			201
+		);
 	}
 	
 	/**
@@ -93,13 +123,35 @@ final class Data {
 	 * Get the request data.
 	 */
 	public function get_request(): void {
-		if ( ! isset( $_POST['_form_id'] ) || ! isset( $_POST['_town'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( empty( $_POST['_wpnonce'] ) ) {
+			/**
+			 * Fires after verifying that the nonce is empty or absent.
+			 */
+			do_action( 'form_block_empty_nonce' );
+			
+			// explicitly return success so that bad actors cannot learn
+			wp_send_json_success();
+		}
+		
+		if ( ! isset( $_POST['_form_id'] ) || ! isset( $_POST['_town'] ) ) {
 			/**
 			 * Fires after a request is considered invalid.
 			 */
 			do_action( 'form_block_invalid_data' );
 			
 			// explicitly return success so that bots cannot learn
+			wp_send_json_success();
+		}
+		
+		$this->form_id = sanitize_text_field( wp_unslash( $_POST['_form_id'] ) );
+		
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'form_block_submit_' . $this->form_id ) ) {
+			/**
+			 * Fires after a request has an invalid nonce.
+			 */
+			do_action( 'form_block_invalid_nonce' );
+			
+			// explicitly return success so that bad actors cannot learn
 			wp_send_json_success();
 		}
 		
@@ -112,8 +164,6 @@ final class Data {
 			// explicitly return success so that bots cannot learn
 			wp_send_json_success();
 		}
-		
-		$this->form_id = sanitize_text_field( wp_unslash( $_POST['_form_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		
 		/**
 		 * Fires before data has been validated.
@@ -194,6 +244,20 @@ final class Data {
 		$is_filled = apply_filters( 'form_block_is_honeypot_filled', $is_filled );
 		
 		return $is_filled;
+	}
+	
+	/**
+	 * Check wheter a form ID is valid. That means, there are form fields stored.
+	 * 
+	 * @since	1.0.2
+	 * 
+	 * @param	string	$form_id The form ID to check
+	 * @return	bool Weter a form ID is valid
+	 */
+	public function is_valid_form_id( string $form_id ): bool {
+		$maybe_data = (array) get_option( 'form_block_data_' . $form_id, [] );
+		
+		return ! empty( $maybe_data['fields'] );
 	}
 	
 	/**
