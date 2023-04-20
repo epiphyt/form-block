@@ -30,30 +30,40 @@ export default function Controls( props ) {
 		setAttributes,
 	} = props;
 	const [ isHelpOpen, setIsHelpOpen ] = useState( [] );
+	const defaultControlTypes = [
+		{
+			attributeName: 'disabled',
+			attributes: {},
+		},
+		{
+			attributeName: 'readOnly',
+			attributes: {},
+		},
+		{
+			attributeName: 'placeholder',
+			attributes: {},
+		},
+		{
+			attributeName: 'pattern',
+			attributes: {},
+		},
+		{
+			attributeName: 'checked',
+			attributes: {},
+		},
+	];
+	
+	if ( type === 'reset' || type === 'submit' ) {
+		defaultControlTypes.push( {
+			attributeName: 'value',
+			attributes: {},
+		} );
+	}
+	
 	const controls = applyFilters(
 		'formBlock.input.controlTypes',
-		[
-			{
-				attributeName: 'disabled',
-				attributes: {},
-			},
-			{
-				attributeName: 'readOnly',
-				attributes: {},
-			},
-			{
-				attributeName: 'placeholder',
-				attributes: {},
-			},
-			{
-				attributeName: 'pattern',
-				attributes: {},
-			},
-			{
-				attributeName: 'checked',
-				attributes: {},
-			},
-		],
+		defaultControlTypes,
+		props,
 	);
 	
 	const getControl = ( attribute, type, key, settings = {} ) => {
