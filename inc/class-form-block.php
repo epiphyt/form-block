@@ -86,7 +86,8 @@ final class Form_Block {
 		$block['attrs']['label'] = $label;
 		$block['attrs']['name'] = $matches['attribute'] ?? '';
 		$name = $this->get_block_name_attribute( $block );
-		$attribute_replacement = 'name="' . esc_attr( $name ) . ( ! empty( $multiple_matches ) ? '[]' : '' ) . '" id="id-' . esc_attr( $name ) . '"';
+		$value_as_array = ! empty( $multiple_matches ) && ( empty( $block['attrs']['type'] ) || $block['attrs']['type'] !== 'email' );
+		$attribute_replacement = 'name="' . esc_attr( $name ) . ( $value_as_array ? '[]' : '' ) . '" id="id-' . esc_attr( $name ) . '"';
 		
 		if ( preg_match( $name_regex, $block_content ) ) {
 			$block_content = preg_replace( $name_regex, $attribute_replacement, $block_content );

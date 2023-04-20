@@ -227,7 +227,16 @@ final class Data {
 				$output .= PHP_EOL;
 			}
 			
-			$output .= $value;
+			if ( ! is_array( $value ) ) {
+				$output .= $value;
+			}
+			else {
+				$output .= implode( PHP_EOL, array_map( function( $item ) {
+					/* translators: list element value */
+					return sprintf( _x( '- %s', 'list element in plaintext email', 'form-block' ), $item );
+				}, $value ) );
+			}
+			
 			$field_output[] = $output;
 		}
 		
