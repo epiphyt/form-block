@@ -132,13 +132,15 @@ document.addEventListener( 'DOMContentLoaded', () => {
 						if ( response.success ) {
 							form.reset();
 							
+							const customSuccessMessage = response?.data?.successMessage;
+							
 							if ( form.hasAttribute( 'data-redirect' ) ) {
-								setSubmitMessage( form, 'success', formBlockData.i18n.requestSuccessRedirect );
+								setSubmitMessage( form, 'success', customSuccessMessage || formBlockData.i18n.requestSuccessRedirect, !! customSuccessMessage );
 								
 								window.location.href = form.getAttribute( 'data-redirect' );
 							}
 							else {
-								setSubmitMessage( form, 'success', formBlockData.i18n.requestSuccess );
+								setSubmitMessage( form, 'success', customSuccessMessage || formBlockData.i18n.requestSuccess, !! customSuccessMessage );
 							}
 						}
 						else if ( response?.data?.message ) {
@@ -174,8 +176,9 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	 * @param	{HTMLElement}	form Form element
 	 * @param	{String}		messageType 'error', 'loading' or 'success'
 	 * @param	{String}		message Message
+	 * @param	{Boolean}		isHtml Whether the message is raw HTML
 	 */
-	function setSubmitMessage( form, messageType, message ) {
+	function setSubmitMessage( form, messageType, message, isHtml ) {
 		let messageContainer = form.querySelector( '.form-block__message-container' );
 		
 		if ( ! messageContainer ) {
@@ -192,6 +195,10 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		messageContainer.textContent = message;
 		// then replace all newlines with <br />
 		messageContainer.innerHTML = nl2br( messageContainer.innerHTML );
+		
+		if ( isHtml ) {
+			messageContainer.innerHTML = message;
+		}
 		
 		if ( messageType === 'loading' ) {
 			const loadingIndicator = document.createElement( 'span' );

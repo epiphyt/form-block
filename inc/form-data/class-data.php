@@ -386,7 +386,17 @@ Your "%1$s" WordPress', 'form-block' ),
 			] );
 		}
 		
-		wp_send_json_success();
+		/**
+		 * Filter the submit success data.
+		 * 
+		 * @since	1.0.3
+		 * 
+		 * @param	array|null	$data Current data
+		 * @param	string		$form_id Current form ID
+		 */
+		$data = apply_filters( 'form_block_submit_success_data', null, $this->form_id );
+		
+		wp_send_json_success( $data );
 	}
 	
 	/**
