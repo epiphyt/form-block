@@ -108,11 +108,12 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			clearInterval( interval );
 			
 			const formData = new FormData( form );
+			const url = formBlockData.requestUrl !== form.action ? form.action : formBlockData.ajaxUrl;
 			const xhr = new XMLHttpRequest();
 			
-			formData.set( 'action', 'form-block-submit' ) 
+			formData.set( 'action', 'form-block-submit' );
 			
-			xhr.open( 'POST', formBlockData.ajaxUrl, true );
+			xhr.open( 'POST', url, true );
 			xhr.send( formData );
 			xhr.onreadystatechange = () => {
 				if ( xhr.readyState !== 4 ) {
