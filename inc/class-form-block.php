@@ -2,12 +2,12 @@
 namespace epiphyt\Form_Block;
 
 use DOMDocument;
-use epiphyt\Form_Block\block_data\Data as BlockDataData;
+use epiphyt\Form_Block\block_data\Data as Block_Data_Data;
 use epiphyt\Form_Block\blocks\Form;
 use epiphyt\Form_Block\blocks\Input;
 use epiphyt\Form_Block\blocks\Select;
 use epiphyt\Form_Block\blocks\Textarea;
-use epiphyt\Form_Block\form_data\Data as FormDataData;
+use epiphyt\Form_Block\form_data\Data as Form_Data_Data;
 
 /**
  * Form Block main class.
@@ -36,11 +36,11 @@ final class Form_Block {
 		add_filter( 'wp_kses_allowed_html', [ $this, 'set_allow_tags' ], 10, 2 );
 		
 		Admin::get_instance()->init();
-		BlockDataData::get_instance()->init();
+		Block_Data_Data::get_instance()->init();
 		// initialize before any block
 		Theme_Styles::get_instance()->init();
 		Form::get_instance()->init();
-		FormDataData::get_instance()->init();
+		Form_Data_Data::get_instance()->init();
 		Input::get_instance()->init();
 		Select::get_instance()->init();
 		Textarea::get_instance()->init();
