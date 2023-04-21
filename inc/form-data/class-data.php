@@ -287,6 +287,17 @@ final class Data {
 		foreach ( $fields as $name => $value ) {
 			$output = $this->get_field_title_by_name( $name, $field_data['fields'] ) . ': ';
 			
+			/**
+			 * Filter the field value in the output.
+			 * 
+			 * @since	1.0.3
+			 * 
+			 * @param	mixed	$value The field's value
+			 * @param	string	$name The field's name
+			 * @param	array	$field_data The form data
+			 */
+			$value = apply_filters( 'form_block_output_field_value', $value, $name, $field_data );
+			
 			if ( strpos( $value, PHP_EOL ) !== false ) {
 				$output .= PHP_EOL;
 			}
