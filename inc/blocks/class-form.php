@@ -286,6 +286,7 @@ final class Form {
 				'isLoading' => esc_js( __( 'Loading …', 'form-block' ) ),
 				'requestError' => esc_js( __( 'There was a problem with your request. Please try again.', 'form-block' ) ),
 				'requestSuccess' => esc_js( __( 'The form has been submitted successfully.', 'form-block' ) ),
+				'requestSuccessRedirect' => esc_js( __( 'The form has been submitted successfully. Redirecting …', 'form-block' ) ),
 			],
 			'requestUrl' => esc_js( Form_Block::get_instance()->get_current_request_url() ),
 		] );

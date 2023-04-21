@@ -126,7 +126,15 @@ document.addEventListener( 'DOMContentLoaded', () => {
 						
 						if ( response.success ) {
 							form.reset();
-							setSubmitMessage( form, 'success', formBlockData.i18n.requestSuccess );
+							
+							if ( form.hasAttribute( 'data-redirect' ) ) {
+								setSubmitMessage( form, 'success', formBlockData.i18n.requestSuccessRedirect );
+								
+								window.location.href = form.getAttribute( 'data-redirect' );
+							}
+							else {
+								setSubmitMessage( form, 'success', formBlockData.i18n.requestSuccess );
+							}
 						}
 						else if ( response?.data?.message ) {
 							// server-side error message
