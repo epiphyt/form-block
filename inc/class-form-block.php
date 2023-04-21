@@ -94,6 +94,7 @@ final class Form_Block {
 		$block['attrs']['label'] = $label;
 		$block['attrs']['name'] = $name_matches['attribute'] ?? '';
 		$name = $this->get_block_name_attribute( $block, 'non-unique' );
+		$this->reset_block_name_attributes();
 		$name_unique = $this->get_block_name_attribute( $block );
 		$value_as_array = ! empty( $multiple_matches ) && ( empty( $block['attrs']['type'] ) || $block['attrs']['type'] !== 'email' );
 		$is_radio = $block['attrs']['type'] === 'radio';
