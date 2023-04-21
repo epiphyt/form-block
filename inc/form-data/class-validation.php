@@ -328,6 +328,7 @@ final class Validation {
 					$validated[] = [
 						'name' => $file['name'],
 						'path' => $file['tmp_name'],
+						'size' => $file['size'],
 					];
 				}
 			}
@@ -342,6 +343,7 @@ final class Validation {
 				$validated[] = [
 					'name' => $files['name'],
 					'path' => $files['tmp_name'],
+					'size' => $files['size'],
 				];
 			}
 		}
@@ -351,6 +353,17 @@ final class Validation {
 				'message' => esc_html__( 'The uploaded file(s) are too big.', 'form-block' ),
 			] );
 		}
+		
+		/**
+		 * Filter validated files.
+		 * 
+		 * @since	1.0.3
+		 * 
+		 * @param	array	$validated Validated files data
+		 * @param	array	$form_data Current form data
+		 * @param	array	$_FILES PHP files array
+		 */
+		$validated = apply_filters( 'form_block_files_validation', $validated, $form_data, $_FILES );
 		
 		return $validated;
 	}

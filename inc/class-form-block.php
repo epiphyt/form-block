@@ -17,6 +17,8 @@ use epiphyt\Form_Block\form_data\Data as Form_Data_Data;
  * @package	epiphyt\Form_Block
  */
 final class Form_Block {
+	const MAX_INT = 2147483647;
+	
 	/**
 	 * @var		array List of block name attributes
 	 */
@@ -245,6 +247,26 @@ final class Form_Block {
 		}
 		
 		return self::$instance;
+	}
+	
+	/**
+	 * Get the maximum upload size.
+	 * 
+	 * @since	1.0.3
+	 * 
+	 * @return	int The maximum upload size
+	 */
+	public function get_maximum_upload_size(): int {
+		$maximum_upload_size = (float) get_option( 'form_block_maximum_upload_size', self::MAX_INT );
+		
+		if ( $maximum_upload_size && $maximum_upload_size !== self::MAX_INT ) {
+			$maximum_upload_size = floor( (float) $maximum_upload_size * 1024 * 1024 );
+		}
+		else {
+			$maximum_upload_size = self::MAX_INT;
+		}
+		
+		return min( wp_max_upload_size(), $maximum_upload_size );
 	}
 	
 	/**

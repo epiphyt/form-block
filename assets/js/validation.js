@@ -30,21 +30,32 @@ FormValidator.prototype.tests.radio = function( field, data ) {
 
 // add file check
 FormValidator.prototype.tests.file = function( field, data ) {
+	const form = field.closest( '.wp-block-form-block-form' );
 	const files = field.files;
 	let tooBig = false;
 	let fileSizeCombined = 0;
+	let maxFilesize = formBlockValidationData.validatorMaxFilesize;
+	let maxFilesizePerFile = formBlockValidationData.validatorMaxFilesizePerFile;
 	let tooBigCombined = false;
+	
+	if ( form.hasAttribute( 'data-max-upload' ) ) {
+		maxFilesize = form.getAttribute( 'data-max-upload' );
+	}
+	
+	if ( form.hasAttribute( 'data-max-upload-file' ) ) {
+		maxFilesizePerFile = form.getAttribute( 'data-max-upload-file' );
+	}
 	
 	// test each file
 	for ( var j = 0; j < files.length; j++ ) {
 		fileSizeCombined += files[ j ].size;
 		
-		if ( fileSizeCombined > formBlockValidationData.validatorMaxFilesize ) {
+		if ( fileSizeCombined > maxFilesize ) {
 			tooBigCombined = true;
 			break;
 		}
 		
-		if ( files[ j ].size > formBlockValidationData.validatorMaxFilesizePerFile ) {
+		if ( files[ j ].size > maxFilesizePerFile ) {
 			tooBig = true;
 			break;
 		}
