@@ -83,9 +83,14 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	 * @param	{Event}	event The submit event
 	 */
 	function submitForm( event ) {
+		const form = event.currentTarget;
+		
+		if ( form.hasAttribute( 'data-no-ajax' ) && form.getAttribute( 'data-no-ajax' ) ) {
+			return;
+		}
+		
 		event.preventDefault();
 		
-		const form = event.currentTarget;
 		const messageContainer = form.querySelector( '.form-block__message-container' );
 		
 		if ( messageContainer ) {
