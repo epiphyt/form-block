@@ -285,6 +285,22 @@ final class Data {
 		$field_output = [];
 		
 		foreach ( $fields as $name => $value ) {
+			/**
+			 * Filter whether to omit the field from output.
+			 * 
+			 * @since	1.0.3
+			 * 
+			 * @param	bool	$omit_field Whether to omit the field from output
+			 * @param	string	$name The field name
+			 * @param	mixed	$value The field value
+			 * @param	array	$field_data The form data
+			 */
+			$omit_field = apply_filters( 'form_block_output_field_omit', false, $name, $value, $field_data );
+			
+			if ( $omit_field ) {
+				continue;
+			}
+			
 			$output = $this->get_field_title_by_name( $name, $field_data['fields'] ) . ': ';
 			
 			/**
@@ -292,8 +308,8 @@ final class Data {
 			 * 
 			 * @since	1.0.3
 			 * 
-			 * @param	mixed	$value The field's value
-			 * @param	string	$name The field's name
+			 * @param	mixed	$value The field value
+			 * @param	string	$name The field name
 			 * @param	array	$field_data The form data
 			 */
 			$value = apply_filters( 'form_block_output_field_value', $value, $name, $field_data );
