@@ -96,11 +96,9 @@ final class Form_Block {
 		$block['attrs']['label'] = $label;
 		$block['attrs']['name'] = $name_matches['attribute'] ?? '';
 		$name = $this->get_block_name_attribute( $block, 'non-unique' );
-		$this->reset_block_name_attributes();
 		$name_unique = $this->get_block_name_attribute( $block );
 		$value_as_array = ! empty( $multiple_matches ) && ( empty( $block['attrs']['type'] ) || $block['attrs']['type'] !== 'email' );
-		$is_radio = $block['attrs']['type'] === 'radio';
-		$attribute_replacement = 'name="' . esc_attr( $is_radio ? $name : $name_unique ) . ( $value_as_array ? '[]' : '' ) . '" id="id-' . esc_attr( $name_unique ) . '"';
+		$attribute_replacement = 'name="' . esc_attr( $name ) . ( $value_as_array ? '[]' : '' ) . '" id="id-' . esc_attr( $name_unique ) . '"';
 		
 		if ( preg_match( $name_regex, $block_content ) ) {
 			$block_content = preg_replace( $name_regex, $attribute_replacement, $block_content );
@@ -316,7 +314,7 @@ final class Form_Block {
 	 * @param	string	$uniqueness 'unique' or 'non-unique'
 	 * @return	string A unique name attribute
 	 */
-	private function get_unique_block_name_attribute( string $block_name, string $uniqueness = 'unique' ): string {
+	public function get_unique_block_name_attribute( string $block_name, string $uniqueness = 'unique' ): string {
 		$block_name_check = in_array( $block_name, $this->block_name_attributes, true );
 		
 		if ( $uniqueness === 'non-unique' ) {
