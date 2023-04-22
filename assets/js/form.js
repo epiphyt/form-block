@@ -1,7 +1,6 @@
 /**
  * Form related functions.
  */
-
 document.addEventListener( 'DOMContentLoaded', () => {
 	const forms = document.querySelectorAll( '.wp-block-form-block-form' );
 	
@@ -131,6 +130,14 @@ document.addEventListener( 'DOMContentLoaded', () => {
 						
 						if ( response.success ) {
 							form.reset();
+							
+							const dropzoneFiles = form.querySelectorAll( '.form-block-pro-dropzone__files' );
+							
+							if ( dropzoneFiles ) {
+								for ( const dropzoneFile of dropzoneFiles ) {
+									dropzoneFile.innerHTML = '';
+								}
+							}
 							
 							const customSuccessMessage = response?.data?.successMessage;
 							
