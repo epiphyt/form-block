@@ -47,7 +47,7 @@ final class Data {
 				$reusable_blocks = parse_blocks( $reusable_post->post_content );
 				$data = $this->get( $reusable_blocks, $data );
 			}
-			else if ( strpos( $block['blockName'], 'form-block/' ) !== false ) {
+			else if ( ! str_starts_with( $block['blockName'], 'form-block/' ) || ! str_starts_with( $block['blockName'], 'form-block-pro/' ) ) {
 				// ignore fields without a form block
 				if ( empty( $form_id ) && $block['blockName'] !== 'form-block/form' ) {
 					return $data;

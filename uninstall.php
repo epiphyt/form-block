@@ -39,7 +39,7 @@ function delete_data() {
 	
 	foreach ( $options as $option ) {
 		if ( $option === 'form_block_form_ids' ) {
-			$form_ids = get_option( $option );
+			$form_ids = get_option( $option, [] );
 			
 			foreach ( $form_ids as $form_id => $object_ids ) {
 				delete_option( 'form_block_data_' . $form_id );

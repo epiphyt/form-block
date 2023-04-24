@@ -24,8 +24,38 @@ final class Data {
 	 * Initialize the class.
 	 */
 	public function init(): void {
+		add_action( 'wp_ajax_form-block-create-nonce', [ $this, 'create_nonce' ] );
 		add_action( 'wp_ajax_form-block-submit', [ $this, 'get_request' ] );
+		add_action( 'wp_ajax_nopriv_form-block-create-nonce', [ $this, 'create_nonce' ] );
 		add_action( 'wp_ajax_nopriv_form-block-submit', [ $this, 'get_request' ] );
+	}
+	
+	/**
+	 * Create a nonce via Ajax.
+	 * 
+	 * @since	1.0.2
+	 */
+	public function create_nonce(): void {
+		if ( empty( $_POST['form_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			wp_send_json_error(
+				[
+					'message' => __( 'The form could not be prepared to submit requests. Please reload the page.', 'form-block' ),
+				]
+			);
+		}
+		
+		$id = sanitize_text_field( wp_unslash( $_POST['form_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		
+		if ( ! $this->is_valid_form_id( $id ) ) {
+			wp_send_json_error();
+		}
+		
+		wp_send_json_success(
+			[
+				'nonce' => wp_create_nonce( 'form_block_submit_' . $id ),
+			],
+			201
+		);
 	}
 	
 	/**
@@ -93,13 +123,35 @@ final class Data {
 	 * Get the request data.
 	 */
 	public function get_request(): void {
-		if ( ! isset( $_POST['_form_id'] ) || ! isset( $_POST['_town'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( empty( $_POST['_wpnonce'] ) ) {
+			/**
+			 * Fires after verifying that the nonce is empty or absent.
+			 */
+			do_action( 'form_block_empty_nonce' );
+			
+			// explicitly return success so that bad actors cannot learn
+			wp_send_json_success();
+		}
+		
+		if ( ! isset( $_POST['_form_id'] ) || ! isset( $_POST['_town'] ) ) {
 			/**
 			 * Fires after a request is considered invalid.
 			 */
 			do_action( 'form_block_invalid_data' );
 			
 			// explicitly return success so that bots cannot learn
+			wp_send_json_success();
+		}
+		
+		$this->form_id = sanitize_text_field( wp_unslash( $_POST['_form_id'] ) );
+		
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'form_block_submit_' . $this->form_id ) ) {
+			/**
+			 * Fires after a request has an invalid nonce.
+			 */
+			do_action( 'form_block_invalid_nonce' );
+			
+			// explicitly return success so that bad actors cannot learn
 			wp_send_json_success();
 		}
 		
@@ -112,8 +164,6 @@ final class Data {
 			// explicitly return success so that bots cannot learn
 			wp_send_json_success();
 		}
-		
-		$this->form_id = sanitize_text_field( wp_unslash( $_POST['_form_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		
 		/**
 		 * Fires before data has been validated.
@@ -197,6 +247,20 @@ final class Data {
 	}
 	
 	/**
+	 * Check wheter a form ID is valid. That means, there are form fields stored.
+	 * 
+	 * @since	1.0.2
+	 * 
+	 * @param	string	$form_id The form ID to check
+	 * @return	bool Weter a form ID is valid
+	 */
+	public function is_valid_form_id( string $form_id ): bool {
+		$maybe_data = (array) get_option( 'form_block_data_' . $form_id, [] );
+		
+		return ! empty( $maybe_data['fields'] );
+	}
+	
+	/**
 	 * Send form submission to the recipients.
 	 * 
 	 * @param	array	$fields The validated fields
@@ -221,13 +285,49 @@ final class Data {
 		$field_output = [];
 		
 		foreach ( $fields as $name => $value ) {
+			/**
+			 * Filter whether to omit the field from output.
+			 * 
+			 * @since	1.0.3
+			 * 
+			 * @param	bool	$omit_field Whether to omit the field from output
+			 * @param	string	$name The field name
+			 * @param	mixed	$value The field value
+			 * @param	array	$field_data The form data
+			 */
+			$omit_field = apply_filters( 'form_block_output_field_omit', false, $name, $value, $field_data );
+			
+			if ( $omit_field ) {
+				continue;
+			}
+			
 			$output = $this->get_field_title_by_name( $name, $field_data['fields'] ) . ': ';
+			
+			/**
+			 * Filter the field value in the output.
+			 * 
+			 * @since	1.0.3
+			 * 
+			 * @param	mixed	$value The field value
+			 * @param	string	$name The field name
+			 * @param	array	$field_data The form data
+			 */
+			$value = apply_filters( 'form_block_output_field_value', $value, $name, $field_data );
 			
 			if ( strpos( $value, PHP_EOL ) !== false ) {
 				$output .= PHP_EOL;
 			}
 			
-			$output .= $value;
+			if ( ! is_array( $value ) ) {
+				$output .= $value;
+			}
+			else {
+				$output .= implode( PHP_EOL, array_map( function( $item ) {
+					/* translators: list element value */
+					return sprintf( _x( '- %s', 'list element in plaintext email', 'form-block' ), $item );
+				}, $value ) );
+			}
+			
 			$field_output[] = $output;
 		}
 		
@@ -302,7 +402,17 @@ Your "%1$s" WordPress', 'form-block' ),
 			] );
 		}
 		
-		wp_send_json_success();
+		/**
+		 * Filter the submit success data.
+		 * 
+		 * @since	1.0.3
+		 * 
+		 * @param	array|null	$data Current data
+		 * @param	string		$form_id Current form ID
+		 */
+		$data = apply_filters( 'form_block_submit_success_data', null, $this->form_id );
+		
+		wp_send_json_success( $data );
 	}
 	
 	/**

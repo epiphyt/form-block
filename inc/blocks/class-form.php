@@ -11,8 +11,6 @@ use epiphyt\Form_Block\Form_Block;
  * @package	epiphyt\Form_Block
  */
 final class Form {
-	const MAX_INT = 2147483647;
-	
 	/**
 	 * @var		\epiphyt\Form_Block\blocks\Form
 	 */
@@ -27,12 +25,23 @@ final class Form {
 		add_action( 'render_block_form-block/form', [ $this, 'add_action' ], 10, 2 );
 		add_action( 'render_block_form-block/form', [ $this, 'add_form_id_input' ], 10, 2 );
 		add_action( 'render_block_form-block/form', [ $this, 'add_honeypot' ], 10, 2 );
+		add_action( 'render_block_form-block/form', [ $this, 'add_maximum_upload_sizes' ], 10, 2 );
 		add_action( 'render_block_form-block/form', [ $this, 'add_method' ], 10, 2 );
 		add_action( 'render_block_form-block/form', [ $this, 'add_required_notice' ], 10, 2 );
+		
+		/**
+		 * Filter form block style before register the block type.
+		 * 
+		 * @since	1.0.1
+		 * 
+		 * @param	array	$style Current block style
+		 */
+		$block_style = apply_filters( 'form_block_form_style', 'form-block' );
 		
 		register_block_type(
 			'form-block/form',
 			[
+				'style' => $block_style, // WP < 6.1
 				'view_script' => 'form-block-form', // WP 5.9
 				'view_script_handles' => [ // since WP 6.1
 					'form-block-form',
@@ -122,6 +131,39 @@ final class Form {
 	}
 	
 	/**
+	 * Add the form maximum upload sizes.
+	 * 
+	 * @since	1.0.3
+	 * 
+	 * @param	string	$block_content The block content
+	 * @param	array	$block Block attributes
+	 * @return	string Updated block content
+	 */
+	public function add_maximum_upload_sizes( string $block_content, array $block ): string {
+		$maximum = Form_Block::get_instance()->get_maximum_upload_size();
+		
+		/**
+		 * Filter the form maximum upload size.
+		 * 
+		 * @param	int		$maximum_upload_size Current maximum upload size
+		 * @param	string	$block_content The block content
+		 * @param	array	$block Block attributes
+		 */
+		$maximum_upload_size = apply_filters( 'form_block_form_maximum_upload_size', $maximum, $block_content, $block );
+		
+		/**
+		 * Filter the form maximum upload size per file.
+		 * 
+		 * @param	int		$maximum_upload_size Current maximum upload size per file
+		 * @param	string	$block_content The block content
+		 * @param	array	$block Block attributes
+		 */
+		$maximum_upload_size_per_file = apply_filters( 'form_block_form_maximum_upload_size_per_file', $maximum, $block_content, $block );
+		
+		return str_replace( '<form', '<form data-max-upload="' . esc_attr( $maximum_upload_size ) . '" data-max-upload-file="' . esc_attr( $maximum_upload_size_per_file ) . '"', $block_content );
+	}
+	
+	/**
 	 * Add the form method.
 	 * 
 	 * @param	string	$block_content The block content
@@ -208,14 +250,6 @@ final class Form {
 		
 		$file_path = plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'validation' . $suffix . '.js';
 		$file_url = plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'validation' . $suffix . '.js';
-		$maximum_upload_size = (float) get_option( 'form_block_maximum_upload_size', self::MAX_INT );
-		
-		if ( $maximum_upload_size && $maximum_upload_size !== self::MAX_INT ) {
-			$maximum_upload_size = floor( (float) $maximum_upload_size * 1024 * 1024 );
-		}
-		else {
-			$maximum_upload_size = self::MAX_INT;
-		}
 		
 		wp_register_script( 'form-block-validation', $file_url, [ 'form-block-validator' ], $is_debug ? filemtime( $file_path ) : FORM_BLOCK_VERSION, true );
 		wp_localize_script( 'form-block-validation', 'formBlockValidationData', [
@@ -227,8 +261,8 @@ final class Form {
 			'validatorFileTooBig' => esc_js( __( 'The uploaded file is too big.', 'form-block' ) ),
 			'validatorInvalid' => esc_js( __( 'This field is invalid.', 'form-block' ) ),
 			'validatorLong' => esc_js( __( 'This field is too long.', 'form-block' ) ),
-			'validatorMaxFilesize' => esc_js( min( wp_max_upload_size(), $maximum_upload_size ) ),
-			'validatorMaxFilesizePerFile' => esc_js( min( wp_max_upload_size(), $maximum_upload_size ) ),
+			'validatorMaxFilesize' => esc_js( Form_Block::get_instance()->get_maximum_upload_size() ),
+			'validatorMaxFilesizePerFile' => esc_js( Form_Block::get_instance()->get_maximum_upload_size() ),
 			'validatorNumber' => esc_js( __( 'This field does not contain a number.', 'form-block' ) ),
 			'validatorNumberMax' => esc_js( __( 'This value is too low.', 'form-block' ) ),
 			'validatorNumberMin' => esc_js( __( 'This value is too high.', 'form-block' ) ),
@@ -252,7 +286,9 @@ final class Form {
 				'isLoading' => esc_js( __( 'Loading …', 'form-block' ) ),
 				'requestError' => esc_js( __( 'There was a problem with your request. Please try again.', 'form-block' ) ),
 				'requestSuccess' => esc_js( __( 'The form has been submitted successfully.', 'form-block' ) ),
+				'requestSuccessRedirect' => esc_js( __( 'The form has been submitted successfully. Redirecting …', 'form-block' ) ),
 			],
+			'requestUrl' => esc_js( Form_Block::get_instance()->get_current_request_url() ),
 		] );
 	}
 }

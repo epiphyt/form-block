@@ -1,12 +1,79 @@
 /**
  * Form related functions.
  */
-
 document.addEventListener( 'DOMContentLoaded', () => {
 	const forms = document.querySelectorAll( '.wp-block-form-block-form' );
 	
 	for ( const form of forms ) {
+		getNonce( form );
 		form.addEventListener( 'submit', submitForm );
+	}
+	
+	/**
+	 * Get a nonce via Ajax.
+	 * 
+	 * @since	1.0.2
+	 * @param {HTMLElement} form 
+	 */
+	function getNonce( form ) {
+		const formData = new FormData();
+		const xhr = new XMLHttpRequest();
+		
+		formData.set( 'action', 'form-block-create-nonce' );
+		formData.set( 'form_id', form.querySelector( '[name="_form_id"]' ).value );
+		
+		xhr.open( 'POST', formBlockData.ajaxUrl, true );
+		xhr.send( formData );
+		xhr.onreadystatechange = () => {
+			if ( xhr.readyState !== 4 ) {
+				return;
+			}
+			
+			if ( xhr.status === 200 || xhr.status === 201 ) {
+				try {
+					const response = JSON.parse( xhr.responseText );
+					
+					if ( response.success ) {
+						let nonceField = form.querySelector( '[name="_wpnonce"]' );
+						
+						if ( ! nonceField ) {
+							nonceField = document.createElement( 'input' );
+							nonceField.name = '_wpnonce';
+							nonceField.type = 'hidden';
+							
+							form.appendChild( nonceField );
+						}
+						
+						nonceField.value = response?.data?.nonce;
+					}
+					else if ( response?.data?.message ) {
+						// server-side error message
+						setSubmitMessage( form, 'error', response?.data?.message );
+						
+						// disable submit button if nonce creation was not successful
+						const submitButton = form.querySelector( '[type="submit"]' );
+						
+						if ( submitButton ) {
+							submitButton.disabled = true;
+						}
+					}
+					else {
+						// generic error message
+						setSubmitMessage( form, 'error', formBlockData.i18n.backendError );
+					}
+				}
+				catch ( error ) {
+					// invalid data from server
+					setSubmitMessage( form, 'error', formBlockData.i18n.backendError );
+					console.error( error );
+				}
+			}
+			else {
+				// request completely failed
+				setSubmitMessage( form, 'error', formBlockData.i18n.requestError );
+				console.error( xhr.responseText );
+			}
+		}
 	}
 	
 	/**
@@ -15,10 +82,14 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	 * @param	{Event}	event The submit event
 	 */
 	function submitForm( event ) {
+		const form = event.currentTarget;
+		
+		if ( form.hasAttribute( 'data-no-ajax' ) && form.getAttribute( 'data-no-ajax' ) ) {
+			return;
+		}
+		
 		event.preventDefault();
 		
-		const form = event.currentTarget;
-		setSubmitMessage( form, 'loading', formBlockData.i18n.isLoading );
 		const messageContainer = form.querySelector( '.form-block__message-container' );
 		
 		if ( messageContainer ) {
@@ -37,13 +108,16 @@ document.addEventListener( 'DOMContentLoaded', () => {
 				return;
 			}
 			
+			setSubmitMessage( form, 'loading', formBlockData.i18n.isLoading );
 			clearInterval( interval );
+			
 			const formData = new FormData( form );
+			const url = formBlockData.requestUrl !== form.action ? form.action : formBlockData.ajaxUrl;
 			const xhr = new XMLHttpRequest();
 			
-			formData.set( 'action', 'form-block-submit' ) 
+			formData.set( 'action', 'form-block-submit' );
 			
-			xhr.open( 'POST', formBlockData.ajaxUrl, true );
+			xhr.open( 'POST', url, true );
 			xhr.send( formData );
 			xhr.onreadystatechange = () => {
 				if ( xhr.readyState !== 4 ) {
@@ -56,7 +130,25 @@ document.addEventListener( 'DOMContentLoaded', () => {
 						
 						if ( response.success ) {
 							form.reset();
-							setSubmitMessage( form, 'success', formBlockData.i18n.requestSuccess );
+							
+							const dropzoneFiles = form.querySelectorAll( '.form-block-pro-dropzone__files' );
+							
+							if ( dropzoneFiles ) {
+								for ( const dropzoneFile of dropzoneFiles ) {
+									dropzoneFile.innerHTML = '';
+								}
+							}
+							
+							const customSuccessMessage = response?.data?.successMessage;
+							
+							if ( form.hasAttribute( 'data-redirect' ) ) {
+								setSubmitMessage( form, 'success', customSuccessMessage || formBlockData.i18n.requestSuccessRedirect, !! customSuccessMessage );
+								
+								window.location.href = form.getAttribute( 'data-redirect' );
+							}
+							else {
+								setSubmitMessage( form, 'success', customSuccessMessage || formBlockData.i18n.requestSuccess, !! customSuccessMessage );
+							}
 						}
 						else if ( response?.data?.message ) {
 							// server-side error message
@@ -72,6 +164,9 @@ document.addEventListener( 'DOMContentLoaded', () => {
 						setSubmitMessage( form, 'error', formBlockData.i18n.backendError );
 						console.error( error );
 					}
+					
+					// get a new nonce for another request
+					getNonce( form );
 				}
 				else {
 					// request completely failed
@@ -88,8 +183,9 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	 * @param	{HTMLElement}	form Form element
 	 * @param	{String}		messageType 'error', 'loading' or 'success'
 	 * @param	{String}		message Message
+	 * @param	{Boolean}		isHtml Whether the message is raw HTML
 	 */
-	function setSubmitMessage( form, messageType, message ) {
+	function setSubmitMessage( form, messageType, message, isHtml ) {
 		let messageContainer = form.querySelector( '.form-block__message-container' );
 		
 		if ( ! messageContainer ) {
@@ -98,7 +194,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			form.appendChild( messageContainer );
 		}
 		else {
-			messageContainer.classList.remove( 'is-type-error', 'is-type-success' );
+			messageContainer.classList.remove( 'is-type-error', 'is-type-loading', 'is-type-success' );
 		}
 		
 		messageContainer.classList.add( 'is-type-' + messageType );
@@ -106,6 +202,10 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		messageContainer.textContent = message;
 		// then replace all newlines with <br />
 		messageContainer.innerHTML = nl2br( messageContainer.innerHTML );
+		
+		if ( isHtml ) {
+			messageContainer.innerHTML = message;
+		}
 		
 		if ( messageType === 'loading' ) {
 			const loadingIndicator = document.createElement( 'span' );

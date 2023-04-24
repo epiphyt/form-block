@@ -2,12 +2,12 @@
 namespace epiphyt\Form_Block;
 
 use DOMDocument;
-use epiphyt\Form_Block\block_data\Data as BlockDataData;
+use epiphyt\Form_Block\block_data\Data as Block_Data_Data;
 use epiphyt\Form_Block\blocks\Form;
 use epiphyt\Form_Block\blocks\Input;
 use epiphyt\Form_Block\blocks\Select;
 use epiphyt\Form_Block\blocks\Textarea;
-use epiphyt\Form_Block\form_data\Data as FormDataData;
+use epiphyt\Form_Block\form_data\Data as Form_Data_Data;
 
 /**
  * Form Block main class.
@@ -17,6 +17,8 @@ use epiphyt\Form_Block\form_data\Data as FormDataData;
  * @package	epiphyt\Form_Block
  */
 final class Form_Block {
+	const MAX_INT = 2147483647;
+	
 	/**
 	 * @var		array List of block name attributes
 	 */
@@ -36,9 +38,11 @@ final class Form_Block {
 		add_filter( 'wp_kses_allowed_html', [ $this, 'set_allow_tags' ], 10, 2 );
 		
 		Admin::get_instance()->init();
-		BlockDataData::get_instance()->init();
+		Block_Data_Data::get_instance()->init();
+		// initialize before any block
+		Theme_Styles::get_instance()->init();
 		Form::get_instance()->init();
-		FormDataData::get_instance()->init();
+		Form_Data_Data::get_instance()->init();
 		Input::get_instance()->init();
 		Select::get_instance()->init();
 		Textarea::get_instance()->init();
@@ -57,6 +61,7 @@ final class Form_Block {
 		$label = '';
 		$multiple_regex = '/<input([^>]+)\s+multiple\s*/';
 		$name_regex = '/name="(?<attribute>[^"]*)"/';
+		$type_regex = '/type="(?<attribute>[^"]*)"/';
 		
 		$dom->loadHTML(
 			mb_convert_encoding(
@@ -76,15 +81,24 @@ final class Form_Block {
 			$label = $span->textContent; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		}
 		
-		// get name attribute
-		preg_match( $name_regex, $block_content, $matches );
 		// get multiple attribute
 		preg_match( $multiple_regex, $block_content, $multiple_matches );
+		// get name attribute
+		preg_match( $name_regex, $block_content, $name_matches );
+		
+		// get type attribute only if not yet set
+		if ( empty( $block['attrs']['type'] ) ) {
+			preg_match( $type_regex, $block_content, $type_matches );
+			
+			$block['attrs']['type'] = $type_matches['attribute'] ?? '';
+		}
 		
 		$block['attrs']['label'] = $label;
-		$block['attrs']['name'] = $matches['attribute'] ?? '';
-		$name = $this->get_block_name_attribute( $block );
-		$attribute_replacement = 'name="' . esc_attr( $name ) . ( ! empty( $multiple_matches ) ? '[]' : '' ) . '" id="id-' . esc_attr( $name ) . '"';
+		$block['attrs']['name'] = $name_matches['attribute'] ?? '';
+		$name = $this->get_block_name_attribute( $block, 'non-unique' );
+		$name_unique = $this->get_block_name_attribute( $block );
+		$value_as_array = ! empty( $multiple_matches ) && ( empty( $block['attrs']['type'] ) || $block['attrs']['type'] !== 'email' );
+		$attribute_replacement = 'name="' . esc_attr( $name ) . ( $value_as_array ? '[]' : '' ) . '" id="id-' . esc_attr( $name_unique ) . '"';
 		
 		if ( preg_match( $name_regex, $block_content ) ) {
 			$block_content = preg_replace( $name_regex, $attribute_replacement, $block_content );
@@ -93,7 +107,7 @@ final class Form_Block {
 			$block_content = str_replace( '<' . $element_type, '<' . $element_type . ' ' . $attribute_replacement, $block_content );
 		}
 		
-		$block_content = str_replace( '<label', '<label for="id-' . esc_attr( $name ) . '"', $block_content );
+		$block_content = str_replace( '<label', '<label for="id-' . esc_attr( $name_unique ) . '"', $block_content );
 		
 		$dom->loadHTML(
 			mb_convert_encoding(
@@ -104,7 +118,7 @@ final class Form_Block {
 			LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
 		);
 		
-		$element = $dom->getElementById( 'id-' . esc_attr( $name ) );
+		$element = $dom->getElementById( 'id-' . esc_attr( $name_unique ) );
 		
 		if (
 			! $element->hasAttribute( 'required' )
@@ -180,9 +194,10 @@ final class Form_Block {
 	 * Get a valid name attribute of a form element.
 	 *
 	 * @param	array	$block Block attributes
+	 * @param	string	$uniqueness 'unique' or 'non-unique'
 	 * @return	string A valid name attribute
 	 */
-	public function get_block_name_attribute( array $block ): string {
+	public function get_block_name_attribute( array $block, string $uniqueness = 'unique' ): string {
 		// if we only have field data, there is no 'attrs' key
 		if ( ! isset( $block['attrs'] ) ) {
 			$block = [
@@ -191,14 +206,14 @@ final class Form_Block {
 		}
 		
 		if ( ! empty( $block['attrs']['name'] ) ) {
-			return $this->get_unique_block_name_attribute( $block['attrs']['name'] );
+			return $this->get_unique_block_name_attribute( $block['attrs']['name'], $uniqueness );
 		}
 		
 		if ( ! empty( $block['attrs']['label'] ) ) {
-			return $this->get_unique_block_name_attribute( $this->get_name_by_label( $block['attrs']['label'] ) );
+			return $this->get_unique_block_name_attribute( $this->get_name_by_label( $block['attrs']['label'] ), $uniqueness );
 		}
 		
-		return $this->get_unique_block_name_attribute( 'unknown' );
+		return $this->get_unique_block_name_attribute( 'unknown', $uniqueness );
 	}
 	
 	/**
@@ -230,6 +245,26 @@ final class Form_Block {
 		}
 		
 		return self::$instance;
+	}
+	
+	/**
+	 * Get the maximum upload size.
+	 * 
+	 * @since	1.0.3
+	 * 
+	 * @return	int The maximum upload size
+	 */
+	public function get_maximum_upload_size(): int {
+		$maximum_upload_size = (float) get_option( 'form_block_maximum_upload_size', self::MAX_INT );
+		
+		if ( $maximum_upload_size && $maximum_upload_size !== self::MAX_INT ) {
+			$maximum_upload_size = floor( (float) $maximum_upload_size * 1024 * 1024 );
+		}
+		else {
+			$maximum_upload_size = self::MAX_INT;
+		}
+		
+		return min( wp_max_upload_size(), $maximum_upload_size );
 	}
 	
 	/**
@@ -276,10 +311,15 @@ final class Form_Block {
 	 * Similar to wp_unique_post(), which has been the inspiration for this. 
 	 *
 	 * @param	string	$block_name The block name
+	 * @param	string	$uniqueness 'unique' or 'non-unique'
 	 * @return	string A unique name attribute
 	 */
-	private function get_unique_block_name_attribute( string $block_name ): string {
+	public function get_unique_block_name_attribute( string $block_name, string $uniqueness = 'unique' ): string {
 		$block_name_check = in_array( $block_name, $this->block_name_attributes, true );
+		
+		if ( $uniqueness === 'non-unique' ) {
+			$block_name_check = false;
+		}
 		
 		if ( ! $block_name_check ) {
 			$this->block_name_attributes[] = $block_name;

@@ -17,6 +17,17 @@ final class Validation {
 	public static $instance;
 	
 	/**
+	 * @since	1.0.2
+	 * @var		array List of field names used by the system
+	 */
+	private $system_field_names = [
+		'_form_id',
+		'_town',
+		'_wpnonce',
+		'action',
+	];
+	
+	/**
 	 * Validate form fields by allowed names.
 	 *
 	 * @param	string	$name The field name
@@ -128,11 +139,7 @@ final class Validation {
 	private function get_allowed_names( array $form_data ): array {
 		Form_Block::get_instance()->reset_block_name_attributes();
 		
-		$allowed_names = [
-			'_form_id',
-			'_town',
-			'action',
-		];
+		$allowed_names = $this->system_field_names;
 		
 		foreach ( $form_data['fields'] as $field ) {
 			$field_name = Form_Block::get_instance()->get_block_name_attribute( $field );
@@ -195,7 +202,9 @@ final class Validation {
 		}
 		// phpcs:enable
 		
-		unset( $validated['_form_id'], $validated['action'], $validated['_town'] );
+		foreach ( $this->system_field_names as $name ) {
+			unset( $validated[ $name ] );
+		}
 		
 		// remove empty fields
 		foreach ( $validated as $key => $value ) {
@@ -319,6 +328,7 @@ final class Validation {
 					$validated[] = [
 						'name' => $file['name'],
 						'path' => $file['tmp_name'],
+						'size' => $file['size'],
 					];
 				}
 			}
@@ -333,6 +343,7 @@ final class Validation {
 				$validated[] = [
 					'name' => $files['name'],
 					'path' => $files['tmp_name'],
+					'size' => $files['size'],
 				];
 			}
 		}
@@ -342,6 +353,17 @@ final class Validation {
 				'message' => esc_html__( 'The uploaded file(s) are too big.', 'form-block' ),
 			] );
 		}
+		
+		/**
+		 * Filter validated files.
+		 * 
+		 * @since	1.0.3
+		 * 
+		 * @param	array	$validated Validated files data
+		 * @param	array	$form_data Current form data
+		 * @param	array	$_FILES PHP files array
+		 */
+		$validated = apply_filters( 'form_block_files_validation', $validated, $form_data, $_FILES );
 		
 		return $validated;
 	}

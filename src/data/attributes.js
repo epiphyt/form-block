@@ -71,9 +71,12 @@ export const getAttributeHelp = ( attribute ) => {
 				</>
 				: null
 			}
-			<ExternalLink href={ mdnAttributeLinkBase + '#' + attribute }>
-				{ __( 'More information', 'form-block' ) }
-			</ExternalLink>
+			{ ! attributes[ attribute ].hideLink
+				? <ExternalLink href={ mdnAttributeLinkBase + '#' + attribute }>
+					{ __( 'More information', 'form-block' ) }
+				</ExternalLink>
+				: null
+			}
 		</>
 	);
 }
