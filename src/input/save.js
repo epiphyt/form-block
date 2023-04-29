@@ -1,4 +1,5 @@
 import { RichText, useBlockProps } from '@wordpress/block-editor';
+
 import { getAllowedAttributes } from './html-data';
 
 export default function InputSave( props ) {
