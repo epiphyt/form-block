@@ -30,7 +30,13 @@ export default function InputSave( props ) {
 	
 	if ( isButton ) {
 		blockProps.className += ' wp-block-button';
-		elementProps.className += ' wp-block-button__link wp-element-button';
+		
+		if ( elementProps.className ) {
+			elementProps.className += ' wp-block-button__link wp-element-button';
+		}
+		else {
+			elementProps.className = 'wp-block-button__link wp-element-button';
+		}
 	}
 	
 	return (
