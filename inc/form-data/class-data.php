@@ -28,6 +28,8 @@ final class Data {
 		add_action( 'wp_ajax_form-block-submit', [ $this, 'get_request' ] );
 		add_action( 'wp_ajax_nopriv_form-block-create-nonce', [ $this, 'create_nonce' ] );
 		add_action( 'wp_ajax_nopriv_form-block-submit', [ $this, 'get_request' ] );
+		
+		add_filter( 'form_block_output_field_output', [ $this, 'set_static_value_output' ], 10, 4 );
 	}
 	
 	/**
@@ -74,6 +76,27 @@ final class Data {
 		}
 		
 		return (array) get_option( 'form_block_data_' . $form_id, [] );
+	}
+	
+	/**
+	 * Get the field data of a list of fields by its name.
+	 * 
+	 * @param	string	$name The name to search for
+	 * @param	array	$fields The fields to search in
+	 * @return	array The field data
+	 */
+	public function get_field_data_by_name( string $name, array $fields ): array {
+		Form_Block::get_instance()->reset_block_name_attributes();
+		
+		foreach ( $fields as $field ) {
+			if ( $name !== Form_Block::get_instance()->get_block_name_attribute( $field ) ) {
+				continue;
+			}
+			
+			return $field;
+		}
+		
+		return [];
 	}
 	
 	/**
@@ -328,6 +351,18 @@ final class Data {
 				}, $value ) );
 			}
 			
+			/**
+			 * Filter the field output.
+			 * 
+			 * @since	1.1.0
+			 * 
+			 * @param	string	$output The field output
+			 * @param	string	$name The field name
+			 * @param	mixed	$value The field value
+			 * @param	array	$field_data The form data
+			 */
+			$output = apply_filters( 'form_block_output_field_output', $output, $name, $value, $field_data );
+			
 			$field_output[] = $output;
 		}
 		
@@ -413,6 +448,39 @@ Your "%1$s" WordPress', 'form-block' ),
 		$data = apply_filters( 'form_block_submit_success_data', null, $this->form_id );
 		
 		wp_send_json_success( $data );
+	}
+	
+	/**
+	 * Set static output value for checkboxes and radio buttons.
+	 * 
+	 * @since	1.1.0
+	 * 
+	 * @param	string	$output The field output
+	 * @param	string	$name The field name
+	 * @param	mixed	$value The field value
+	 * @param	array	$form_data The form data
+	 * @return	string The updated field output
+	 */
+	public function set_static_value_output( string $output, string $name, $value, array $form_data ): string {
+		$field_data = $this->get_field_data_by_name( $name, $form_data['fields'] );
+		
+		if ( empty( $field_data['type'] ) || ( $field_data['type'] !== 'checkbox' && $field_data['type'] !== 'radio' ) ) {
+			return $output;
+		}
+		
+		$label = $this->get_field_title_by_name( $name, $form_data['fields'] );
+		
+		if ( $field_data['type'] === 'checkbox' ) {
+			/* translators: form field title */
+			return sprintf( __( 'Checked: %s', 'form-block' ), $label );
+		}
+		else if ( $field_data['type'] === 'radio' ) {
+			/* translators: form field title */
+			return sprintf( __( 'Selected: %s', 'form-block' ), $label );
+		}
+		
+		// this should never happen, just in case
+		return $output;
 	}
 	
 	/**
