@@ -1,4 +1,4 @@
-import { useBlockProps } from '@wordpress/block-editor';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 import {
 	Flex,
 	FlexBlock,
@@ -92,11 +92,12 @@ export default function InputEdit( props ) {
 					
 					{ isAllowedAttribute( type, 'label' )
 						? <FlexBlock>
-							<TextControl
-								className="form-block__label-control"
+							<RichText
+								className="form-block__label"
 								onChange={ ( label ) => setAttributes( { label } ) }
 								placeholder={ __( 'Label', 'form-block' ) }
-								value={ label }
+								tagName="label"
+								value={ label || '' }
 							/>
 						</FlexBlock>
 						: null
@@ -119,11 +120,12 @@ export default function InputEdit( props ) {
 						? <Flex>
 							{ isAllowedAttribute( type, 'label' )
 								? <FlexBlock>
-									<TextControl
-										className="form-block__label-control"
+									<RichText
+										className="form-block__label"
 										onChange={ ( label ) => setAttributes( { label } ) }
 										placeholder={ __( 'Label', 'form-block' ) }
-										value={ label }
+										tagName="label"
+										value={ label || '' }
 									/>
 								</FlexBlock>
 								: null

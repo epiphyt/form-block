@@ -6,8 +6,8 @@ const attributes = {
 		type: 'boolean',
 	},
 	label: {
-		selector: '.form-block__label-content',
-		source: 'text',
+		selector: '.form-block__label',
+		source: 'html',
 		type: 'string',
 	},
 	name: {

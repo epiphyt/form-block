@@ -1,4 +1,4 @@
-import { useBlockProps } from '@wordpress/block-editor';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 import { getAllowedAttributes } from './html-data';
 
 export default function InputSave( props ) {
@@ -34,7 +34,9 @@ export default function InputSave( props ) {
 				? <label
 					className="form-block__label is-input-label"
 				>
-					<span className="form-block__label-content">{ label }</span>
+					<RichText.Content
+						value={ label }
+					/>
 					{ required ? <span className="is-required">*</span> : '' }
 				</label>
 				: null
