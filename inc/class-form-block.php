@@ -73,8 +73,8 @@ final class Form_Block {
 		);
 		
 		// get label content
-		foreach ( $dom->getElementsByTagName( 'label' ) as $element ) {
-			if ( ! str_contains( $element->getAttribute( 'class' ), 'form-block__label' ) ) {
+		foreach ( $dom->getElementsByTagName( 'span' ) as $element ) {
+			if ( ! str_contains( $element->getAttribute( 'class' ), 'form-block__label-content' ) ) {
 				continue;
 			}
 			

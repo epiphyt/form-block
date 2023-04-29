@@ -6,7 +6,7 @@ const attributes = {
 		type: 'boolean',
 	},
 	label: {
-		selector: '.form-block__label',
+		selector: '.form-block__label-content',
 		source: 'html',
 		type: 'string',
 	},

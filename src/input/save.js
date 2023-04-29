@@ -47,6 +47,8 @@ export default function InputSave( props ) {
 					className="form-block__label is-input-label"
 				>
 					<RichText.Content
+						className="form-block__label-content"
+						tagName="span"
 						value={ label }
 					/>
 					{ required ? <span className="is-required">*</span> : '' }

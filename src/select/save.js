@@ -39,6 +39,8 @@ export default function SelectSave( props ) {
 				className="form-block__label is-textarea-label"
 			>
 				<RichText.Content
+					className="form-block__label-content"
+					tagName="span"
 					value={ label }
 				/>
 				{ required ? <span className="is-required">*</span> : '' }

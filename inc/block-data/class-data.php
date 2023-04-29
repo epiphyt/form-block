@@ -151,9 +151,9 @@ final class Data {
 		// get label data
 		$label_attributes = $this->get_element_attributes(
 			$dom,
-			'label',
+			'span',
 			[
-				'class_name' => 'form-block__label',
+				'class_name' => 'form-block__label-content',
 				'get_text_content' => true,
 			],
 		);
