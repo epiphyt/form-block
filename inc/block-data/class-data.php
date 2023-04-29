@@ -50,7 +50,7 @@ final class Data {
 			else if ( ! str_starts_with( $block['blockName'], 'form-block/' ) || ! str_starts_with( $block['blockName'], 'form-block-pro/' ) ) {
 				// ignore fields without a form block
 				if ( empty( $form_id ) && $block['blockName'] !== 'form-block/form' ) {
-					return $data;
+					continue;
 				}
 				
 				$field_data = [];
@@ -147,9 +147,9 @@ final class Data {
 		// get label data
 		$label_attributes = $this->get_element_attributes(
 			$dom,
-			'span',
+			'label',
 			[
-				'class_name' => 'form-block__label-content',
+				'class_name' => 'form-block__label',
 				'get_text_content' => true,
 			],
 		);

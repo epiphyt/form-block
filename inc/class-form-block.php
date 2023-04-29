@@ -73,12 +73,12 @@ final class Form_Block {
 		);
 		
 		// get label content
-		foreach ( $dom->getElementsByTagName( 'span' ) as $span ) {
-			if ( $span->getAttribute( 'class' ) !== 'form-block__label-content' ) {
+		foreach ( $dom->getElementsByTagName( 'label' ) as $element ) {
+			if ( ! str_contains( $element->getAttribute( 'class' ), 'form-block__label' ) ) {
 				continue;
 			}
 			
-			$label = $span->textContent; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$label = $element->textContent; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		}
 		
 		// get multiple attribute
