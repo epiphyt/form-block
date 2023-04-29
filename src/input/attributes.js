@@ -13,6 +13,9 @@ const attributes = {
 		source: 'attribute',
 		type: 'boolean',
 	},
+	isReplyTo: {
+		type: 'boolean',
+	},
 	label: {
 		selector: '.form-block__label',
 		source: 'html',

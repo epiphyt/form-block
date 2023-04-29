@@ -14,6 +14,7 @@ export const contactForm = applyFilters(
 		[
 			'form-block/input',
 			{
+				isReplyTo: true,
 				label: __( 'Email Address', 'form-block' ),
 				required: true,
 				type: 'email',
@@ -74,6 +75,7 @@ export const newsletterForm = applyFilters(
 		[
 			'form-block/input',
 			{
+				isReplyTo: true,
 				label: __( 'Email Address', 'form-block' ),
 				required: true,
 				type: 'email',

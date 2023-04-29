@@ -142,6 +142,40 @@ final class Data {
 		return self::$instance;
 	}
 	
+	private function get_reply_to( array $data, array $fields ): string {
+		// reverse since the latest reply to field is the most important one
+		$reverse_fields = array_reverse( $fields );
+		
+		foreach ( array_reverse( $data ) as $name => $value ) {
+			$label = $this->get_field_title_by_name( $name, $fields );
+			$key = array_search( $label, array_column( array_reverse( $fields ), 'label' ), true );
+			
+			if ( $key === false ) {
+				continue;
+			}
+			
+			if ( ! empty( $reverse_fields[ $key ]['is_reply_to'] ) ) {
+				/**
+				 * Filter the reply to address.
+				 * 
+				 * @since	1.1.0
+				 * 
+				 * @param	mixed	$value The field value
+				 * @param	array	$data The POST data
+				 * @param	array	$fields The form fields
+				 */
+				$value = apply_filters( 'form_block_reply_to', $value, $data, $fields );
+				
+				return $value;
+			}
+		}
+		
+		/**
+		 * This filter is described in epiphyt\Form_Block\form_data\Data::get_reply_to().
+		 */
+		return apply_filters( 'form_block_reply_to', '', $data, $fields );
+	}
+	
 	/**
 	 * Get the request data.
 	 */
@@ -366,6 +400,20 @@ final class Data {
 			$field_output[] = $output;
 		}
 		
+		$headers = [];
+		$reply_to = $this->get_reply_to( $fields, $field_data['fields'] );
+		
+		if ( ! empty( $reply_to ) ) {
+			if ( str_contains( $reply_to, ' ' ) ) {
+				$reply_to = explode( ' ', $reply_to );
+			}
+			else {
+				$reply_to = (array) $reply_to;
+			}
+			
+			$headers[] = 'Reply-To: ' . trim( implode( ',', $reply_to ), ' ' );
+		}
+		
 		$email_text = sprintf(
 			/* translators: 1: blog title, 2: form fields */
 			__( 'Hello,
@@ -416,7 +464,7 @@ Your "%1$s" WordPress', 'form-block' ),
 				continue;
 			}
 			
-			$sent = wp_mail( $recipient, $subject, $email_text, [], $attachments );
+			$sent = wp_mail( $recipient, $subject, $email_text, $headers, $attachments );
 			
 			$success[ $recipient ] = $sent;
 		}

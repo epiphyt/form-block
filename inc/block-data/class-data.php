@@ -79,6 +79,10 @@ final class Data {
 					case 'form-block/input':
 						$field_data = $this->get_attributes( $block['innerHTML'], 'input' );
 						$field_data['block_type'] = 'input';
+						
+						if ( isset( $block['attrs']['isReplyTo'] ) ) {
+							$field_data['is_reply_to'] = $block['attrs']['isReplyTo'];
+						}
 						break;
 					case 'form-block/select':
 						$field_data = $this->get_attributes( $block['innerHTML'], 'select' );

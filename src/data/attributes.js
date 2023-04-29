@@ -17,6 +17,12 @@ export const attributes = applyFilters(
 			description: __( 'Whether the form element is disabled and will not be submitted by sending the form.', 'form-block' ),
 			label: _x( 'Disabled', 'HTML attribute name', 'form-block' ),
 		},
+		isReplyTo: {
+			controlType: 'toggle',
+			description: __( 'Whether to use the value of this field as reply-to in the email to allow automatically answer the user via email.', 'form-block' ),
+			hideLink: true,
+			label: __( 'Use as reply-to', 'form-block' ),
+		},
 		pattern: {
 			controlType: 'text',
 			description: __( 'A pattern the value must match to be valid. Any valid regular expression can be used (without forward slashes in the beginning or the end).', 'form-block' ),
