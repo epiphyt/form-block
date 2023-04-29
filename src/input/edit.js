@@ -69,12 +69,17 @@ export default function InputEdit( props ) {
 		value,
 		width,
 	};
+	const isButton = type === 'reset' || type === 'submit';
 	
 	blockProps.className += ' is-type-' + type;
 	
 	if ( type === 'hidden' ) {
 		elementProps.help = __( 'This input is hidden in the frontend.', 'form-block' );
 		elementProps.type = 'text';
+	}
+	
+	if ( isButton ) {
+		blockProps.className += ' wp-block-button';
 	}
 	
 	return (
@@ -146,6 +151,7 @@ export default function InputEdit( props ) {
 					}
 					
 					<TextControl
+						className={ isButton ? 'wp-block-button__link wp-element-button' : '' }
 						onChange={ ( value ) => setAttributes( { value } ) }
 						{ ...elementProps }
 					/>

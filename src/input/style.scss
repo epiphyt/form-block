@@ -48,3 +48,18 @@
 	font-size: 12px;
 	padding: 1px $grid-unit-05;
 }
+
+.wp-block-form-block-input.wp-block-button {
+	.components-base-control__field {
+		margin-bottom: 0;
+	}
+	
+	.components-text-control__input {
+		background-color: rgba(0, 0, 0, 0);
+		border: 0;
+		color: inherit;
+		font-size: $editor-font-size;
+		margin: 0;
+		padding: 0;
+	}
+}

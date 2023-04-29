@@ -1,5 +1,5 @@
 .form-block__element {
-	input:not([type="submit"]),
+	input:not([type="reset"]):not([type="submit"]),
 	textarea {
 		border: 1px solid #949494;
 		font-family: inherit;
@@ -12,28 +12,6 @@
 		display: block;
 		padding: calc(.667em + 2px);
 		width: 100%;
-	}
-	
-	input[type="reset"],
-	input[type="submit"] {
-		align-self: flex-start;
-		-moz-appearance: none;
-		-webkit-appearance: none;
-		appearance: none;
-		background-color: var(--wp--preset--color--primary);
-		border-radius: 0;
-		border-width: 0;
-		color: var(--wp--preset--color--background);
-		cursor: pointer;
-		font-family: inherit;
-		font-size: var(--wp--preset--font-size--medium);
-		line-height: inherit;
-		padding: calc(.667em + 2px) calc(1.333em + 2px);
-		text-decoration: none;
-		
-		&:hover {
-			opacity: .9;
-		}
 	}
 	
 	select {
