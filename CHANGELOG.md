@@ -6,7 +6,7 @@
 * Added: Preparation to fully support Form Block Pro version 1.0.0
 * Improved: Displaying of values from checkboxes and radio buttons
 * Improved: Design if reset and submit buttons (thanks [@zu](https://github.com/zu) for reporting)
-* Fixed: Getting correc values for form field name attributes
+* Fixed: Getting correct values for form field name attributes
 
 ## 1.0.2
 * Fixed: Security issue regarding an CSRF (thanks [@DanielRuf](https://github.com/DanielRuf) for reporting)
