@@ -5,7 +5,7 @@
 * Added: Option to set an email field as "reply-to" in the email notification
 * Added: Preparation to fully support Form Block Pro version 1.0.0
 * Improved: Displaying of values from checkboxes and radio buttons
-* Improved: Design if reset and submit buttons (thanks [@zu](https://github.com/zu) for reporting)
+* Improved: Design of reset and submit buttons (thanks [@zu](https://github.com/zu) for reporting)
 * Fixed: Getting correct values for form field name attributes
 
 ## 1.0.2
