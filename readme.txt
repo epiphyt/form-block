@@ -2,7 +2,7 @@
 Contributors: epiphyt, kittmedia
 Tags: contact, form, contact form, gutenberg, block editor
 Requires at least: 6.0
-Stable tag: 1.0.2
+Stable tag: 1.1.0
 Tested up to: 6.2
 Requires PHP: 7.4
 License: GPL2
@@ -42,6 +42,14 @@ We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin
 
 
 == Changelog ==
+
+= 1.1.0 =
+* Added: Rich text editor for labels
+* Added: Option to set an email field as "reply-to" in the email notification
+* Added: Preparation to fully support Form Block Pro version 1.0.0
+* Improved: Displaying of values from checkboxes and radio buttons
+* Improved: Design if reset and submit buttons (thanks [@zu](https://github.com/zu) for reporting)
+* Fixed: Getting correc values for form field name attributes
 
 = 1.0.2 =
 * Fixed: Security issue regarding an CSRF (thanks [@DanielRuf](https://github.com/DanielRuf) for reporting)

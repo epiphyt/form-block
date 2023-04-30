@@ -50,7 +50,7 @@ final class Data {
 			else if ( ! str_starts_with( $block['blockName'], 'form-block/' ) || ! str_starts_with( $block['blockName'], 'form-block-pro/' ) ) {
 				// ignore fields without a form block
 				if ( empty( $form_id ) && $block['blockName'] !== 'form-block/form' ) {
-					return $data;
+					continue;
 				}
 				
 				$field_data = [];
@@ -79,6 +79,10 @@ final class Data {
 					case 'form-block/input':
 						$field_data = $this->get_attributes( $block['innerHTML'], 'input' );
 						$field_data['block_type'] = 'input';
+						
+						if ( isset( $block['attrs']['isReplyTo'] ) ) {
+							$field_data['is_reply_to'] = $block['attrs']['isReplyTo'];
+						}
 						break;
 					case 'form-block/select':
 						$field_data = $this->get_attributes( $block['innerHTML'], 'select' );

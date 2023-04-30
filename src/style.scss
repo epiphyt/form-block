@@ -28,6 +28,13 @@
 	.components-toggle-control {
 		margin-bottom: $grid-unit-10;
 	}
+	
+	.form-block__label-content {
+		&.rich-text {
+			display: block;
+			margin-bottom: $grid-unit;
+		}
+	}
 }
 
 .form-block__flexible-flex-item.form-block__flexible-flex-item {

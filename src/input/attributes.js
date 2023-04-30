@@ -13,9 +13,12 @@ const attributes = {
 		source: 'attribute',
 		type: 'boolean',
 	},
+	isReplyTo: {
+		type: 'boolean',
+	},
 	label: {
 		selector: '.form-block__label-content',
-		source: 'text',
+		source: 'html',
 		type: 'string',
 	},
 	name: {

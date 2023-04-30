@@ -1,4 +1,4 @@
-import { useBlockProps } from '@wordpress/block-editor';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 
 export default function SelectSave( props ) {
 	const {
@@ -38,7 +38,11 @@ export default function SelectSave( props ) {
 			<label
 				className="form-block__label is-textarea-label"
 			>
-				<span className="form-block__label-content">{ label }</span>
+				<RichText.Content
+					className="form-block__label-content"
+					tagName="span"
+					value={ label }
+				/>
 				{ required ? <span className="is-required">*</span> : '' }
 			</label>
 		</div>

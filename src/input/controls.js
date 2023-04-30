@@ -32,6 +32,10 @@ export default function Controls( props ) {
 	const [ isHelpOpen, setIsHelpOpen ] = useState( [] );
 	const defaultControlTypes = [
 		{
+			attributeName: 'isReplyTo',
+			attributes: {},
+		},
+		{
 			attributeName: 'disabled',
 			attributes: {},
 		},

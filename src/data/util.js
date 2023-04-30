@@ -19,6 +19,7 @@ export const stripSpecialChars = ( name, toLowerCase = true ) => {
 	name = name.replace( /ö/gi, 'oe' );
 	name = name.replace( /ü/gi, 'ue' );
 	name = name.replace( /ß/gi, 'ss' );
+	name = name.replace( /<[^>]*>/g, '' );
 	
 	return name.replace( /[^a-z0-9\-_\.\[\]]/g, function( s ) {
 		const c = s.charCodeAt( 0 );

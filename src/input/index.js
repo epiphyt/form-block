@@ -3,9 +3,9 @@
  */
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { overlayText } from '@wordpress/icons';
 
 import attributes from './attributes';
+import deprecated from './deprecated';
 import InputEdit from './edit';
 import { input } from './icon';
 import InputSave from './save';
@@ -30,4 +30,5 @@ registerBlockType( {
 	ancestor: [
 		'form-block/form',
 	],
+	deprecated,
 } );

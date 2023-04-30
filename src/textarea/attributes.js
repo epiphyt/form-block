@@ -7,7 +7,7 @@ const attributes = {
 	},
 	label: {
 		selector: '.form-block__label-content',
-		source: 'text',
+		source: 'html',
 		type: 'string',
 	},
 	name: {

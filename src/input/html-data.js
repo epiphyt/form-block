@@ -29,6 +29,7 @@ const types = applyFilters(
 			allowedAttributes: [
 				'autoComplete',
 				'disabled',
+				'isReplyTo',
 				'label',
 				'maxLength',
 				'minLength',

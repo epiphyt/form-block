@@ -1,4 +1,4 @@
-import { useBlockProps } from '@wordpress/block-editor';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 import {
 	Button,
 	Flex,
@@ -48,11 +48,12 @@ export default function SelectEdit( props ) {
 			
 			<Flex>
 				<FlexBlock>
-					<TextControl
-						className="form-block__label-control"
+					<RichText
+						className="form-block__label"
 						onChange={ ( label ) => setAttributes( { label } ) }
 						placeholder={ __( 'Label', 'form-block' ) }
-						value={ label }
+						tagName="label"
+						value={ label || '' }
 					/>
 				</FlexBlock>
 				
