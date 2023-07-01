@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.1
+* Fixed: Design issue with labels of checkboxes and radio buttons
+
 ## 1.1.0
 * Added: Rich text editor for labels
 * Added: Option to set an email field as "reply-to" in the email notification

@@ -2,7 +2,7 @@
 Contributors: epiphyt, kittmedia
 Tags: contact, form, contact form, gutenberg, block editor
 Requires at least: 6.0
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 Tested up to: 6.2
 Requires PHP: 7.4
 License: GPL2
@@ -42,6 +42,9 @@ We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin
 
 
 == Changelog ==
+
+= 1.1.1 =
+* Fixed: Design issue with labels of checkboxes and radio buttons
 
 = 1.1.0 =
 * Added: Rich text editor for labels
