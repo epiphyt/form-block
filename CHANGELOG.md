@@ -1,12 +1,15 @@
 # Changelog
 
+## 1.1.1
+* Fixed: Design issue with labels of checkboxes and radio buttons
+
 ## 1.1.0
 * Added: Rich text editor for labels
 * Added: Option to set an email field as "reply-to" in the email notification
 * Added: Preparation to fully support Form Block Pro version 1.0.0
 * Improved: Displaying of values from checkboxes and radio buttons
-* Improved: Design if reset and submit buttons (thanks [@zu](https://github.com/zu) for reporting)
-* Fixed: Getting correc values for form field name attributes
+* Improved: Design of reset and submit buttons (thanks [@zu](https://github.com/zu) for reporting)
+* Fixed: Getting correct values for form field name attributes
 
 ## 1.0.2
 * Fixed: Security issue regarding an CSRF (thanks [@DanielRuf](https://github.com/DanielRuf) for reporting)
