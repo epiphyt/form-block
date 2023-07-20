@@ -50,6 +50,10 @@ final class Data {
 			else if ( ! str_starts_with( $block['blockName'], 'form-block/' ) || ! str_starts_with( $block['blockName'], 'form-block-pro/' ) ) {
 				// ignore fields without a form block
 				if ( empty( $form_id ) && $block['blockName'] !== 'form-block/form' ) {
+					if ( ! empty( $block['innerBlocks'] ) ) {
+						$data = array_merge( $data, $this->get( $block['innerBlocks'], $data, $form_id ) );
+					}
+					
 					continue;
 				}
 				
@@ -109,19 +113,19 @@ final class Data {
 					
 					unset( $field_data );
 				}
-				
-				/**
-				 * Filter the form data.
-				 * 
-				 * @param	array	$data Current form data
-				 * @param	array	$blocks Blocks from parsed_blocks()
-				 * @param	string	$form_id The form ID
-				 */
-				$data = apply_filters( 'form_block_get_data', $data, $block, $form_id );
 			}
 			
+			/**
+			 * Filter the form data.
+			 * 
+			 * @param	array	$data Current form data
+			 * @param	array	$blocks Blocks from parsed_blocks()
+			 * @param	string	$form_id The form ID
+			 */
+			$data = apply_filters( 'form_block_get_data', $data, $block, $form_id );
+				
 			if ( ! empty( $block['innerBlocks'] ) ) {
-				$data = $this->get( $block['innerBlocks'], $data, $form_id );
+				$data = array_merge( $data, $this->get( $block['innerBlocks'], $data, $form_id ) );
 			}
 		}
 		
