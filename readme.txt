@@ -2,7 +2,7 @@
 Contributors: epiphyt, kittmedia
 Tags: contact, form, contact form, gutenberg, block editor
 Requires at least: 6.0
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 Tested up to: 6.2
 Requires PHP: 7.4
 License: GPL2
@@ -30,7 +30,7 @@ The settings can be found in **Settings > Writing > Form Block**.
 
 = Is there a Pro version? =
 
-There will be a Pro version with enhanced functionality in the feature. Lean more at [formblock.pro](https://formblock.pro/en/).
+There is a Pro version with enhanced functionality. Lean more at [formblock.pro](https://formblock.pro/en/).
 
 = How can I contribute? =
 
@@ -42,6 +42,9 @@ We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin
 
 
 == Changelog ==
+
+= 1.1.2 =
+* Fixed: Issue storing form data for forms when they are in another block (e.g. in a column)
 
 = 1.1.1 =
 * Fixed: Design issue with labels of checkboxes and radio buttons

@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.2
+* Fixed: Issue storing form data for forms when they are in another block (e.g. in a column)
+
 ## 1.1.1
 * Fixed: Design issue with labels of checkboxes and radio buttons
 
