@@ -23,7 +23,7 @@ The settings can be found in **Settings > Writing > Form Block**.
 
 ### Is there a Pro version?
 
-There will be a Pro version with enhanced functionality in the feature. Lean more at https://formblock.pro/en/.
+Yes, there is a Pro version with enhanced functionality. Lean more at https://formblock.pro/en/.
 
 ### How can I contribute?
 
