@@ -114,6 +114,10 @@ final class Data {
 					unset( $field_data );
 				}
 			}
+				
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$data = array_merge( $data, $this->get( $block['innerBlocks'], $data, $form_id ) );
+			}
 			
 			/**
 			 * Filter the form data.
@@ -123,10 +127,6 @@ final class Data {
 			 * @param	string	$form_id The form ID
 			 */
 			$data = apply_filters( 'form_block_get_data', $data, $block, $form_id );
-				
-			if ( ! empty( $block['innerBlocks'] ) ) {
-				$data = array_merge( $data, $this->get( $block['innerBlocks'], $data, $form_id ) );
-			}
 		}
 		
 		return $data;
