@@ -192,7 +192,7 @@ final class Form {
 	 */
 	public function add_required_notice( string $block_content, array $block ): string {
 		/* translators: an asterisk sign */
-		$notice = '<p>' . sprintf( esc_html__( 'Required fields are marked with %s', 'form-block' ), '<span class="is-required">*</span>' ) . '</p>';
+		$notice = '<p>' . sprintf( esc_html__( 'Required fields are marked with %s', 'form-block' ), '<span class="is-required" aria-hidden="true">*</span>' ) . '</p>';
 		
 		/**
 		 * Filter the form required notice.
