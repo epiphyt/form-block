@@ -52,7 +52,7 @@ export default function InputSave( props ) {
 						tagName="span"
 						value={ label }
 					/>
-					{ required ? <span className="is-required">*</span> : '' }
+					{ required ? <span className="is-required" aria-hidden="true">*</span> : '' }
 				</label>
 				: null
 			}

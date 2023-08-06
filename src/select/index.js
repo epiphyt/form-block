@@ -5,6 +5,7 @@ import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 
 import attributes from './attributes';
+import deprecated from './deprecated';
 import SelectEdit from './edit';
 import { select } from './icon';
 import SelectSave from './save';
@@ -29,4 +30,5 @@ registerBlockType( {
 	ancestor: [
 		'form-block/form',
 	],
+	deprecated,
 } );
