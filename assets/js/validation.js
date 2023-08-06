@@ -266,5 +266,38 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				} );
 			};
 		};
+		
+		const newFormErrorObserver = new MutationObserver( function( mutations, observer ) {
+			const formErrors = form.querySelectorAll( '.form-error' );
+			const oldFormErrors = form.querySelectorAll( '.form-block__element:not(.form-error) [aria-invalid="true"]' );
+			
+			if ( formErrors ) {
+				for ( const formError of formErrors ) {
+					if ( formError.classList.contains( 'wp-block-form-block-input' ) ) {
+						formError.querySelector( 'input' ).ariaInvalid = true;
+					}
+					else if ( formError.classList.contains( 'wp-block-form-block-select' ) ) {
+						formError.querySelector( 'select' ).ariaInvalid = true;
+					}
+					else if ( formError.classList.contains( 'wp-block-form-block-textarea' ) ) {
+						formError.querySelector( 'textarea' ).ariaInvalid = true;
+					}
+				};
+			}
+			
+			if ( oldFormErrors ) {
+				for ( const oldFormError of oldFormErrors ) {
+					oldFormError.ariaInvalid = false;
+				}
+			}
+		} );
+		
+		newFormErrorObserver.observe(
+			form,
+			{
+				attributeFilter: [ 'class' ],
+				subtree: true,
+			}
+		);
 	};
 } );
