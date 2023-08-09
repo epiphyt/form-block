@@ -2,8 +2,8 @@
 Contributors: epiphyt, kittmedia
 Tags: contact, form, contact form, gutenberg, block editor
 Requires at least: 6.0
-Stable tag: 1.1.2
-Tested up to: 6.2
+Stable tag: 1.1.3
+Tested up to: 6.3
 Requires PHP: 7.4
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -42,6 +42,10 @@ We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin
 
 
 == Changelog ==
+
+= 1.1.3 =
+* Fixed: Invalid fields are now marked via `aria-invalid` for better accessibility
+* Fixed: Added `aria-hidden="true"` to the asterisk, marking a field as required, for better accessibility
 
 = 1.1.2 =
 * Fixed: Issue storing form data for forms when they are in another block (e.g. in a column)
