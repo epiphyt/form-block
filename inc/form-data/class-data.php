@@ -523,7 +523,12 @@ Your "%1$s" WordPress', 'form-block' ),
 			return sprintf( __( 'Checked: %s', 'form-block' ), $label );
 		}
 		else if ( $field_data['type'] === 'radio' ) {
-			/* translators: form field title */
+			if ( $value !== 'on' ) {
+				/* translators: form field title or value */
+				return sprintf( __( 'Selected: %s', 'form-block' ), $value );
+			}
+			
+			/* translators: form field title or value */
 			return sprintf( __( 'Selected: %s', 'form-block' ), $label );
 		}
 		

@@ -99,7 +99,15 @@ export default function InputEdit( props ) {
 						? <FlexBlock>
 							<RichText
 								className="form-block__label"
-								onChange={ ( label ) => setAttributes( { label } ) }
+								onChange={ ( newLabel ) => {
+									const oldLabel = label;
+									
+									setAttributes( { label: newLabel } );
+									
+									if ( ! value || value === oldLabel ) {
+										setAttributes( { value: newLabel } );
+									}
+								} }
 								placeholder={ __( 'Label', 'form-block' ) }
 								tagName="label"
 								value={ label || '' }

@@ -57,7 +57,12 @@ export default function Controls( props ) {
 		},
 	];
 	
-	if ( type === 'reset' || type === 'submit' ) {
+	if (
+		type === 'checkbox'
+		|| type === 'radio'
+		|| type === 'reset'
+		|| type === 'submit'
+	) {
 		defaultControlTypes.push( {
 			attributeName: 'value',
 			attributes: {},

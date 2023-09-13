@@ -23,6 +23,7 @@ const types = applyFilters(
 				'disabled',
 				'label',
 				'required',
+				'value',
 			],
 		},
 		email: {
@@ -72,6 +73,7 @@ const types = applyFilters(
 				'disabled',
 				'label',
 				'required',
+				'value',
 			],
 		},
 		reset: {
