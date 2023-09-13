@@ -64,11 +64,7 @@ final class Form_Block {
 		$type_regex = '/type="(?<attribute>[^"]*)"/';
 		
 		$dom->loadHTML(
-			mb_convert_encoding(
-				'<html>' . $block_content . '</html>',
-				'HTML-ENTITIES',
-				'UTF-8'
-			),
+			'<html><meta charset="UTF-8">' . $block_content . '</html>',
 			LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
 		);
 		
@@ -110,11 +106,7 @@ final class Form_Block {
 		$block_content = str_replace( '<label', '<label for="id-' . esc_attr( $name_unique ) . '"', $block_content );
 		
 		$dom->loadHTML(
-			mb_convert_encoding(
-				'<html>' . $block_content . '</html>',
-				'HTML-ENTITIES',
-				'UTF-8'
-			),
+			'<html><meta charset="UTF-8">' . $block_content . '</html>',
 			LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
 		);
 		
@@ -187,7 +179,7 @@ final class Form_Block {
 			}
 		}
 		
-		return str_replace( [ '<html>', '</html>' ], '', $dom->saveHTML( $dom->documentElement ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		return str_replace( [ '<html><meta charset="UTF-8">', '</html>' ], '', $dom->saveHTML( $dom->documentElement ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
 	
 	/**
