@@ -2,7 +2,7 @@
 Contributors: epiphyt, kittmedia
 Tags: contact, form, contact form, gutenberg, block editor
 Requires at least: 6.0
-Stable tag: 1.1.3
+Stable tag: 1.1.4
 Tested up to: 6.3
 Requires PHP: 7.4
 License: GPL2
