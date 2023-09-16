@@ -43,6 +43,9 @@ We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin
 
 == Changelog ==
 
+= 1.1.4 =
+* Fixed: Sending potentially the wrong checkbox/radio button value if multiple fields have the same name. There is now a new "value" field available for these input types. Please review your forms and adjust the value for your inputs to fix this issue.
+
 = 1.1.3 =
 * Fixed: Invalid fields are now marked via `aria-invalid` for better accessibility
 * Fixed: Added `aria-hidden="true"` to the asterisk, marking a field as required, for better accessibility
