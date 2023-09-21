@@ -2,9 +2,11 @@
  * Form related functions.
  */
 document.addEventListener( 'DOMContentLoaded', () => {
+	let allowSubmit = {};
 	const forms = document.querySelectorAll( '.wp-block-form-block-form' );
 	
 	for ( const form of forms ) {
+		allowSubmit[ form ] = true;
 		getNonce( form );
 		form.addEventListener( 'submit', submitForm );
 	}
@@ -90,6 +92,12 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		
 		event.preventDefault();
 		
+		if ( ! allowSubmit[ form ] ) {
+			return;
+		}
+		
+		allowSubmit[ form ] = false;
+		
 		const messageContainer = form.querySelector( '.form-block__message-container' );
 		
 		if ( messageContainer ) {
@@ -105,6 +113,8 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			}
 			
 			if ( ! formBlockIsValidated ) {
+				allowSubmit[ form ] = false;
+				
 				return;
 			}
 			
@@ -123,6 +133,8 @@ document.addEventListener( 'DOMContentLoaded', () => {
 				if ( xhr.readyState !== 4 ) {
 					return;
 				}
+				
+				allowSubmit[ form ] = false;
 				
 				if ( xhr.status === 200 ) {
 					try {
