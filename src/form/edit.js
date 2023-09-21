@@ -17,9 +17,6 @@ import Wizard from './wizard';
 
 export default function FormEdit( props ) {
 	const {
-		attributes: {
-			formId,
-		},
 		clientId,
 		name,
 		setAttributes,
