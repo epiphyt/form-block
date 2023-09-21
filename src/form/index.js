@@ -9,6 +9,7 @@ import FormEdit from './edit';
 import { form } from './icon';
 import FormSave from './save';
 import variations from './variations';
+import './form-id-update';
 
 import './style.scss';
 
@@ -37,5 +38,3 @@ registerBlockType( {
 	},
 	variations,
 } );
-
-import './form-id-update';
