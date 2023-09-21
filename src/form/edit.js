@@ -1,6 +1,7 @@
 import {
 	__experimentalBlockVariationPicker as BlockVariationPicker,
 	InnerBlocks,
+	InspectorControls,
 	store as blockEditorStore,
 	useBlockProps,
 } from '@wordpress/block-editor';
@@ -8,6 +9,7 @@ import {
 	createBlocksFromInnerBlocksTemplate,
 	store as blocksStore,
 } from '@wordpress/blocks';
+import { PanelBody, TextControl } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -17,6 +19,9 @@ import Wizard from './wizard';
 
 export default function FormEdit( props ) {
 	const {
+		attributes: {
+			subject,
+		},
 		clientId,
 		name,
 		setAttributes,
@@ -38,6 +43,17 @@ export default function FormEdit( props ) {
 	
 	return (
 		<div { ...blockProps }>
+			<InspectorControls>
+				<PanelBody>
+					<TextControl
+						label={ __( 'Custom subject', 'form-block-pro' ) }
+						onChange={ ( subject ) => setAttributes( { subject } ) }
+						type="text"
+						value={ subject || '' }
+					/>
+				</PanelBody>
+			</InspectorControls>
+			
 			<InnerBlocks />
 		</div>
 	);

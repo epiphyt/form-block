@@ -448,9 +448,15 @@ Your "%1$s" WordPress', 'form-block' ),
 			}
 		}
 		
-		/* translators: blog name */
-		$subject = sprintf( __( 'New form submission via "%s"', 'form-block' ), get_bloginfo( 'name' ) );
 		$success = [];
+		
+		if ( ! empty( $field_data['subject'] ) ) {
+			$subject = $field_data['subject'];
+		}
+		else {
+			/* translators: blog name */
+			$subject = sprintf( __( 'New form submission via "%s"', 'form-block' ), get_bloginfo( 'name' ) );
+		}
 		
 		/**
 		 * Filter the email subject.
