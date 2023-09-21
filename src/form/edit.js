@@ -9,9 +9,11 @@ import {
 	store as blocksStore,
 } from '@wordpress/blocks';
 import { useDispatch, useSelect } from '@wordpress/data';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 import { form } from './icon';
+import Wizard from './wizard';
 
 export default function FormEdit( props ) {
 	const {
@@ -45,6 +47,7 @@ export default function FormEdit( props ) {
 }
 
 function Placeholder( { clientId, name, setAttributes } ) {
+	const [ isWizardOpen, setIsWizardOpen ] = useState( false );
 	const { defaultVariation, variations } = useSelect(
 		( select ) => {
 			const {
@@ -65,8 +68,9 @@ function Placeholder( { clientId, name, setAttributes } ) {
 	return (
 		<div { ...blockProps }>
 			<BlockVariationPicker
-				label={ __( 'Form Type', 'form-block' ) }
 				icon={ form }
+				instructions={ __( 'Create a form with the wizard or select one of the variations. You can adjust them at any time.', 'form-block' ) }
+				label={ __( 'Form Type', 'form-block' ) }
 				variations={ variations }
 				onSelect={ ( nextVariation = defaultVariation ) => {
 					if ( nextVariation.attributes ) {
@@ -82,8 +86,17 @@ function Placeholder( { clientId, name, setAttributes } ) {
 							true
 						);
 					}
+					else if ( nextVariation.name === 'wizard' ) {
+						setIsWizardOpen( true );
+					}
 				} }
 				allowSkip
+			/>
+			
+			<Wizard
+				clientId={ clientId }
+				isWizardOpen={ isWizardOpen }
+				setIsWizardOpen={ setIsWizardOpen }
 			/>
 		</div>
 	);

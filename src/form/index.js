@@ -10,6 +10,8 @@ import { form } from './icon';
 import FormSave from './save';
 import variations from './variations';
 
+import './style.scss';
+
 registerBlockType( {
 	apiVersion: 2,
 	name: 'form-block/form',

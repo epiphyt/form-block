@@ -1,17 +1,25 @@
 import { __ } from '@wordpress/i18n';
 import { atSymbol } from '@wordpress/icons';
 
-import { empty, contact } from './icon';
+import { empty, contact, wand } from './icon';
 import { contactForm, defaultForm, newsletterForm } from './templates';
 
 const variations = [
+	{
+		name: 'wizard',
+		title: __( 'Form Wizard', 'form-block' ),
+		description: __( 'An interactive wizard for easy and fast form creation', 'form-block' ),
+		icon: wand,
+		innerBlocks: null,
+		isDefault: true,
+		scope: [ 'block' ],
+	},
 	{
 		name: 'empty',
 		title: __( 'Empty Form', 'form-block' ),
 		description: __( 'A single empty input field', 'form-block' ),
 		icon: empty,
 		innerBlocks: defaultForm,
-		isDefault: true,
 		scope: [ 'block' ],
 	},
 	{
