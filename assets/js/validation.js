@@ -172,10 +172,15 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		form.addEventListener( 'submit', function( event ) {
 			const form = event.currentTarget;
 			const fileFields = form.querySelectorAll( '[type="file"]' );
+			let invalidFields = [];
 			const validatorResult = validator.checkAll( this );
 			
 			validatorResult.fields.forEach( function( field, index, array ) {
 				if ( field.field.type !== 'file' ) {
+					if ( ! field.valid ) {
+						invalidFields.push( field );
+					}
+					
 					return;
 				}
 				
@@ -188,6 +193,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				if ( ! field.valid ) {
 					validatorResult.valid = false;
 					validator.mark( field.field, field.error );
+					invalidFields.push( field );
 				}
 			} );
 			
@@ -215,10 +221,33 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			
 			if ( ! ( !! validatorResult.valid ) ) {
 				event.preventDefault();
+				
+				if ( invalidFields.length > 1 ) {
+					let invalidFieldNotice = form.querySelector( '.form-block__invalid-field-notice' );
+					
+					if ( ! invalidFieldNotice ) {
+						invalidFieldNotice = document.createElement( 'p' );
+						invalidFieldNotice.classList.add(
+							'form-block__invalid-field-notice',
+							'is-error-notice',
+							//'screen-reader-text',
+						);
+						invalidFieldNotice.setAttribute( 'aria-live', 'assertive' );
+						form.appendChild( invalidFieldNotice );
+					}
+					
+					invalidFieldNotice.textContent = formBlockValidationData.validationInvalidFieldNotice.replace( '%d', invalidFields.length );
+				}
+				else if ( invalidFields.length === 1 ) {
+					invalidFields[0].field.focus();
+				}
 			}
-			else if ( form.classList.contains( 'is-ajax-form' ) ) {
-				event.preventDefault();
-				__formSubmit( event );
+			else if ( ! form.hasAttribute( 'data-no-ajax' ) || ! form.getAttribute( 'data-no-ajax' ) ) {
+				const invalidFieldNotice = form.querySelector( '.form-block__invalid-field-notice' );
+				
+				if ( invalidFieldNotice ) {
+					invalidFieldNotice.remove();
+				}
 			}
 			
 			// scroll to first invalid field
@@ -226,7 +255,10 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				const firstInvalidField = form.querySelector( '.form-error' );
 				
 				if ( firstInvalidField ) {
-					firstInvalidField.scrollIntoView( { block: 'center' } );
+					firstInvalidField.scrollIntoView( {
+						behavior: 'auto',
+						block: 'center',
+					} );
 				}
 				else {
 					formBlockIsValidated = true;

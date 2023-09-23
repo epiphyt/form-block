@@ -272,6 +272,8 @@ final class Form {
 			'validatorSelect' => esc_js( __( 'You must select an option.', 'form-block' ) ),
 			'validatorTime' => esc_js( __( 'This field has an invalid time.', 'form-block' ) ),
 			'validatorUrl' => esc_js( __( 'This field has an invalid URL.', 'form-block' ) ),
+			/* translators: invalid field count */
+			'validationInvalidFieldNotice' => \esc_js( \__( 'Could not submit form because %d fields are invalid.', 'form-block' ) ),
 		] );
 		wp_add_inline_script( 'form-block-validation', 'let formBlockIsValidated = false;', 'before' );
 		
