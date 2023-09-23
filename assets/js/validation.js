@@ -243,6 +243,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				}
 			}
 			else if ( ! form.hasAttribute( 'data-no-ajax' ) || ! form.getAttribute( 'data-no-ajax' ) ) {
+				formBlockAllowSubmit[ form ] = true;
 				const invalidFieldNotice = form.querySelector( '.form-block__invalid-field-notice' );
 				
 				if ( invalidFieldNotice ) {

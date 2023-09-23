@@ -2,11 +2,11 @@
  * Form related functions.
  */
 document.addEventListener( 'DOMContentLoaded', () => {
-	let allowSubmit = {};
+	window.formBlockAllowSubmit = {};
 	const forms = document.querySelectorAll( '.wp-block-form-block-form' );
 	
 	for ( const form of forms ) {
-		allowSubmit[ form ] = true;
+		formBlockAllowSubmit[ form ] = true;
 		getNonce( form );
 		form.addEventListener( 'submit', submitForm );
 	}
@@ -92,11 +92,11 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		
 		event.preventDefault();
 		
-		if ( ! allowSubmit[ form ] ) {
+		if ( ! formBlockAllowSubmit[ form ] ) {
 			return;
 		}
 		
-		allowSubmit[ form ] = false;
+		formBlockAllowSubmit[ form ] = false;
 		
 		const messageContainer = form.querySelector( '.form-block__message-container' );
 		
@@ -113,7 +113,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			}
 			
 			if ( ! formBlockIsValidated ) {
-				allowSubmit[ form ] = false;
+				formBlockAllowSubmit[ form ] = false;
 				
 				return;
 			}
@@ -134,7 +134,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 					return;
 				}
 				
-				allowSubmit[ form ] = false;
+				formBlockAllowSubmit[ form ] = false;
 				
 				if ( xhr.status === 200 ) {
 					try {
@@ -214,6 +214,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		messageContainer.textContent = message;
 		// then replace all newlines with <br />
 		messageContainer.innerHTML = nl2br( messageContainer.innerHTML );
+		messageContainer.setAttribute( 'aria-live', 'assertive' );
 		
 		if ( isHtml ) {
 			messageContainer.innerHTML = message;
