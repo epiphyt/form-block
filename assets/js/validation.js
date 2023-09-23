@@ -230,7 +230,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 						invalidFieldNotice.classList.add(
 							'form-block__invalid-field-notice',
 							'is-error-notice',
-							//'screen-reader-text',
+							'screen-reader-text',
 						);
 						invalidFieldNotice.setAttribute( 'aria-live', 'assertive' );
 						form.appendChild( invalidFieldNotice );
