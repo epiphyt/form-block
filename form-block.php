@@ -64,7 +64,7 @@ if ( ! \extension_loaded( 'dom' ) ) {
 	function disable_plugin() {
 		?>
 		<div class="notice notice-error">
-			<p><?php \esc_html_e( 'The PHP extension "Document Object Model" (php-dom) is missing. Embed Privacy requires this extension to be installed and enabled. Please ask your hosting provider to install and enable it. Embed Privacy disables itself now. Please re-enable it again if the extension is installed and enabled.', 'form-block' ); ?></p>
+			<p><?php \esc_html_e( 'The PHP extension "Document Object Model" (php-dom) is missing. Form Block requires this extension to be installed and enabled. Please ask your hosting provider to install and enable it. Form Block disables itself now. Please re-enable it again if the extension is installed and enabled.', 'form-block' ); ?></p>
 		</div>
 		<?php
 		\deactivate_plugins( \plugin_basename( __FILE__ ) );

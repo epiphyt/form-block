@@ -49,7 +49,6 @@ There is also a Pro version of Form Block available. It offers additional featur
 
 * Extended server-side validation
 * Custom recipient(s) for each form
-* Custom email subject for each form
 * Custom form action
 * Upload via drag and drop
 * Global defined consent checkbox
