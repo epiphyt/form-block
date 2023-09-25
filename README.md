@@ -23,6 +23,12 @@ WordPress: 6.0
 
 The settings can be found in **Settings > Writing > Form Block**.
 
+### Where will submitted forms be sent to?
+
+All submitted forms will be sent to the administration email address you have set in the settings (**Settings > General > Administration Email Address**).
+
+If you want to use another email address as recipient, you can use the filter `form_block_recipients` to change the recipient email address.
+
 ### Is there a Pro version?
 
 Yes, there is a Pro version with enhanced functionality. Lean more at https://formblock.pro/en/.

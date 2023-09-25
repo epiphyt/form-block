@@ -2,7 +2,7 @@
 Contributors: epiphyt, kittmedia
 Tags: contact, form, contact form, gutenberg, block editor
 Requires at least: 6.0
-Stable tag: 1.1.4
+Stable tag: 1.2.0
 Tested up to: 6.3
 Requires PHP: 7.4
 License: GPL2
@@ -70,6 +70,12 @@ You can find more information at [https://formblock.pro/en/](https://formblock.p
 
 The settings can be found in **Settings > Writing > Form Block**.
 
+= Where will submitted forms be sent to? =
+
+All submitted forms will be sent to the administration email address you have set in the settings (**Settings > General > Administration Email Address**).
+
+If you want to use another email address as recipient, you can use the filter `form_block_recipients` to change the recipient email address.
+
 = Is there a Pro version? =
 
 Yes, there is a Pro version with enhanced functionality. Lean more at [https://formblock.pro/en/](https://formblock.pro/en/).
@@ -84,6 +90,17 @@ We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin
 
 
 == Changelog ==
+
+= 1.2.0 =
+* Added: Form creation wizard for even easier form creation
+* Added: Ability to set a custom subject for each form
+* Added: Error message summary if multiple form fields are invalid for screen readers
+* Added: Checks to prohibit multiple form submissions while clicking multiple times on the submit button
+* Added: Check for PHP DOM extension
+* Added: A new filter to add custom controls in the primary panel of the form block
+* Added: A new class for the notice below the field stating how required fields are marked for easier customization
+* Fixed: After re-validating an invalid form, it can now be sent successfully
+* Fixed: Line breaks for checkbox labels in Twenty Twenty-Three
 
 = 1.1.4 =
 * Fixed: Sending potentially the wrong checkbox/radio button value if multiple fields have the same name. There is now a new "value" field available for these input types. Please review your forms and adjust the value for your inputs to fix this issue.
@@ -126,5 +143,7 @@ We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin
 
 == Screenshots ==
 1. The form in the frontend
-2. The form block in the backend
-3. The form block settings
+2. The form block variation picker
+3. The form creation wizard to create form fields without them creating manually
+4. The form block in the backend
+5. The form block settings

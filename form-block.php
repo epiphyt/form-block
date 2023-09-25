@@ -18,13 +18,13 @@ use const WP_PLUGIN_DIR;
 Plugin Name:	Form Block
 Plugin URI:		https://formblock.pro/en/
 Description:	An extensive yet user-friendly form block.
-Version:		1.1.4
+Version:		1.2.0
 Author:			Epiphyt
 Author URI:		https://epiph.yt
 License:		GPL2
 License URI:	https://www.gnu.org/licenses/gpl-2.0.html
+Tags:			form, blocks, block editor, email, contact form
 Text Domain:	form-block
-Domain Path:	/languages
 
 Form Block is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ along with Form Block. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
 // exit if ABSPATH is not defined
 defined( 'ABSPATH' ) || exit;
 
-define( 'FORM_BLOCK_VERSION', '1.1.4' );
+define( 'FORM_BLOCK_VERSION', '1.2.0' );
 
 if ( ! defined( 'EPI_FORM_BLOCK_BASE' ) ) {
 	define( 'EPI_FORM_BLOCK_BASE', WP_PLUGIN_DIR . '/form-block/' );
@@ -64,7 +64,7 @@ if ( ! \extension_loaded( 'dom' ) ) {
 	function disable_plugin() {
 		?>
 		<div class="notice notice-error">
-			<p><?php \esc_html_e( 'The PHP extension "Document Object Model" (php-dom) is missing. Embed Privacy requires this extension to be installed and enabled. Please ask your hosting provider to install and enable it. Embed Privacy disables itself now. Please re-enable it again if the extension is installed and enabled.', 'embed-privacy' ); ?></p>
+			<p><?php \esc_html_e( 'The PHP extension "Document Object Model" (php-dom) is missing. Embed Privacy requires this extension to be installed and enabled. Please ask your hosting provider to install and enable it. Embed Privacy disables itself now. Please re-enable it again if the extension is installed and enabled.', 'form-block' ); ?></p>
 		</div>
 		<?php
 		\deactivate_plugins( \plugin_basename( __FILE__ ) );

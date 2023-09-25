@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.0
+* Added: Form creation wizard for even easier form creation
+* Added: Ability to set a custom subject for each form
+* Added: Error message summary if multiple form fields are invalid for screen readers
+* Added: Checks to prohibit multiple form submissions while clicking multiple times on the submit button
+* Added: Check for PHP DOM extension
+* Added: A new filter to add custom controls in the primary panel of the form block
+* Added: A new class for the notice below the field stating how required fields are marked for easier customization
+* Fixed: After re-validating an invalid form, it can now be sent successfully
+* Fixed: Line breaks for checkbox labels in Twenty Twenty-Three
+
 ## 1.1.4
 * Fixed: Sending potentially the wrong checkbox/radio button value if multiple fields have the same name. There is now a new "value" field available for these input types. Please review your forms and adjust the value for your inputs to fix this issue.
 
