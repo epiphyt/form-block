@@ -21,7 +21,7 @@ export default function Controls( { props } ) {
 		<InspectorControls>
 			<PanelBody>
 				<TextControl
-					label={ __( 'Custom subject', 'form-block-pro' ) }
+					label={ __( 'Custom subject', 'form-block' ) }
 					onChange={ ( subject ) => setAttributes( { subject } ) }
 					type="text"
 					value={ subject || '' }
