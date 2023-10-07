@@ -36,6 +36,11 @@ final class Data {
 	 */
 	public function get( array $blocks, array $data = [], string $form_id = '' ): array {
 		foreach ( $blocks as $block ) {
+			// don't process empty blocks
+			if ( $block['blockName'] === null ) {
+				continue;
+			}
+			
 			// reusable blocks need to be get first
 			if ( $block['blockName'] === 'core/block' && ! empty( $block['attrs']['ref'] ) ) {
 				$reusable_post = get_post( $block['attrs']['ref'] );
