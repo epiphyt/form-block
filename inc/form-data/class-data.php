@@ -142,6 +142,13 @@ final class Data {
 		return self::$instance;
 	}
 	
+	/**
+	 * Get Reply-to email address.
+	 * 
+	 * @param	array	$data Form data
+	 * @param	array	$fields Form fields
+	 * @return	string Reply-to email address
+	 */
 	private function get_reply_to( array $data, array $fields ): string {
 		// reverse since the latest reply to field is the most important one
 		$reverse_fields = array_reverse( $fields );
