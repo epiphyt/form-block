@@ -272,6 +272,17 @@ final class Data {
 			$required[] = Form_Block::get_instance()->get_block_name_attribute( $field );
 		}
 		
+		/**
+		 * Filter the required fields.
+		 * 
+		 * @since	1.3.0
+		 * 
+		 * @param	array	$required Required fields
+		 * @param	array	$data Form data
+		 * @param	string	$form_id Form ID
+		 */
+		$required = \apply_filters( 'form_block_required_fields', $required, $data, $form_id );
+		
 		return $required;
 	}
 	
