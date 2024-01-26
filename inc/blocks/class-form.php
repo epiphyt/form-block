@@ -22,12 +22,12 @@ final class Form {
 	public function init(): void {
 		add_action( 'init', [ $this, 'enqueue_block_styles' ] );
 		add_action( 'init', [ $this, 'register_frontend_assets' ] );
-		add_action( 'render_block_form-block/form', [ $this, 'add_action' ], 10, 2 );
-		add_action( 'render_block_form-block/form', [ $this, 'add_form_id_input' ], 10, 2 );
-		add_action( 'render_block_form-block/form', [ $this, 'add_honeypot' ], 10, 2 );
-		add_action( 'render_block_form-block/form', [ $this, 'add_maximum_upload_sizes' ], 10, 2 );
-		add_action( 'render_block_form-block/form', [ $this, 'add_method' ], 10, 2 );
-		add_action( 'render_block_form-block/form', [ $this, 'add_required_notice' ], 10, 2 );
+		\add_filter( 'render_block_form-block/form', [ $this, 'add_action' ], 10, 2 );
+		\add_filter( 'render_block_form-block/form', [ $this, 'add_form_id_input' ], 10, 2 );
+		\add_filter( 'render_block_form-block/form', [ $this, 'add_honeypot' ], 10, 2 );
+		\add_filter( 'render_block_form-block/form', [ $this, 'add_maximum_upload_sizes' ], 10, 2 );
+		\add_filter( 'render_block_form-block/form', [ $this, 'add_method' ], 10, 2 );
+		\add_filter( 'render_block_form-block/form', [ $this, 'add_required_notice' ], 10, 2 );
 		
 		/**
 		 * Filter form block style before register the block type.
