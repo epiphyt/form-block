@@ -111,6 +111,7 @@ final class Form_Block {
 		);
 		
 		$element = $dom->getElementById( 'id-' . esc_attr( $name_unique ) );
+		$element->setAttribute( 'class', trim( $element->getAttribute( 'class' ) . ' form-block__source' ) );
 		
 		if (
 			! $element->hasAttribute( 'required' )
