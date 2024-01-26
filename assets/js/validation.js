@@ -126,6 +126,8 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	let typingTimeout;
 	
 	for ( const form of forms ) {
+		form.validator = validator;
+		
 		for ( const changeEvent of events ) {
 			form.addEventListener( changeEvent, function( event ) {
 				clearTimeout( typingTimeout );
