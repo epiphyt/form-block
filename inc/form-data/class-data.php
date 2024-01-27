@@ -254,10 +254,13 @@ final class Data {
 	/**
 	 * Get all required fields of a form.
 	 * 
+	 * @since	1.3.0 Add $fields parameter
+	 * 
 	 * @param	string	$form_id Current form ID
+	 * @param	array	$fields Submitted form fields
 	 * @return	array List of required field names
 	 */
-	public function get_required_fields( string $form_id = '' ): array {
+	public function get_required_fields( string $form_id = '', array $fields = [] ): array {
 		if ( ! $form_id ) {
 			$form_id = $this->form_id;
 		}
@@ -288,7 +291,7 @@ final class Data {
 		 * @param	array	$data Form data
 		 * @param	string	$form_id Form ID
 		 */
-		$required = \apply_filters( 'form_block_required_fields', $required, $data, $form_id );
+		$required = \apply_filters( 'form_block_required_fields', $required, $data, $form_id, $fields );
 		
 		return $required;
 	}

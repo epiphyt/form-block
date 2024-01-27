@@ -224,7 +224,7 @@ final class Validation {
 		 */
 		$validated = apply_filters( 'form_block_validated_fields', $validated, Data::get_instance()->get_form_id(), $form_data );
 		
-		$required_fields = Data::get_instance()->get_required_fields( Data::get_instance()->get_form_id() );
+		$required_fields = Data::get_instance()->get_required_fields( Data::get_instance()->get_form_id(), $validated );
 		
 		// check all required fields
 		$missing_fields = [];
