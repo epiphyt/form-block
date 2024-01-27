@@ -21,33 +21,15 @@ final class Form {
 	 */
 	public function init(): void {
 		add_action( 'init', [ $this, 'enqueue_block_styles' ] );
+		\add_action( 'init', [ $this, 'register_block' ] );
 		add_action( 'init', [ $this, 'register_frontend_assets' ] );
+		\add_filter( 'block_type_metadata', [ self::class, 'register_block_metadata' ] );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_action' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_form_id_input' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_honeypot' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_maximum_upload_sizes' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_method' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_required_notice' ], 10, 2 );
-		
-		/**
-		 * Filter form block style before register the block type.
-		 * 
-		 * @since	1.0.1
-		 * 
-		 * @param	array	$style Current block style
-		 */
-		$block_style = apply_filters( 'form_block_form_style', 'form-block' );
-		
-		register_block_type(
-			'form-block/form',
-			[
-				'style' => $block_style, // WP < 6.1
-				'view_script' => 'form-block-form', // WP 5.9
-				'view_script_handles' => [ // since WP 6.1
-					'form-block-form',
-				],
-			],
-		);
 	}
 	
 	/**
@@ -235,6 +217,44 @@ final class Form {
 		}
 		
 		return self::$instance;
+	}
+	
+	/**
+	 * Register additional block metadata.
+	 * 
+	 * @since	1.3.0
+	 * 
+	 * @param	array	$metadata Block metadata
+	 * @return	array Updated block metadata
+	 */
+	public static function register_block_metadata( array $metadata ): array {
+		if ( $metadata['name'] !== 'form-block/form' ) {
+			return $metadata;
+		}
+		
+		/**
+		 * Filter form block style before register the block type.
+		 * 
+		 * @since	1.0.1
+		 * @since	1.3.0 Value is an array by default
+		 * 
+		 * @param	array	$styles Current block styles
+		 */
+		$metadata['style'] = apply_filters( 'form_block_form_style', [ 'form-block' ] );
+		
+		$metadata['viewScript'][] = 'form-block-validator';
+		$metadata['viewScript'][] = 'form-block-validation';
+		
+		return $metadata;
+	}
+	
+	/**
+	 * Register block.
+	 * 
+	 * @since	1.3.0
+	 */
+	public static function register_block(): void {
+		register_block_type( \EPI_FORM_BLOCK_BASE . '/build/form' );
 	}
 	
 	/**

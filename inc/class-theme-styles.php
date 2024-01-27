@@ -55,17 +55,20 @@ final class Theme_Styles {
 	}
 	
 	/**
-	 * Register block style.
+	 * Register block styles.
+	 * 
+	 * @param	array	$styles Registered block styles
+	 * @return	array Updated block styles
 	 */
-	public function register_block_styles( string $style ): string {
+	public function register_block_styles( array $styles ): array {
 		if ( $this->is_theme( 'Twenty Twenty-Three' ) ) {
-			$style = 'form-block-twenty-twenty-three';
+			$styles[] = 'form-block-twenty-twenty-three';
 		}
 		else if ( $this->is_theme( 'Twenty Twenty-Two' ) ) {
-			$style = 'form-block-twenty-twenty-two';
+			$styles[] = 'form-block-twenty-twenty-two';
 		}
 		
-		return $style;
+		return $styles;
 	}
 	
 	/**

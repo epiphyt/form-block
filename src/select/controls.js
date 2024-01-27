@@ -80,7 +80,7 @@ export default function Controls( props ) {
 	}
 	
 	const getLabel = ( attribute ) => {
-		if (  ! selectAttributes[ attribute ].label ) {
+		if ( ! selectAttributes[ attribute ].label ) {
 			return null;
 		}
 		

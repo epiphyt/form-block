@@ -1,4 +1,4 @@
-import { useBlockProps } from '@wordpress/block-editor';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 
 import { getAllowedAttributes, getTypes } from './html-data';
 

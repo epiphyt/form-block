@@ -1,0 +1,93 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "form-block/input",
+	"title": "Input",
+	"category": "formatting",
+	"keywords": [ "field", "number", "text" ],
+	"textdomain": "form-block",
+	"ancestor": [ "form-block/form" ],
+	"attributes": {
+		"checked": {
+			"attribute": "checked",
+			"selector": "input",
+			"source": "attribute",
+			"type": "boolean"
+		},
+		"disabled": {
+			"attribute": "disabled",
+			"selector": "input",
+			"source": "attribute",
+			"type": "boolean"
+		},
+		"isReplyTo": {
+			"type": "boolean"
+		},
+		"label": {
+			"selector": ".form-block__label-content",
+			"source": "html",
+			"type": "string"
+		},
+		"name": {
+			"attribute": "name",
+			"selector": "input",
+			"source": "attribute",
+			"type": "string"
+		},
+		"pattern": {
+			"attribute": "pattern",
+			"selector": "input",
+			"source": "attribute",
+			"type": "string"
+		},
+		"placeholder": {
+			"attribute": "placeholder",
+			"selector": "input",
+			"source": "attribute",
+			"type": "string"
+		},
+		"readOnly": {
+			"attribute": "readonly",
+			"selector": "input",
+			"source": "attribute",
+			"type": "boolean"
+		},
+		"required": {
+			"attribute": "required",
+			"selector": "input",
+			"source": "attribute",
+			"type": "boolean"
+		},
+		"type": {
+			"attribute": "type",
+			"default": "text",
+			"enum": [],
+			"selector": "input",
+			"source": "attribute",
+			"type": "string"
+		},
+		"value": {
+			"attribute": "value",
+			"selector": "input",
+			"source": "attribute",
+			"type": "string"
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"color": {
+			"gradients": true
+		},
+		"html": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": [ "file:./index.css" ]
+}

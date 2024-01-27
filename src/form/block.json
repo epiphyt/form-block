@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "form-block/form",
+	"title": "Form",
+	"category": "formatting",
+	"description": "An enhanced form block",
+	"keywords": [ "contact", "mail" ],
+	"textdomain": "form-block",
+	"attributes": {
+		"formId": {
+			"type": "string"
+		},
+		"subject": {
+			"type": "string"
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"color": {
+			"gradients": true
+		},
+		"html": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": [ "file:./index.css" ],
+	"viewScript": [ "form-block-form" ]
+}

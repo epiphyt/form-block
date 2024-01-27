@@ -5,7 +5,7 @@ WordPress offers several (contact) form plugins, but most of them are not up-to-
 ## Requirements
 
 PHP: 7.4<br>
-WordPress: 6.0
+WordPress: 6.3
 
 **Note: This plugins requires the PHP extension ["Document Object Model" (php-dom)](https://www.php.net/manual/en/book.dom.php).**
 

@@ -1,0 +1,68 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "form-block/textarea",
+	"title": "Textarea",
+	"category": "formatting",
+	"keywords": [ "input", "paragraph" ],
+	"textdomain": "form-block",
+	"ancestor": [ "form-block/form" ],
+	"attributes": {
+		"disabled": {
+			"attribute": "disabled",
+			"selector": "textarea",
+			"source": "attribute",
+			"type": "boolean"
+		},
+		"label": {
+			"selector": ".form-block__label-content",
+			"source": "html",
+			"type": "string"
+		},
+		"name": {
+			"attribute": "name",
+			"selector": "textarea",
+			"source": "attribute",
+			"type": "string"
+		},
+		"placeholder": {
+			"attribute": "placeholder",
+			"selector": "textarea",
+			"source": "attribute",
+			"type": "string"
+		},
+		"readOnly": {
+			"attribute": "readonly",
+			"selector": "textarea",
+			"source": "attribute",
+			"type": "boolean"
+		},
+		"required": {
+			"attribute": "required",
+			"selector": "textarea",
+			"source": "attribute",
+			"type": "boolean"
+		},
+		"value": {
+			"selector": "textarea",
+			"source": "text",
+			"type": "string"
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"color": {
+			"gradients": true
+		},
+		"html": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		}
+	},
+	"editorScript": "file:./index.js"
+}

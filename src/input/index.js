@@ -9,26 +9,20 @@ import deprecated from './deprecated';
 import InputEdit from './edit';
 import { input } from './icon';
 import InputSave from './save';
+import meta from './block.json';
 
-registerBlockType( {
-	apiVersion: 2,
-	name: 'form-block/input',
-}, {
-	title: __( 'Input', 'form-block' ),
-	icon: input,
-	category: 'formatting',
-	attributes,
-	edit: InputEdit,
-	keywords: [
-		__( 'text', 'form-block' ),
-		__( 'number', 'form-block' ),
-	],
-	save: InputSave,
-	supports: {
-		html: false,
-	},
-	ancestor: [
-		'form-block/form',
-	],
-	deprecated,
-} );
+import './editor.scss';
+
+registerBlockType(
+	meta,
+	{
+		attributes,
+		icon: input,
+		edit: InputEdit,
+		save: InputSave,
+		supports: {
+			html: false,
+		},
+		deprecated,
+	}
+);

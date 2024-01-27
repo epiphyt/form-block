@@ -1,7 +1,7 @@
 === Form Block ===
 Contributors: epiphyt, kittmedia
 Tags: contact, form, contact form, gutenberg, block editor
-Requires at least: 6.0
+Requires at least: 6.3
 Stable tag: 1.2.0
 Tested up to: 6.4
 Requires PHP: 7.4
