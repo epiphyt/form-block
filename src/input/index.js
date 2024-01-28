@@ -20,9 +20,6 @@ registerBlockType(
 		icon: input,
 		edit: InputEdit,
 		save: InputSave,
-		supports: {
-			html: false,
-		},
 		deprecated,
 	}
 );
