@@ -125,6 +125,13 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	const forms = document.querySelectorAll( '.wp-block-form-block-form' );
 	let typingTimeout;
 	
+	const setAriaDescribedBy = ( field ) => {
+		const innerError = field.parentNode.querySelector( '.inline-error' );
+		console.log( innerError );
+		innerError.id = field.id + '__inline-error';
+		field.setAttribute( 'aria-describedby', ( ( field.getAttribute( 'aria-describedby' ) || '' ) + ' ' + innerError.id ).trim() );
+	}
+	
 	for ( const form of forms ) {
 		form.validator = validator;
 		
@@ -141,6 +148,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 						
 						if ( ! result.valid ) {
 							validator.mark( event.target, result.error );
+							setAriaDescribedBy( event.target );
 						}
 						else {
 							validator.unmark( event.target );
@@ -180,6 +188,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			validatorResult.fields.forEach( function( field, index, array ) {
 				if ( field.field.type !== 'file' ) {
 					if ( ! field.valid ) {
+						setAriaDescribedBy( field.field );
 						invalidFields.push( field );
 					}
 					
@@ -195,6 +204,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				if ( ! field.valid ) {
 					validatorResult.valid = false;
 					validator.mark( field.field, field.error );
+					setAriaDescribedBy( field.field );
 					invalidFields.push( field );
 				}
 			} );
@@ -217,6 +227,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 				if ( ! validatorField.valid ) {
 					validatorResult.valid = false;
 					validator.mark( validatorField.field, validatorField.error );
+					setAriaDescribedBy( validatorField.field );
 				}
 				
 			};
