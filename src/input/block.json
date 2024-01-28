@@ -4,6 +4,7 @@
 	"name": "form-block/input",
 	"title": "Input",
 	"category": "formatting",
+	"description": "A single input field for a form.",
 	"keywords": [ "field", "number", "text" ],
 	"textdomain": "form-block",
 	"ancestor": [ "form-block/form" ],

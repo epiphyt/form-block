@@ -4,6 +4,7 @@
 	"name": "form-block/select",
 	"title": "Select",
 	"category": "formatting",
+	"description": "A select field to select one or multiple values from.",
 	"keywords": [ "choice", "option" ],
 	"textdomain": "form-block",
 	"ancestor": [ "form-block/form" ],

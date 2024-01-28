@@ -4,7 +4,7 @@
 	"name": "form-block/form",
 	"title": "Form",
 	"category": "formatting",
-	"description": "An enhanced form block",
+	"description": "A form with customizable fields.",
 	"keywords": [ "contact", "mail" ],
 	"textdomain": "form-block",
 	"attributes": {

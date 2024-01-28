@@ -4,6 +4,7 @@
 	"name": "form-block/textarea",
 	"title": "Textarea",
 	"category": "formatting",
+	"description": "A mulitline text field.",
 	"keywords": [ "input", "paragraph" ],
 	"textdomain": "form-block",
 	"ancestor": [ "form-block/form" ],
