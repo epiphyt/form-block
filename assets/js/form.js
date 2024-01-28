@@ -142,6 +142,12 @@ document.addEventListener( 'DOMContentLoaded', () => {
 						
 						if ( response.success ) {
 							form.reset();
+							const fieldsToReset = form.querySelectorAll( '.form-block__element.form-error, .form-block__element.is-enabled, .form-block__element.is-invalid, .form-block__element.is-valid' );
+							
+							for ( const field of fieldsToReset ) {
+								field.classList.remove( 'is-enabled', 'is-invalid', 'is-valid', 'form-error' );
+								form.validator.unmark( field );
+							}
 							
 							const dropzoneFiles = form.querySelectorAll( '.form-block-pro-dropzone__files' );
 							
