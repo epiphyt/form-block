@@ -52,6 +52,7 @@ There is also a Pro version of Form Block available. It offers additional featur
 * Custom form action
 * Upload via drag and drop
 * Global defined consent checkbox
+* Field dependencies
 
 You can find more information at [https://formblock.pro/en/](https://formblock.pro/en/).
 
@@ -89,6 +90,13 @@ We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin
 
 
 == Changelog ==
+
+= 1.3.0 =
+* Added: Support block settings like font size, line height and dimensions
+* Added: By selecting an invalid field, the error message will now be announced to screen readers
+* Fixed: Improved resetting a form after successful submit
+* Notice: This version requires at least WordPress 6.3
+* For developers: Each `<form>` element has now its validator object attached to it
 
 = 1.2.0 =
 * Added: Form creation wizard for even easier form creation
