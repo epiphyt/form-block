@@ -127,7 +127,6 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	
 	const setAriaDescribedBy = ( field ) => {
 		const innerError = field.parentNode.querySelector( '.inline-error' );
-		console.log( innerError );
 		innerError.id = field.id + '__inline-error';
 		field.setAttribute( 'aria-describedby', ( ( field.getAttribute( 'aria-describedby' ) || '' ) + ' ' + innerError.id ).trim() );
 	}
