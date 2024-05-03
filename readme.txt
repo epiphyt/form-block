@@ -88,6 +88,9 @@ The code is open source and hosted on [GitHub](https://github.com/epiphyt/form-b
 
 We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin shop from southern Germany.
 
+= How can I report security bugs? =
+
+You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/form-block)
 
 == Changelog ==
 

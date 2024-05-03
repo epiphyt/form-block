@@ -41,6 +41,9 @@ The code is open source and hosted on [GitHub](https://github.com/epiphyt/form-b
 
 We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin shop from southern Germany.
 
+## Security
+
+For security related information, please consult the [security policy](SECURITY.md).
 
 ## License
 
