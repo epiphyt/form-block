@@ -244,7 +244,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 							'is-error-notice',
 							'screen-reader-text',
 						);
-						invalidFieldNotice.setAttribute( 'aria-live', 'assertive' );
+						invalidFieldNotice.ariaLive = 'assertive';
 						form.appendChild( invalidFieldNotice );
 					}
 					
