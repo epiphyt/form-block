@@ -26,6 +26,40 @@ const types = applyFilters(
 				'value',
 			],
 		},
+		color: {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'disabled',
+				'label',
+			],
+		},
+		date: {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'disabled',
+				'label',
+				'max',
+				'min',
+				'readOnly',
+				'required',
+				'step',
+			],
+		},
+		'datetime-local': {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'disabled',
+				'label',
+				'max',
+				'min',
+				'readOnly',
+				'required',
+				'step',
+			],
+		},
 		email: {
 			allowedAttributes: [
 				'autoComplete',
@@ -54,6 +88,36 @@ const types = applyFilters(
 				'required',
 			],
 		},
+		hidden: {
+			allowedAttributes: [],
+		},
+		image: {
+			allowedAttributes: [
+				'ariaDescription',
+				'alt',
+				'autoComplete',
+				'disabled',
+				'height',
+				'label',
+				'readOnly',
+				'required',
+				'src',
+				'width',
+			],
+		},
+		month: {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'disabled',
+				'label',
+				'max',
+				'min',
+				'readOnly',
+				'required',
+				'step',
+			],
+		},
 		number: {
 			allowedAttributes: [
 				'autoComplete',
@@ -67,6 +131,21 @@ const types = applyFilters(
 				'step',
 			],
 		},
+		password: {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'disabled',
+				'label',
+				'maxLength',
+				'minLength',
+				'pattern',
+				'placeholder',
+				'readOnly',
+				'required',
+				'size',
+			],
+		},
 		radio: {
 			allowedAttributes: [
 				'checked',
@@ -76,10 +155,37 @@ const types = applyFilters(
 				'value',
 			],
 		},
+		range: {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'disabled',
+				'label',
+				'max',
+				'min',
+				'step',
+			],
+		},
 		reset: {
 			allowedAttributes: [
 				'disabled',
 				'value',
+			],
+		},
+		search: {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'dirname',
+				'disabled',
+				'label',
+				'maxLength',
+				'minLength',
+				'pattern',
+				'placeholder',
+				'readOnly',
+				'required',
+				'size',
 			],
 		},
 		submit: {
@@ -102,6 +208,19 @@ const types = applyFilters(
 				'size',
 			],
 		},
+		time: {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'disabled',
+				'label',
+				'max',
+				'min',
+				'readOnly',
+				'required',
+				'step',
+			],
+		},
 		text: {
 			allowedAttributes: [
 				'autoComplete',
@@ -115,6 +234,34 @@ const types = applyFilters(
 				'readOnly',
 				'required',
 				'size',
+			],
+		},
+		url: {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'disabled',
+				'label',
+				'maxLength',
+				'minLength',
+				'pattern',
+				'placeholder',
+				'readOnly',
+				'required',
+				'size',
+			],
+		},
+		week: {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'disabled',
+				'label',
+				'max',
+				'min',
+				'readOnly',
+				'required',
+				'step',
 			],
 		},
 	},
