@@ -204,6 +204,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	 * @param	{Boolean}		isHtml Whether the message is raw HTML
 	 */
 	function setSubmitMessage( form, messageType, message, isHtml ) {
+		const ariaLiveType = messageType === 'error' ? 'assertive' : 'polite';
 		let messageContainer = form.querySelector( '.form-block__message-container' );
 		
 		if ( ! messageContainer ) {
@@ -220,7 +221,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		messageContainer.textContent = message;
 		// then replace all newlines with <br />
 		messageContainer.innerHTML = nl2br( messageContainer.innerHTML );
-		messageContainer.setAttribute( 'aria-live', 'assertive' );
+		messageContainer.setAttribute( 'aria-live', ariaLiveType );
 		
 		if ( isHtml ) {
 			messageContainer.innerHTML = message;
