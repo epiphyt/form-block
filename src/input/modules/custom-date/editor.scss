@@ -2,7 +2,9 @@
 
 .form-block__date-custom {
 	.form-block__date-custom--separator {
-		margin-block-end: $grid-unit-10;
+		font-size: $default-font-size;
+		margin-block-end: $grid-unit-10; // match input margin
+		padding-block: 6px; // match input padding
 		
 		&:last-child {
 			display: none;

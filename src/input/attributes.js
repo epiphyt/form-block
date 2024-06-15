@@ -9,6 +9,7 @@ const attributes = {
 	},
 	customDate: {
 		default: {
+			showLabel: false,
 			showPlaceholder: true,
 			value: {},
 		},

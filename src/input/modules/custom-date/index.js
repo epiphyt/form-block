@@ -60,6 +60,7 @@ export function CustomDate( { props, elementProps } ) {
 		setAttributes,
 	} = props;
 	const {
+		showLabel,
 		showPlaceholder,
 		value,
 	} = customDate;
@@ -93,12 +94,12 @@ export function CustomDate( { props, elementProps } ) {
 				<fieldset className="form-block__date-custom">
 					<legend className="screen-reader-text">{ label }</legend>
 					
-					<Flex align="center">
+					<Flex align="flex-end">
 						{ fields.map( ( field, index ) => (
 							<Fragment key={ index }>
 								<FlexBlock className={ 'is-type-' + field }>
 									<TextControl
-										hideLabelFromVision={ true }
+										hideLabelFromVision={ ! showLabel }
 										label={ fieldData[ field ].label }
 										onChange={ ( value ) => onFieldUpdate( field, value ) }
 										{ ...elementProps }
