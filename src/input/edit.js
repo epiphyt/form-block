@@ -10,6 +10,7 @@ import { __ } from '@wordpress/i18n';
 
 import Controls from './controls';
 import { isAllowedAttribute } from './html-data';
+import { CustomDate, isCustomDate } from './modules/custom-date';
 
 export default function InputEdit( props ) {
 	const {
@@ -158,11 +159,16 @@ export default function InputEdit( props ) {
 						: null
 					}
 					
-					<TextControl
-						className={ isButton ? 'wp-block-button__link wp-element-button' : '' }
-						onChange={ ( value ) => setAttributes( { value } ) }
-						{ ...elementProps }
-					/>
+					{ isCustomDate( type )
+						? <CustomDate elementProps={ elementProps } props={ props } />
+						: <TextControl
+							className={ isButton ? 'wp-block-button__link wp-element-button' : '' }
+							hideLabelFromVision={ true }
+							label={ label }
+							onChange={ ( value ) => setAttributes( { value } ) }
+							{ ...elementProps }
+						/>
+					}
 				</>
 			}
 		</div>

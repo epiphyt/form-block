@@ -12,6 +12,9 @@ export const attributes = applyFilters(
 			description: __( 'Whether the element is checked by default.', 'form-block' ),
 			label: _x( 'Checked', 'HTML attribute name', 'form-block' ),
 		},
+		customDate: {
+			controlType: 'custom-date',
+		},
 		disabled: {
 			controlType: 'toggle',
 			description: __( 'Whether the form element is disabled and will not be submitted by sending the form.', 'form-block' ),

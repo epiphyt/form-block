@@ -47,6 +47,20 @@ const types = applyFilters(
 				'step',
 			],
 		},
+		'date-custom': {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'customDate',
+				'disabled',
+				'label',
+				'max',
+				'min',
+				'readOnly',
+				'required',
+				'step',
+			],
+		},
 		'datetime-local': {
 			allowedAttributes: [
 				'ariaDescription',

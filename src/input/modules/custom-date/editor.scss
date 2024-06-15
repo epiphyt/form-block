@@ -1,0 +1,15 @@
+@import '~@wordpress/base-styles/variables';
+
+.form-block__date-custom {
+	.form-block__date-custom--separator {
+		margin-block-end: $grid-unit-10;
+		
+		&:last-child {
+			display: none;
+		}
+	}
+	
+	.is-type-year {
+		flex-grow: 2;
+	}
+}

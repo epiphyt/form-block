@@ -19,6 +19,7 @@ import {
 } from '../data/attributes';
 import { getSanitizedAttributeValue, stripSpecialChars } from '../data/util';
 import { getTypes, isAllowedAttribute } from './html-data';
+import CustomDateControls from './modules/custom-date/controls';
 
 export default function Controls( props ) {
 	const {
@@ -92,6 +93,15 @@ export default function Controls( props ) {
 		} );
 		
 		switch ( inputAttributes[ attribute ].controlType ) {
+			case 'custom-date':
+				return (
+					<CustomDateControls
+						attribute={ attribute }
+						key={ key }
+						props={ props }
+						updateValue={ updateValue }
+					/>
+				);
 			case 'number':
 				return (
 					<TextControl
