@@ -61,7 +61,10 @@ final class Theme_Styles {
 	 * @return	array Updated block styles
 	 */
 	public function register_block_styles( array $styles ): array {
-		if ( $this->is_theme( 'Twenty Twenty-Three' ) ) {
+		if ( $this->is_theme( 'Twenty Twenty-Four' ) ) {
+			$styles[] = 'form-block-twenty-twenty-four';
+		}
+		else if ( $this->is_theme( 'Twenty Twenty-Three' ) ) {
 			$styles[] = 'form-block-twenty-twenty-three';
 		}
 		else if ( $this->is_theme( 'Twenty Twenty-Two' ) ) {
@@ -78,7 +81,13 @@ final class Theme_Styles {
 		$is_debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
 		$suffix = ( $is_debug ? '' : '.min' );
 		
-		if ( $this->is_theme( 'Twenty Twenty-Three' ) ) {
+		if ( $this->is_theme( 'Twenty Twenty-Four' ) ) {
+			$file_path = \plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-four' . $suffix . '.css';
+			$file_url = \plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-four' . $suffix . '.css';
+			
+			\wp_register_style( 'form-block-twenty-twenty-four', $file_url, [ 'form-block' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION );
+		}
+		else if ( $this->is_theme( 'Twenty Twenty-Three' ) ) {
 			$file_path = plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-three' . $suffix . '.css';
 			$file_url = plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-three' . $suffix . '.css';
 			
