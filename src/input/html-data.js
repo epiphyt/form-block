@@ -243,6 +243,17 @@ const types = applyFilters(
 				'step',
 			],
 		},
+		'time-custom': {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'customDate',
+				'disabled',
+				'label',
+				'readOnly',
+				'required',
+			],
+		},
 		text: {
 			allowedAttributes: [
 				'autoComplete',
