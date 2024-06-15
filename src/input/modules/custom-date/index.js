@@ -64,18 +64,37 @@ export function CustomDate( { props, elementProps } ) {
 		showPlaceholder,
 		value,
 	} = customDate;
+	let fields;
 	const fieldData = {
 		day: {
 			label: __( 'Day', 'form-block' ),
 			placeholder: _x( 'DD', 'date field placeholder', 'form-block' ),
+			separatorAfter: _x( '/', 'date separator', 'form-block' ),
+			separatorBefore: '',
+		},
+		hour: {
+			label: __( 'Hours', 'form-block' ),
+			placeholder: _x( 'HH', 'date field placeholder', 'form-block' ),
+			separatorAfter: _x( ':', 'time separator', 'form-block' ),
+			separatorBefore: _x( 'at', 'date and time separator', 'form-block' ),
+		},
+		minute: {
+			label: __( 'Minutes', 'form-block' ),
+			placeholder: _x( 'MM', 'date field placeholder', 'form-block' ),
+			separatorAfter: '',
+			separatorBefore: '',
 		},
 		month: {
 			label: __( 'Month', 'form-block' ),
 			placeholder: _x( 'MM', 'date field placeholder', 'form-block' ),
+			separatorAfter: _x( '/', 'date separator', 'form-block' ),
+			separatorBefore: '',
 		},
 		year: {
 			label: __( 'Year', 'form-block' ),
 			placeholder: _x( 'YYYY', 'date field placeholder', 'form-block' ),
+			separatorAfter: '',
+			separatorBefore: '',
 		},
 	}
 	
@@ -88,35 +107,47 @@ export function CustomDate( { props, elementProps } ) {
 	
 	switch ( type ) {
 		case 'date-custom':
-			const fields = _x( 'month, day, year', 'date order in lowercase', 'form-block' ).split( ', ' );
-			
-			return (
-				<fieldset className="form-block__date-custom">
-					<legend className="screen-reader-text">{ label }</legend>
-					
-					<Flex align="flex-end">
-						{ fields.map( ( field, index ) => (
-							<Fragment key={ index }>
-								<FlexBlock className={ 'is-type-' + field }>
-									<TextControl
-										hideLabelFromVision={ ! showLabel }
-										label={ fieldData[ field ].label }
-										onChange={ ( value ) => onFieldUpdate( field, value ) }
-										{ ...elementProps }
-										placeholder={ showPlaceholder ? fieldData[ field ].placeholder : '' }
-										value={ value ? ( value[ field ] || '' ) : '' }
-									/>
-								</FlexBlock>
-								
-								<FlexItem className="form-block__date-custom--separator">
-									{ _x( '/', 'date separator', 'form-block' ) }
-								</FlexItem>
-							</Fragment>
-						) ) }
-					</Flex>
-				</fieldset>
-			);
+			fields = _x( 'month, day, year', 'date order in lowercase', 'form-block' ).split( ', ' );
+			break;
+		case 'datetime-local-custom':
+			fields = _x( 'month, day, year, hour, minute', 'date order in lowercase', 'form-block' ).split( ', ' );
+			break;
 	}
 	
-	return null;
+	return (
+		<fieldset className="form-block__date-custom">
+			<legend className="screen-reader-text">{ label }</legend>
+			
+			<Flex align="flex-end">
+				{ fields.map( ( field, index ) => (
+					<Fragment key={ index }>
+						{ fieldData[ field ].separatorBefore
+							? <FlexItem className="form-block__date-custom--separator is-before">
+								{ fieldData[ field ].separatorBefore }
+							</FlexItem>
+							: null
+						}
+						
+						<FlexBlock className={ 'is-type-' + field }>
+							<TextControl
+								hideLabelFromVision={ ! showLabel }
+								label={ fieldData[ field ].label }
+								onChange={ ( value ) => onFieldUpdate( field, value ) }
+								{ ...elementProps }
+								placeholder={ showPlaceholder ? fieldData[ field ].placeholder : '' }
+								value={ value ? ( value[ field ] || '' ) : '' }
+							/>
+						</FlexBlock>
+						
+						{ fieldData[ field ].separatorAfter
+							? <FlexItem className="form-block__date-custom--separator is-after">
+								{ fieldData[ field ].separatorAfter }
+							</FlexItem>
+							: null
+						}
+					</Fragment>
+				) ) }
+			</Flex>
+		</fieldset>
+	);
 }

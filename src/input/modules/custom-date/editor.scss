@@ -5,10 +5,6 @@
 		font-size: $default-font-size;
 		margin-block-end: $grid-unit-10; // match input margin
 		padding-block: 6px; // match input padding
-		
-		&:last-child {
-			display: none;
-		}
 	}
 	
 	.is-type-year {

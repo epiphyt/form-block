@@ -54,11 +54,8 @@ const types = applyFilters(
 				'customDate',
 				'disabled',
 				'label',
-				'max',
-				'min',
 				'readOnly',
 				'required',
-				'step',
 			],
 		},
 		'datetime-local': {
@@ -72,6 +69,17 @@ const types = applyFilters(
 				'readOnly',
 				'required',
 				'step',
+			],
+		},
+		'datetime-local-custom': {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'customDate',
+				'disabled',
+				'label',
+				'readOnly',
+				'required',
 			],
 		},
 		email: {
