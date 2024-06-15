@@ -140,6 +140,17 @@ const types = applyFilters(
 				'step',
 			],
 		},
+		'month-custom': {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'customDate',
+				'disabled',
+				'label',
+				'readOnly',
+				'required',
+			],
+		},
 		number: {
 			allowedAttributes: [
 				'autoComplete',

@@ -112,6 +112,9 @@ export function CustomDate( { props, elementProps } ) {
 		case 'datetime-local-custom':
 			fields = _x( 'month, day, year, hour, minute', 'date order in lowercase', 'form-block' ).split( ', ' );
 			break;
+		case 'month-custom':
+			fields = _x( 'month, year', 'date order in lowercase', 'form-block' ).split( ', ' );
+			break;
 		case 'time-custom':
 			fields = _x( 'hour, minute', 'date order in lowercase', 'form-block' ).split( ', ' );
 			break;
