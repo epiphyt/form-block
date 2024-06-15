@@ -2,6 +2,7 @@
 namespace epiphyt\Form_Block;
 
 use DOMDocument;
+use epiphyt\Form_Block\modules\Custom_Date;
 use epiphyt\Form_Block\block_data\Data as Block_Data_Data;
 use epiphyt\Form_Block\blocks\Form;
 use epiphyt\Form_Block\blocks\Input;
@@ -18,6 +19,13 @@ use epiphyt\Form_Block\form_data\Data as Form_Data_Data;
  */
 final class Form_Block {
 	const MAX_INT = 2147483647;
+	
+	/**
+	 * @var		array Registered Modules
+	 */
+	public array $modules = [
+		Custom_Date::class,
+	];
 	
 	/**
 	 * @var		array List of block name attributes
@@ -46,6 +54,11 @@ final class Form_Block {
 		Input::get_instance()->init();
 		Select::get_instance()->init();
 		Textarea::get_instance()->init();
+		
+		foreach ( $this->modules as $key => $asset ) {
+			$this->modules[ $key ] = new $asset();
+			$this->modules[ $key ]->init();
+		}
 	}
 	
 	/**

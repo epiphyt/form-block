@@ -1,0 +1,251 @@
+<?php
+namespace epiphyt\Form_Block\modules;
+
+use DOMDocument;
+use DOMElement;
+use DOMException;
+use DOMXPath;
+
+/**
+ * Custom date module.
+ * 
+ * @author	Epiphyt
+ * @license	GPL2
+ * @package	epiphyt\Form_Block
+ */
+final class Custom_Date {
+	/**
+	 * Initialize the class.
+	 */
+	public function init(): void {
+		\add_action( 'enqueue_block_editor_assets', [ self::class, 'enqueue_editor_assets' ] );
+		\add_filter( 'render_block_form-block/input', [ self::class, 'set_markup' ], 15, 2 );
+	}
+	
+	/**
+	 * Add single date fields to an input element.
+	 * 
+	 * @param	array		$fields Fields to add
+	 * @param	DOMDocument	$dom DOM object
+	 * @param	DOMElement	$element DOM element object
+	 * @param	array		$field_data Data of the input field
+	 * @param	array		$block_data Data of the block
+	 */
+	private static function add_date_fields( array $fields, DOMDocument $dom, DOMElement $element, array $field_data, array $block_data ): void {
+		foreach ( $fields as $type => $field ) {
+			$container = $dom->createElement( 'div' );
+			$input_container = $dom->createElement( 'div' );
+			$input_node = $dom->createElement( 'input' );
+			$label_classes = 'form-block__label is-input-label';
+			$label_content_node = $dom->createElement( 'span', $field['label'] );
+			$label_node = $dom->createElement( 'label' );
+			$separators = [];
+			
+			foreach ( $field['separator'] as $position => $value ) {
+				if ( ! empty( $value ) ) {
+					$separators[ $position ] = $dom->createElement( 'span' );
+					$separators[ $position ]->setAttribute( 'class', 'form-block__date-custom--separator is-' . $position );
+					$separators[ $position ]->textContent = $value;
+				}
+			}
+			
+			$input_node->setAttribute( 'class', $field_data['class'] );
+			$input_node->setAttribute( 'id', $field_data['id'] . '-' . $type );
+			$input_node->setAttribute( 'name', $field_data['name'] . '[' . $type . ']' );
+			$input_node->setAttribute( 'type', 'text' );
+			$input_node->setAttribute( 'value', $block_data['value'][ $type ] ?? '' );
+			
+			if ( $field_data['is_required'] ) {
+				$input_node->setAttribute( 'required', '' );
+			}
+			
+			if ( $block_data['showPlaceholder'] ) {
+				$input_node->setAttribute( 'placeholder', $field['placeholder'] );
+			}
+			
+			if ( empty( $block_data['showLabel'] ) ) {
+				$label_classes .= ' screen-reader-text';
+			}
+			
+			$container->setAttribute( 'class', 'form-block__element is-type-text is-sub-type-' . $type );
+			$input_container->setAttribute( 'class', 'form-block__input-container' );
+			$label_content_node->setAttribute( 'class', 'form-block__label-content' );
+			$label_node->setAttribute( 'class', $label_classes );
+			$label_node->setAttribute( 'for', $field_data['id'] . '-' . $type );
+			$label_node->appendChild( $label_content_node );
+			
+			if ( ! empty( $separators['before'] ) ) {
+				$input_container->appendChild( $separators['before'] );
+			}
+			
+			$input_container->appendChild( $input_node );
+			
+			if ( ! empty( $separators['after'] ) ) {
+				$input_container->appendChild( $separators['after'] );
+			}
+			
+			$container->appendChild( $input_container );
+			$container->appendChild( $label_node );
+			$element->appendChild( $container );
+		}
+	}
+	
+	/**
+	 * Enqueue editor assets.
+	 */
+	public static function enqueue_editor_assets(): void {
+		\wp_localize_script( 'form-block-input-editor-script', 'formBlockInputCustomDate', self::get_field_data() );
+	}
+	
+	/**
+	 * Get field data.
+	 * 
+	 * @param	array	$order Field data order
+	 * @return	array Field data
+	 */
+	public static function get_field_data( array $order = [] ): array {
+		$fields = [
+			'day' => [
+				'label' => \__( 'Day', 'form-block' ),
+				'placeholder' => \_x( 'DD', 'date field placeholder', 'form-block' ),
+				'separator' => [
+					'after' => \_x( '/', 'date separator', 'form-block' ),
+					'before' => '',
+				],
+			],
+			'hour' => [
+				'label' => \__( 'Hours', 'form-block' ),
+				'placeholder' => \_x( 'HH', 'date field placeholder', 'form-block' ),
+				'separator' => [
+					'after' => \_x( ':', 'time separator', 'form-block' ),
+					'before' => \_x( 'at', 'date and time separator', 'form-block' ),
+				],
+			],
+			'minute' => [
+				'label' => \__( 'Minutes', 'form-block' ),
+				'placeholder' => \_x( 'MM', 'date field placeholder', 'form-block' ),
+				'separator' => [
+					'after' => '',
+					'before' => '',
+				],
+			],
+			'month' => [
+				'label' => \__( 'Month', 'form-block' ),
+				'placeholder' => \_x( 'MM', 'date field placeholder', 'form-block' ),
+				'separator' => [
+					'after' => \_x( '/', 'date separator', 'form-block' ),
+					'before' => '',
+				],
+			],
+			'week' => [
+				'label' => \__( 'Week', 'form-block' ),
+				'placeholder' => \_x( 'WK', 'date field placeholder', 'form-block' ),
+				'separator' => [
+					'after' => \_x( '/', 'date separator', 'form-block' ),
+					'before' => '',
+				],
+			],
+			'year' => [
+				'label' => \__( 'Year', 'form-block' ),
+				'placeholder' => \_x( 'YYYY', 'date field placeholder', 'form-block' ),
+				'separator' => [
+					'after' => '',
+					'before' => '',
+				],
+			],
+		];
+		
+		if ( empty( $order ) ) {
+			return $fields;
+		}
+		
+		return \array_merge( \array_flip( $order ), $fields );
+	}
+	
+	/**
+	 * Set markup for a custom date field.
+	 * 
+	 * @param	string	$block_content The block content
+	 * @param	array	$block Block attributes
+	 * @return	string Updated block content
+	 */
+	public static function set_markup( string $block_content, array $block ): string {
+		$dom = new DOMDocument();
+		$dom->loadHTML(
+			'<html><meta charset="UTF-8">' . $block_content . '</html>',
+			\LIBXML_HTML_NOIMPLIED | \LIBXML_HTML_NODEFDTD
+		);
+		$xpath = new DOMXPath( $dom );
+		/** @var	\DOMElement $input_node */
+		$input_node = $xpath->query( '//div[contains(@class, "wp-block-form-block-input")]//input' )->item( 0 );
+		$label_node = $xpath->query( '//div[contains(@class, "wp-block-form-block-input")]//label' )->item( 0 );
+		$label_content_node = $xpath->query( '//div[contains(@class, "wp-block-form-block-input")]//span[contains(@class, "form-block__label-content")]' )->item( 0 );
+		$field_data = [
+			'class' => $input_node->getAttribute( 'class' ),
+			'id' => $input_node->getAttribute( 'id' ),
+			'is_required' => $input_node->hasAttribute( 'required' ) ? true : false,
+			'name' => $input_node->getAttribute( 'name' ),
+			'type' => $input_node->getAttribute( 'type' ),
+		];
+		
+		if ( ! \str_ends_with( $field_data['type'], '-custom' ) ) {
+			return $block_content;
+		}
+		
+		$fieldset = $dom->createElement( 'fieldset' );
+		$legend = $dom->createElement( 'legend' );
+		$legend_content = $dom->createElement( 'span', $label_content_node->textContent ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		$legend_content->setAttribute( 'class', 'form-block__label-content' );
+		$legend->appendChild( $legend_content );
+		
+		if ( $field_data['is_required'] ) {
+			$required_symbol = $dom->createElement( 'span' );
+			$required_symbol->setAttribute( 'class', 'is-required' );
+			$required_symbol->setAttribute( 'aria-hidden', 'true' );
+			$required_symbol->textContent = '*'; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$legend->appendChild( $required_symbol );
+		}
+		
+		$fieldset->appendChild( $legend );
+		$fieldset->setAttribute( 'class', 'form-block__input-group' );
+		
+		switch ( $field_data['type'] ) {
+			case 'date-custom':
+				$order = \explode( ', ', \_x( 'month, day, year', 'date order in lowercase', 'form-block' ) );
+				break;
+			case 'datetime-local-custom':
+				$order = \explode( ', ', \_x( 'month, day, year, hour, minute', 'date order in lowercase', 'form-block' ) );
+				break;
+			case 'month-custom':
+				$order = \explode( ', ', \_x( 'month, year', 'date order in lowercase', 'form-block' ) );
+				break;
+			case 'time-custom':
+				$order = \explode( ', ', \_x( 'hour, minute', 'date order in lowercase', 'form-block' ) );
+				break;
+			case 'week-custom':
+				$order = \explode( ', ', \_x( 'week, year', 'date order in lowercase', 'form-block' ) );
+				break;
+		}
+		
+		if ( ! isset( $order ) ) {
+			return $block_content;
+		}
+		
+		$fields = \array_intersect_key( self::get_field_data( $order ), \array_flip( $order ) );
+		$block_data = \wp_parse_args(
+			$block['attrs']['customDate'] ?? [],
+			[
+				'showPlaceholder' => true,
+				'showLabel' => false,
+				'value' => [],
+			]
+		);
+		
+		self::add_date_fields( $fields, $dom, $fieldset, $field_data, $block_data );
+		$input_node->parentNode->appendChild( $fieldset ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		$input_node->parentNode->removeChild( $input_node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		$label_node->parentNode->removeChild( $label_node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		
+		return str_replace( [ '<html><meta charset="UTF-8">', '</html>' ], '', $dom->saveHTML( $dom->documentElement ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+	}
+}

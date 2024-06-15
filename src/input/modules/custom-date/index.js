@@ -65,44 +65,6 @@ export function CustomDate( { props, elementProps } ) {
 		value,
 	} = customDate;
 	let fields;
-	const fieldData = {
-		day: {
-			label: __( 'Day', 'form-block' ),
-			placeholder: _x( 'DD', 'date field placeholder', 'form-block' ),
-			separatorAfter: _x( '/', 'date separator', 'form-block' ),
-			separatorBefore: '',
-		},
-		hour: {
-			label: __( 'Hours', 'form-block' ),
-			placeholder: _x( 'HH', 'date field placeholder', 'form-block' ),
-			separatorAfter: _x( ':', 'time separator', 'form-block' ),
-			separatorBefore: _x( 'at', 'date and time separator', 'form-block' ),
-		},
-		minute: {
-			label: __( 'Minutes', 'form-block' ),
-			placeholder: _x( 'MM', 'date field placeholder', 'form-block' ),
-			separatorAfter: '',
-			separatorBefore: '',
-		},
-		month: {
-			label: __( 'Month', 'form-block' ),
-			placeholder: _x( 'MM', 'date field placeholder', 'form-block' ),
-			separatorAfter: _x( '/', 'date separator', 'form-block' ),
-			separatorBefore: '',
-		},
-		week: {
-			label: __( 'Weak', 'form-block' ),
-			placeholder: _x( 'WK', 'date field placeholder', 'form-block' ),
-			separatorAfter: _x( '/', 'date separator', 'form-block' ),
-			separatorBefore: '',
-		},
-		year: {
-			label: __( 'Year', 'form-block' ),
-			placeholder: _x( 'YYYY', 'date field placeholder', 'form-block' ),
-			separatorAfter: '',
-			separatorBefore: '',
-		},
-	}
 	
 	const onFieldUpdate = ( field, fieldValue ) => {
 		let newValue = structuredClone( customDate );
@@ -136,9 +98,9 @@ export function CustomDate( { props, elementProps } ) {
 			<Flex align="flex-end">
 				{ fields.map( ( field, index ) => (
 					<Fragment key={ index }>
-						{ fieldData[ field ].separatorBefore
+						{ formBlockInputCustomDate[ field ].separator.before
 							? <FlexItem className="form-block__date-custom--separator is-before">
-								{ fieldData[ field ].separatorBefore }
+								{ formBlockInputCustomDate[ field ].separator.before }
 							</FlexItem>
 							: null
 						}
@@ -146,17 +108,17 @@ export function CustomDate( { props, elementProps } ) {
 						<FlexBlock className={ 'is-type-' + field }>
 							<TextControl
 								hideLabelFromVision={ ! showLabel }
-								label={ fieldData[ field ].label }
+								label={ formBlockInputCustomDate[ field ].label }
 								onChange={ ( value ) => onFieldUpdate( field, value ) }
 								{ ...elementProps }
-								placeholder={ showPlaceholder ? fieldData[ field ].placeholder : '' }
+								placeholder={ showPlaceholder ? formBlockInputCustomDate[ field ].placeholder : '' }
 								value={ value ? ( value[ field ] || '' ) : '' }
 							/>
 						</FlexBlock>
 						
-						{ fieldData[ field ].separatorAfter
+						{ formBlockInputCustomDate[ field ].separator.after
 							? <FlexItem className="form-block__date-custom--separator is-after">
-								{ fieldData[ field ].separatorAfter }
+								{ formBlockInputCustomDate[ field ].separator.after }
 							</FlexItem>
 							: null
 						}
