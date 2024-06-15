@@ -90,6 +90,12 @@ export function CustomDate( { props, elementProps } ) {
 			separatorAfter: _x( '/', 'date separator', 'form-block' ),
 			separatorBefore: '',
 		},
+		week: {
+			label: __( 'Weak', 'form-block' ),
+			placeholder: _x( 'WK', 'date field placeholder', 'form-block' ),
+			separatorAfter: _x( '/', 'date separator', 'form-block' ),
+			separatorBefore: '',
+		},
 		year: {
 			label: __( 'Year', 'form-block' ),
 			placeholder: _x( 'YYYY', 'date field placeholder', 'form-block' ),
@@ -117,6 +123,9 @@ export function CustomDate( { props, elementProps } ) {
 			break;
 		case 'time-custom':
 			fields = _x( 'hour, minute', 'date order in lowercase', 'form-block' ).split( ', ' );
+			break;
+		case 'week-custom':
+			fields = _x( 'week, year', 'date order in lowercase', 'form-block' ).split( ', ' );
 			break;
 	}
 	

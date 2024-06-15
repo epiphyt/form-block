@@ -308,5 +308,16 @@ const types = applyFilters(
 				'step',
 			],
 		},
+		'week-custom': {
+			allowedAttributes: [
+				'ariaDescription',
+				'autoComplete',
+				'customDate',
+				'disabled',
+				'label',
+				'readOnly',
+				'required',
+			],
+		},
 	},
 );
