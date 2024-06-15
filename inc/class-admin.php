@@ -3,11 +3,6 @@
 namespace epiphyt\Form_Block;
 
 use function add_action;
-use function plugin_dir_path;
-use function plugin_dir_url;
-use function wp_enqueue_script;
-use function wp_enqueue_style;
-use const EPI_FORM_BLOCK_FILE;
 
 /**
  * Form Block admin class.
