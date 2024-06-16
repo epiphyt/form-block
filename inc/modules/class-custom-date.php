@@ -5,6 +5,7 @@ use DOMDocument;
 use DOMElement;
 use DOMException;
 use DOMXPath;
+use epiphyt\Form_Block\form_data\Data;
 
 /**
  * Custom date module.
@@ -15,10 +16,22 @@ use DOMXPath;
  */
 final class Custom_Date {
 	/**
+	 * @var		array Supported custom date field types
+	 */
+	public static array $field_types = [
+		'date-custom',
+		'datetime-local-custom',
+		'month-custom',
+		'time-custom',
+		'week-custom',
+	];
+	
+	/**
 	 * Initialize the class.
 	 */
 	public function init(): void {
 		\add_action( 'enqueue_block_editor_assets', [ self::class, 'enqueue_editor_assets' ] );
+		\add_filter( 'form_block_output_field_value', [ self::class, 'set_output_format' ], 10, 3 );
 		\add_filter( 'render_block_form-block/input', [ self::class, 'set_markup' ], 15, 2 );
 	}
 	
@@ -163,6 +176,37 @@ final class Custom_Date {
 	}
 	
 	/**
+	 * Get the field order.
+	 * 
+	 * @param	string	$type Field type
+	 * @return	array Field order
+	 */
+	public static function get_field_order( string $type ): array {
+		switch ( $type ) {
+			case 'date-custom':
+				$order = \explode( ', ', \_x( 'month, day, year', 'date order in lowercase', 'form-block' ) );
+				break;
+			case 'datetime-local-custom':
+				$order = \explode( ', ', \_x( 'month, day, year, hour, minute', 'date order in lowercase', 'form-block' ) );
+				break;
+			case 'month-custom':
+				$order = \explode( ', ', \_x( 'month, year', 'date order in lowercase', 'form-block' ) );
+				break;
+			case 'time-custom':
+				$order = \explode( ', ', \_x( 'hour, minute', 'date order in lowercase', 'form-block' ) );
+				break;
+			case 'week-custom':
+				$order = \explode( ', ', \_x( 'week, year', 'date order in lowercase', 'form-block' ) );
+				break;
+			default:
+				$order = [];
+				break;
+		}
+		
+		return $order;
+	}
+	
+	/**
 	 * Set markup for a custom date field.
 	 * 
 	 * @param	string	$block_content The block content
@@ -208,26 +252,9 @@ final class Custom_Date {
 		
 		$fieldset->appendChild( $legend );
 		$fieldset->setAttribute( 'class', 'form-block__input-group' );
+		$order = self::get_field_order( $field_data['type'] );
 		
-		switch ( $field_data['type'] ) {
-			case 'date-custom':
-				$order = \explode( ', ', \_x( 'month, day, year', 'date order in lowercase', 'form-block' ) );
-				break;
-			case 'datetime-local-custom':
-				$order = \explode( ', ', \_x( 'month, day, year, hour, minute', 'date order in lowercase', 'form-block' ) );
-				break;
-			case 'month-custom':
-				$order = \explode( ', ', \_x( 'month, year', 'date order in lowercase', 'form-block' ) );
-				break;
-			case 'time-custom':
-				$order = \explode( ', ', \_x( 'hour, minute', 'date order in lowercase', 'form-block' ) );
-				break;
-			case 'week-custom':
-				$order = \explode( ', ', \_x( 'week, year', 'date order in lowercase', 'form-block' ) );
-				break;
-		}
-		
-		if ( ! isset( $order ) ) {
+		if ( empty( $order ) ) {
 			return $block_content;
 		}
 		
@@ -247,5 +274,39 @@ final class Custom_Date {
 		$label_node->parentNode->removeChild( $label_node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		
 		return str_replace( [ '<html><meta charset="UTF-8">', '</html>' ], '', $dom->saveHTML( $dom->documentElement ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+	}
+	
+	/**
+	 * Set the output format.
+	 * 
+	 * @param	mixed	$value Post value
+	 * @param	string	$name Field name
+	 * @param	array	$field_data Form field data
+	 * @return	mixed Output in proper format
+	 */
+	public static function set_output_format( mixed $value, string $name, array $field_data ): mixed {
+		$field = Data::get_instance()->get_field_data_by_name( $name, $field_data['fields'] );
+		
+		if ( ! \in_array( $field['type'], self::$field_types, true ) ) {
+			return $value;
+		}
+		
+		$field_order = self::get_field_order( $field['type'] );
+		$format_data = \array_intersect_key( self::get_field_data( $field_order ), \array_flip( $field_order ) );
+		$output = '';
+		
+		foreach ( $format_data as $format_type => $field_format ) {
+			// don't start with a separator
+			if ( ! empty( $output ) ) {
+				$output .= $field_format['separator']['before'] ?? '';
+			}
+			
+			if ( ! empty( $value[ $format_type ] ) && \is_string( $value[ $format_type ] ) ) {
+				$output .= $value[ $format_type ];
+				$output .= $field_format['separator']['after'] ?? '';
+			}
+		}
+		
+		return $output;
 	}
 }
