@@ -18,7 +18,7 @@ import {
 	getAttributeHelp,
 } from '../data/attributes';
 import { getSanitizedAttributeValue, stripSpecialChars } from '../data/util';
-import { getTypes, isAllowedAttribute } from './html-data';
+import { getTypes, isAllowedAttribute, types } from './html-data';
 import CustomDateControls from './modules/custom-date/controls';
 
 export default function Controls( props ) {
@@ -210,7 +210,7 @@ export default function Controls( props ) {
 				<SelectControl
 					label={ _x( 'Type', 'HTML attribute name', 'form-block' ) }
 					onChange={ ( type ) => setAttributes( { type } ) }
-					options={ getTypes().map( ( type ) => ( { label: type, value: type } ) ) }
+					options={ getTypes().map( ( type ) => ( { label: types[ type ].label, value: type } ) ) }
 					value={ type }
 				/>
 				<TextControl

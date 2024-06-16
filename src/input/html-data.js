@@ -1,4 +1,5 @@
 import { applyFilters } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
 
 export const getAllowedAttributes = ( type ) => {
 	return types[ type ].allowedAttributes;
@@ -14,7 +15,7 @@ export const isAllowedAttribute = ( type, attribute ) => {
 	return types[ type ].allowedAttributes.includes( attribute );
 }
 
-const types = applyFilters(
+export const types = applyFilters(
 	'formBlock.input.htmlTypes',
 	{
 		checkbox: {
@@ -25,6 +26,7 @@ const types = applyFilters(
 				'required',
 				'value',
 			],
+			label: __( 'Checkbox', 'form-block' ),
 		},
 		color: {
 			allowedAttributes: [
@@ -33,6 +35,7 @@ const types = applyFilters(
 				'disabled',
 				'label',
 			],
+			label: __( 'Color selection', 'form-block' ),
 		},
 		date: {
 			allowedAttributes: [
@@ -46,6 +49,7 @@ const types = applyFilters(
 				'required',
 				'step',
 			],
+			label: __( 'Datei', 'form-block' ),
 		},
 		'date-custom': {
 			allowedAttributes: [
@@ -57,6 +61,7 @@ const types = applyFilters(
 				'readOnly',
 				'required',
 			],
+			label: __( 'Date with separate fields', 'form-block' ),
 		},
 		'datetime-local': {
 			allowedAttributes: [
@@ -70,6 +75,7 @@ const types = applyFilters(
 				'required',
 				'step',
 			],
+			label: __( 'Date and time', 'form-block' ),
 		},
 		'datetime-local-custom': {
 			allowedAttributes: [
@@ -81,6 +87,7 @@ const types = applyFilters(
 				'readOnly',
 				'required',
 			],
+			label: __( 'Date and time with separate fields', 'form-block' ),
 		},
 		email: {
 			allowedAttributes: [
@@ -97,6 +104,7 @@ const types = applyFilters(
 				'required',
 				'size',
 			],
+			label: __( 'E-mail', 'form-block' ),
 		},
 		file: {
 			allowedAttributes: [
@@ -109,9 +117,11 @@ const types = applyFilters(
 				'readOnly',
 				'required',
 			],
+			label: __( 'File', 'form-block' ),
 		},
 		hidden: {
 			allowedAttributes: [],
+			label: __( 'Hidden', 'form-block' ),
 		},
 		image: {
 			allowedAttributes: [
@@ -126,6 +136,7 @@ const types = applyFilters(
 				'src',
 				'width',
 			],
+			label: __( 'Image', 'form-block' ),
 		},
 		month: {
 			allowedAttributes: [
@@ -139,6 +150,7 @@ const types = applyFilters(
 				'required',
 				'step',
 			],
+			label: __( 'Month', 'form-block' ),
 		},
 		'month-custom': {
 			allowedAttributes: [
@@ -150,6 +162,7 @@ const types = applyFilters(
 				'readOnly',
 				'required',
 			],
+			label: __( 'Month with separate fields', 'form-block' ),
 		},
 		number: {
 			allowedAttributes: [
@@ -163,6 +176,7 @@ const types = applyFilters(
 				'required',
 				'step',
 			],
+			label: __( 'Number', 'form-block' ),
 		},
 		password: {
 			allowedAttributes: [
@@ -178,6 +192,7 @@ const types = applyFilters(
 				'required',
 				'size',
 			],
+			label: __( 'Password (input not visible)', 'form-block' ),
 		},
 		radio: {
 			allowedAttributes: [
@@ -187,6 +202,7 @@ const types = applyFilters(
 				'required',
 				'value',
 			],
+			label: __( 'Radio button', 'form-block' ),
 		},
 		range: {
 			allowedAttributes: [
@@ -198,12 +214,14 @@ const types = applyFilters(
 				'min',
 				'step',
 			],
+			label: __( 'Range', 'form-block' ),
 		},
 		reset: {
 			allowedAttributes: [
 				'disabled',
 				'value',
 			],
+			label: __( 'Reset button', 'form-block' ),
 		},
 		search: {
 			allowedAttributes: [
@@ -220,12 +238,14 @@ const types = applyFilters(
 				'required',
 				'size',
 			],
+			label: __( 'Search', 'form-block' ),
 		},
 		submit: {
 			allowedAttributes: [
 				'disabled',
 				'value',
 			],
+			label: __( 'Submit button', 'form-block' ),
 		},
 		tel: {
 			allowedAttributes: [
@@ -240,6 +260,7 @@ const types = applyFilters(
 				'required',
 				'size',
 			],
+			label: __( 'Telephone', 'form-block' ),
 		},
 		time: {
 			allowedAttributes: [
@@ -253,6 +274,7 @@ const types = applyFilters(
 				'required',
 				'step',
 			],
+			label: __( 'Time', 'form-block' ),
 		},
 		'time-custom': {
 			allowedAttributes: [
@@ -264,6 +286,7 @@ const types = applyFilters(
 				'readOnly',
 				'required',
 			],
+			label: __( 'Time with separate fields', 'form-block' ),
 		},
 		text: {
 			allowedAttributes: [
@@ -279,6 +302,7 @@ const types = applyFilters(
 				'required',
 				'size',
 			],
+			label: __( 'Text', 'form-block' ),
 		},
 		url: {
 			allowedAttributes: [
@@ -294,6 +318,7 @@ const types = applyFilters(
 				'required',
 				'size',
 			],
+			label: __( 'URL', 'form-block' ),
 		},
 		week: {
 			allowedAttributes: [
@@ -307,6 +332,7 @@ const types = applyFilters(
 				'required',
 				'step',
 			],
+			label: __( 'Week', 'form-block' ),
 		},
 		'week-custom': {
 			allowedAttributes: [
@@ -318,6 +344,7 @@ const types = applyFilters(
 				'readOnly',
 				'required',
 			],
+			label: __( 'Week with separate fields', 'form-block' ),
 		},
 	},
 );
