@@ -128,7 +128,10 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	const setAriaDescribedBy = ( field ) => {
 		const innerError = field.parentNode.querySelector( '.inline-error' );
 		innerError.id = field.id + '__inline-error';
-		field.setAttribute( 'aria-describedby', ( ( field.getAttribute( 'aria-describedby' ) || '' ) + ' ' + innerError.id ).trim() );
+		
+		if ( ! field.hasAttribute( 'aria-describedby' ) || ! field.getAttribute( 'aria-describedby' ).includes( innerError.id ) ) {
+			field.setAttribute( 'aria-describedby', ( ( field.getAttribute( 'aria-describedby' ) || '' ) + ' ' + innerError.id ).trim() );
+		}
 	}
 	
 	for ( const form of forms ) {
