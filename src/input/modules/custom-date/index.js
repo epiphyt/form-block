@@ -111,6 +111,7 @@ export function CustomDate( { props, elementProps } ) {
 								label={ formBlockInputCustomDate[ field ].label }
 								onChange={ ( value ) => onFieldUpdate( field, value ) }
 								{ ...elementProps }
+								type="number"
 								placeholder={ showPlaceholder ? formBlockInputCustomDate[ field ].placeholder : '' }
 								value={ value ? ( value[ field ] || '' ) : '' }
 							/>
