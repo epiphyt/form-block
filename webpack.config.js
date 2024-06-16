@@ -8,6 +8,7 @@ const mode = isProduction ? 'production' : 'development';
 
 const jsFiles = {
 	'form': path.resolve( process.cwd(), 'assets/js', 'form.js' ),
+	'multi-field': path.resolve( process.cwd(), 'assets/js', 'multi-field.js' ),
 	'validation': path.resolve( process.cwd(), 'assets/js', 'validation.js' ),
 };
 const scssFiles = {

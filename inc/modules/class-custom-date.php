@@ -63,6 +63,7 @@ final class Custom_Date {
 			}
 			
 			$input_node->setAttribute( 'class', $field_data['class'] );
+			$input_node->setAttribute( 'data-max-length', $field['validation']['max-length'] );
 			$input_node->setAttribute( 'data-validate-length-range', $field['validation']['min-length'] . ',' . $field['validation']['max-length'] );
 			$input_node->setAttribute( 'data-validate-minmax', $field['validation']['min'] . ',' . $field['validation']['max'] );
 			$input_node->setAttribute( 'id', $field_data['id'] . '-' . $type );
@@ -305,6 +306,8 @@ final class Custom_Date {
 		if ( empty( $order ) ) {
 			return $block_content;
 		}
+		
+		\wp_enqueue_script( 'form-block-multi-field' );
 		
 		$fields = \array_intersect_key( self::get_field_data( $order ), \array_flip( $order ) );
 		$block_data = \wp_parse_args(

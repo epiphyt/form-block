@@ -263,6 +263,11 @@ final class Form {
 	public function register_frontend_assets(): void {
 		$is_debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
 		$suffix = ( $is_debug ? '' : '.min' );
+		$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'multi-field' . $suffix . '.js';
+		$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'multi-field' . $suffix . '.js';
+		
+		\wp_register_script( 'form-block-multi-field', $file_url, [ 'form-block-form' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION, true );
+		
 		$file_path = plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/js/vendor/validator' . $suffix . '.js';
 		$file_url = plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/js/vendor/validator' . $suffix . '.js';
 		
