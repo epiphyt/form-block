@@ -63,9 +63,13 @@ final class Custom_Date {
 			}
 			
 			$input_node->setAttribute( 'class', $field_data['class'] );
+			$input_node->setAttribute( 'data-validate-length-range', $field['validation']['min-length'] . ',' . $field['validation']['max-length'] );
+			$input_node->setAttribute( 'data-validate-minmax', $field['validation']['min'] . ',' . $field['validation']['max'] );
 			$input_node->setAttribute( 'id', $field_data['id'] . '-' . $type );
+			$input_node->setAttribute( 'max', $field['validation']['max'] );
+			$input_node->setAttribute( 'min', $field['validation']['min'] );
 			$input_node->setAttribute( 'name', $field_data['name'] . '[' . $type . ']' );
-			$input_node->setAttribute( 'type', 'text' );
+			$input_node->setAttribute( 'type', 'number' );
 			$input_node->setAttribute( 'value', $block_data['value'][ $type ] ?? '' );
 			
 			if ( $field_data['is_required'] ) {
@@ -80,7 +84,7 @@ final class Custom_Date {
 				$label_classes .= ' screen-reader-text';
 			}
 			
-			$container->setAttribute( 'class', 'form-block__element is-type-text is-sub-type-' . $type );
+			$container->setAttribute( 'class', 'form-block__element is-sub-element is-type-text is-sub-type-' . $type );
 			$input_container->setAttribute( 'class', 'form-block__input-container' );
 			$label_content_node->setAttribute( 'class', 'form-block__label-content' );
 			$label_node->setAttribute( 'class', $label_classes );
@@ -125,6 +129,13 @@ final class Custom_Date {
 					'after' => \_x( '/', 'date separator', 'form-block' ),
 					'before' => '',
 				],
+				'validation' => [
+					'max' => 31,
+					'max-length' => 2,
+					'min' => 1,
+					'min-length' => 2,
+					'type' => 'numeric',
+				],
 			],
 			'hour' => [
 				'label' => \__( 'Hours', 'form-block' ),
@@ -132,6 +143,13 @@ final class Custom_Date {
 				'separator' => [
 					'after' => \_x( ':', 'time separator', 'form-block' ),
 					'before' => \_x( 'at', 'date and time separator', 'form-block' ),
+				],
+				'validation' => [
+					'max' => 24,
+					'max-length' => 2,
+					'min' => 0,
+					'min-length' => 2,
+					'type' => 'numeric',
 				],
 			],
 			'minute' => [
@@ -141,6 +159,13 @@ final class Custom_Date {
 					'after' => '',
 					'before' => '',
 				],
+				'validation' => [
+					'max' => 59,
+					'max-length' => 2,
+					'min' => 0,
+					'min-length' => 2,
+					'type' => 'numeric',
+				],
 			],
 			'month' => [
 				'label' => \__( 'Month', 'form-block' ),
@@ -148,6 +173,13 @@ final class Custom_Date {
 				'separator' => [
 					'after' => \_x( '/', 'date separator', 'form-block' ),
 					'before' => '',
+				],
+				'validation' => [
+					'max' => 12,
+					'max-length' => 2,
+					'min' => 1,
+					'min-length' => 2,
+					'type' => 'numeric',
 				],
 			],
 			'week' => [
@@ -157,6 +189,13 @@ final class Custom_Date {
 					'after' => \_x( '/', 'date separator', 'form-block' ),
 					'before' => '',
 				],
+				'validation' => [
+					'max' => 53,
+					'max-length' => 2,
+					'min' => 1,
+					'min-length' => 2,
+					'type' => 'numeric',
+				],
 			],
 			'year' => [
 				'label' => \__( 'Year', 'form-block' ),
@@ -164,6 +203,13 @@ final class Custom_Date {
 				'separator' => [
 					'after' => '',
 					'before' => '',
+				],
+				'validation' => [
+					'max' => 99999,
+					'max-length' => 4,
+					'min' => 0,
+					'min-length' => 4,
+					'type' => 'numeric',
 				],
 			],
 		];
@@ -220,6 +266,8 @@ final class Custom_Date {
 			\LIBXML_HTML_NOIMPLIED | \LIBXML_HTML_NODEFDTD
 		);
 		$xpath = new DOMXPath( $dom );
+		/** @var	\DOMElement $container_node */
+		$container_node = $xpath->query( '//div[contains(@class, "wp-block-form-block-input")]' )->item( 0 );
 		/** @var	\DOMElement $input_node */
 		$input_node = $xpath->query( '//div[contains(@class, "wp-block-form-block-input")]//input' )->item( 0 );
 		$label_node = $xpath->query( '//div[contains(@class, "wp-block-form-block-input")]//label' )->item( 0 );
@@ -269,6 +317,7 @@ final class Custom_Date {
 		);
 		
 		self::add_date_fields( $fields, $dom, $fieldset, $field_data, $block_data );
+		$container_node->setAttribute( 'class', $container_node->getAttribute( 'class' ) . ' has-sub-elements' );
 		$input_node->parentNode->appendChild( $fieldset ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		$input_node->parentNode->removeChild( $input_node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		$label_node->parentNode->removeChild( $label_node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
