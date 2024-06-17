@@ -229,6 +229,12 @@ export default function Wizard( props ) {
 		setIsWizardOpen( false );
 	};
 	
+	const onKeyPress = ( event ) => {
+		if ( event.key === 'Enter' ) {
+			onInsert();
+		}
+	}
+	
 	return (
 		<Modal
 			className="form-block__wizard-modal"
@@ -239,6 +245,7 @@ export default function Wizard( props ) {
 				help={ __( 'Define the field labels of the fields you need. Separate multiple field labels with a comma. Add an * to a label to automatically mark the field as required.', 'form-block' ) }
 				label={ __( 'Which form fields do you need?', 'form-block' ) }
 				onChange={ ( fields ) => setFields( fields ) }
+				onKeyPress={ onKeyPress }
 			/>
 			<ToggleControl
 				checked={ includeConsentCheckbox }
