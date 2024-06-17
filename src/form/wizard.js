@@ -66,15 +66,37 @@ export default function Wizard( props ) {
 		const preparedFields = fields.split( ',' ).map( ( field ) => field.trim() );
 		
 		for ( const preparedField of preparedFields ) {
+			let isAdded = false;
+			const isRequired = preparedField.includes( '*' );
+			const fieldLabel = preparedField.replace( '*', '' );
+			
 			checkFieldTypeLoop:
 			for ( const fieldType of Object.keys( fieldMatches ) ) {
 				for ( const potentialMatch of fieldMatches[ fieldType ] ) {
-					console.log( {preparedField, potentialMatch} );
-					const isRequired = preparedField.includes( '*' );
-					const fieldLabel = preparedField.replace( '*', '' );
+					if ( ! preparedField.toLowerCase().includes( potentialMatch ) ) {
+						continue;
+					}
 					
-					if ( preparedField.toLowerCase().includes( potentialMatch ) ) {
-						if ( fieldType !== 'textarea' ) {
+					switch ( fieldType ) {
+						case 'select':
+							blocks.push( [
+								'form-block/select',
+								{
+									label: fieldLabel,
+									required: isRequired,
+								},
+							] );
+							break;
+						case 'textarea':
+							blocks.push( [
+								'form-block/textarea',
+								{
+									label: fieldLabel,
+									required: isRequired,
+								},
+							] );
+							break;
+						default:
 							let blockAttributes = {
 								label: fieldLabel,
 								required: isRequired,
@@ -93,26 +115,23 @@ export default function Wizard( props ) {
 								'form-block/input',
 								blockAttributes,
 							] );
-						}
-						else {
-							blocks.push( [
-								'form-block/textarea',
-								{
-									label: fieldLabel,
-									required: isRequired,
-								},
-							] );
-						}
+							break;
 					}
-					else {
-						blocks.push( [
-							'form-block/input',
-							{
-								label: fieldLabel,
-								required: isRequired,
-								type: 'text',
-							},
-						] );
+					
+					isAdded = true;
+					break checkFieldTypeLoop;
+				}
+			}
+			
+			if ( ! isAdded ) {
+				blocks.push( [
+					'form-block/input',
+					{
+						label: fieldLabel,
+						required: isRequired,
+						type: 'text',
+					},
+				] );
 					}
 					break checkFieldTypeLoop;
 				}
