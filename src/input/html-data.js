@@ -262,6 +262,22 @@ export const types = applyFilters(
 			],
 			label: __( 'Telephone', 'form-block' ),
 		},
+		text: {
+			allowedAttributes: [
+				'autoComplete',
+				'dirname',
+				'disabled',
+				'label',
+				'maxLength',
+				'minLength',
+				'pattern',
+				'placeholder',
+				'readOnly',
+				'required',
+				'size',
+			],
+			label: __( 'Text', 'form-block' ),
+		},
 		time: {
 			allowedAttributes: [
 				'ariaDescription',
@@ -287,22 +303,6 @@ export const types = applyFilters(
 				'required',
 			],
 			label: __( 'Time with separate fields', 'form-block' ),
-		},
-		text: {
-			allowedAttributes: [
-				'autoComplete',
-				'dirname',
-				'disabled',
-				'label',
-				'maxLength',
-				'minLength',
-				'pattern',
-				'placeholder',
-				'readOnly',
-				'required',
-				'size',
-			],
-			label: __( 'Text', 'form-block' ),
 		},
 		url: {
 			allowedAttributes: [

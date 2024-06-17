@@ -14,8 +14,18 @@ const fieldMatches = applyFilters(
 	'formBlock.wizard.fieldMatches',
 	{
 		checkbox: [
-			_x( '?', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'checkbox', 'potential form field name in lowercase', 'form-block' ),
 			_x( 'consent', 'potential form field name in lowercase', 'form-block' ),
+		],
+		color: [
+			_x( 'color', 'potential form field name in lowercase', 'form-block' ),
+		],
+		'datetime-local-custom': [ // override 'date'
+			_x( 'date time', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'date and time', 'potential form field name in lowercase', 'form-block' ),
+		],
+		'date-custom': [
+			_x( 'date', 'potential form field name in lowercase', 'form-block' ),
 		],
 		email: [
 			_x( 'e-mail', 'potential form field name in lowercase', 'form-block' ),
@@ -26,8 +36,45 @@ const fieldMatches = applyFilters(
 			_x( 'file', 'potential form field name in lowercase', 'form-block' ),
 			_x( 'upload', 'potential form field name in lowercase', 'form-block' ),
 		],
+		hidden: [
+			_x( 'hidden', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'invisible', 'potential form field name in lowercase', 'form-block' ),
+		],
+		image: [
+			_x( 'image', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'picture', 'potential form field name in lowercase', 'form-block' ),
+		],
+		'month-custom': [
+			_x( 'month', 'potential form field name in lowercase', 'form-block' ),
+		],
+		'number': [
+			_x( 'amount', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'count', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'int', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'integer', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'number', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'numeric', 'potential form field name in lowercase', 'form-block' ),
+		],
 		password: [
 			_x( 'password', 'potential form field name in lowercase', 'form-block' ),
+		],
+		radio: [
+			_x( 'choice', 'potential form field name in lowercase', 'form-block' ),
+		],
+		range: [
+			_x( 'range', 'potential form field name in lowercase', 'form-block' ),
+		],
+		reset: [
+			_x( 'cancel', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'reset', 'potential form field name in lowercase', 'form-block' ),
+		],
+		search: [
+			_x( 'find', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'search', 'potential form field name in lowercase', 'form-block' ),
+		],
+		select: [
+			_x( 'select', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'selection', 'potential form field name in lowercase', 'form-block' ),
 		],
 		tel: [
 			_x( 'tel', 'potential form field name in lowercase', 'form-block' ),
@@ -42,7 +89,23 @@ const fieldMatches = applyFilters(
 			_x( 'zip', 'potential form field name in lowercase', 'form-block' ),
 		],
 		textarea: [
+			_x( 'area', 'potential form field name in lowercase', 'form-block' ),
 			_x( 'message', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'multiline', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'textarea', 'potential form field name in lowercase', 'form-block' ),
+		],
+		'time-custom': [
+			_x( 'clock', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'time', 'potential form field name in lowercase', 'form-block' ),
+		],
+		url: [
+			_x( 'homepage', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'link', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'page', 'potential form field name in lowercase', 'form-block' ),
+			_x( 'url', 'potential form field name in lowercase', 'form-block' ),
+		],
+		'week-custom': [
+			_x( 'week', 'potential form field name in lowercase', 'form-block' ),
 		],
 	}
 );
@@ -132,9 +195,6 @@ export default function Wizard( props ) {
 						type: 'text',
 					},
 				] );
-					}
-					break checkFieldTypeLoop;
-				}
 			}
 		}
 		
