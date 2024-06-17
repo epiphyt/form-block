@@ -49,7 +49,7 @@ export const types = applyFilters(
 				'required',
 				'step',
 			],
-			label: __( 'Datei', 'form-block' ),
+			label: __( 'Date', 'form-block' ),
 		},
 		'date-custom': {
 			allowedAttributes: [
