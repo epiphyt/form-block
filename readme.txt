@@ -1,6 +1,6 @@
 === Form Block ===
 Contributors: epiphyt, kittmedia
-Tags: contact, form, contact form, gutenberg, block editor, accessibility
+Tags: form, contact form, gutenberg, block editor, accessibility
 Requires at least: 6.3
 Stable tag: 1.4.0
 Tested up to: 6.5
