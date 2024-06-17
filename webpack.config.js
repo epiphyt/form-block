@@ -8,10 +8,12 @@ const mode = isProduction ? 'production' : 'development';
 
 const jsFiles = {
 	'form': path.resolve( process.cwd(), 'assets/js', 'form.js' ),
+	'multi-field': path.resolve( process.cwd(), 'assets/js', 'multi-field.js' ),
 	'validation': path.resolve( process.cwd(), 'assets/js', 'validation.js' ),
 };
 const scssFiles = {
 	'form': path.resolve( process.cwd(), 'assets/style', 'form.scss' ),
+	'twenty-twenty-four': path.resolve( process.cwd(), 'assets/style', 'twenty-twenty-four.scss' ),
 	'twenty-twenty-three': path.resolve( process.cwd(), 'assets/style', 'twenty-twenty-three.scss' ),
 	'twenty-twenty-two': path.resolve( process.cwd(), 'assets/style', 'twenty-twenty-two.scss' ),
 };

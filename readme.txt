@@ -1,8 +1,8 @@
 === Form Block ===
 Contributors: epiphyt, kittmedia
-Tags: contact, form, contact form, gutenberg, block editor
+Tags: contact, form, contact form, gutenberg, block editor, accessibility
 Requires at least: 6.3
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 Tested up to: 6.5
 Requires PHP: 7.4
 License: GPL2
@@ -19,6 +19,7 @@ WordPress offers several (contact) form plugins, but most of them are not up-to-
 = Features =
 
 * Fully support of the block editor
+* Built with accessibility in mind
 * Create forms with an unlimited number of fields
 * Select from a wide variety of field types
 * Use a predefined form or start from scratch
@@ -88,8 +89,20 @@ The code is open source and hosted on [GitHub](https://github.com/epiphyt/form-b
 
 We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin shop from southern Germany.
 
+= How can I report security bugs? =
+
+You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/form-block)
 
 == Changelog ==
+
+= 1.4.0 =
+* Added: Custom separated date fields (read [the announcement for more information](https://epiph.yt/en/blog/2024/form-block-1-4-0-release-and-opinions-on-date-pickers/))
+* Added: All supported input types that were previously only part of the Pro version
+* Added: Design for Twenty Twenty-Four
+* Added: More recognized field names for the form wizard
+* Improved: Input type selection is now more descriptive and translatable
+* Fixed: `aria-describedby` for error fields is no more added multiple times
+* Fixed: Form wizard now returns the proper input fields
 
 = 1.3.0 =
 * Added: Support block settings like font size, line height and dimensions

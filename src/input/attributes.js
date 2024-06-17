@@ -7,6 +7,14 @@ const attributes = {
 		source: 'attribute',
 		type: 'boolean',
 	},
+	customDate: {
+		default: {
+			showLabel: false,
+			showPlaceholder: true,
+			value: {},
+		},
+		type: 'object',
+	},
 	disabled: {
 		attribute: 'disabled',
 		selector: 'input',

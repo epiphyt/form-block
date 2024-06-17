@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.0
+* Added: Custom separated date fields (read [the announcement for more information](https://epiph.yt/en/blog/2024/form-block-1-4-0-release-and-opinions-on-date-pickers/))
+* Added: All supported input types that were previously only part of the Pro version
+* Added: Design for Twenty Twenty-Four
+* Added: More recognized field names for the form wizard
+* Improved: Input type selection is now more descriptive and translatable
+* Fixed: `aria-describedby` for error fields is no more added multiple times
+* Fixed: Form wizard now returns the proper input fields
+
 ## 1.3.0
 * Added: Support block settings like font size, line height and dimensions
 * Added: By selecting an invalid field, the error message will now be announced to screen readers

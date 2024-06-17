@@ -92,7 +92,12 @@ final class Validation {
 							$validated = sanitize_textarea_field( $value );
 							break;
 						default:
-							$validated = sanitize_text_field( $value );
+							if ( \is_array( $value ) ) {
+								$validated = \array_map( 'sanitize_text_field', $value );
+							}
+							else {
+								$validated = sanitize_text_field( $value );
+							}
 							break;
 					}
 					

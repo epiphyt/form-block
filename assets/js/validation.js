@@ -96,6 +96,46 @@ FormValidator.prototype.tests.url = function( field, data ) {
 	return this.texts.url;
 };
 
+const adjustMultiFieldErrors = ( data ) => {
+	const parentField = data.field.closest( '.form-block__element' );
+	let innerError = document.getElementById( data.field.id + '__inline-error' );
+	
+	if ( innerError ) {
+		innerError.remove();
+	}
+	
+	if ( data.valid ) {
+		data.field.removeAttribute( 'aria-invalid' );
+		
+		return;
+	}
+	
+	const adjacentField = parentField.closest( '.form-block__element:not(.is-sub-element)' );
+	innerError = document.createElement( 'div' );
+	const labelContent = parentField.querySelector( '.form-block__label-content' ).textContent;
+	innerError.id = data.field.id + '__inline-error';
+	innerError.textContent = labelContent + ': ' + data.error;
+	innerError.classList.add( 'inline-error' );
+	parentField.classList.add( 'form-error' );
+	adjacentField.classList.add( 'form-error' );
+	adjacentField.appendChild( innerError );
+	setAriaDescribedBy( data.field, adjacentField );
+	data.field.closest( '.form-block__element' ).querySelector( '.inline-error' ).remove();
+	data.field.ariaInvalid = true;
+	
+}
+
+const setAriaDescribedBy = ( field, parentField ) => {
+	const fieldToExtend = parentField || field;
+	const errorId = field.id + '__inline-error';
+	const innerError = document.getElementById( errorId ) || fieldToExtend.parentNode.querySelector( '.inline-error:not([id])' );
+	innerError.id = errorId;
+	
+	if ( ! field.hasAttribute( 'aria-describedby' ) || ! field.getAttribute( 'aria-describedby' ).includes( errorId ) ) {
+		field.setAttribute( 'aria-describedby', ( ( field.getAttribute( 'aria-describedby' ) || '' ) + ' ' + errorId ).trim() );
+	}
+}
+
 const validator = new FormValidator( {
 	classes: {
 		alert: 'inline-error',
@@ -125,13 +165,6 @@ document.addEventListener( 'DOMContentLoaded', function() {
 	const forms = document.querySelectorAll( '.wp-block-form-block-form' );
 	let typingTimeout;
 	
-	const setAriaDescribedBy = ( field ) => {
-		const innerError = field.parentNode.querySelector( '.inline-error' );
-		console.log( innerError );
-		innerError.id = field.id + '__inline-error';
-		field.setAttribute( 'aria-describedby', ( ( field.getAttribute( 'aria-describedby' ) || '' ) + ' ' + innerError.id ).trim() );
-	}
-	
 	for ( const form of forms ) {
 		form.validator = validator;
 		
@@ -153,6 +186,14 @@ document.addEventListener( 'DOMContentLoaded', function() {
 						else {
 							validator.unmark( event.target );
 						}
+					}
+					
+					if ( event.target.closest( '.form-block__input-group' ) ) {
+						let data = validator.checkField( event.target );
+						data.field = event.target;
+						adjustMultiFieldErrors( data );
+						
+						return;
 					}
 					
 					const container = event.target.closest( '[class^="wp-block-form-block-"]' );
@@ -185,8 +226,13 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			let invalidFields = [];
 			const validatorResult = validator.checkAll( this );
 			
-			validatorResult.fields.forEach( function( field, index, array ) {
-				if ( field.field.type !== 'file' ) {
+			validatorResult.fields.reverse().forEach( function( field, index, array ) {
+				if ( field.field.closest( '.form-block__input-group' ) ) {
+					adjustMultiFieldErrors( field );
+					
+					return;
+				}
+				else if ( field.field.type !== 'file' ) {
 					if ( ! field.valid ) {
 						setAriaDescribedBy( field.field );
 						invalidFields.push( field );
@@ -245,7 +291,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 							'is-error-notice',
 							'screen-reader-text',
 						);
-						invalidFieldNotice.setAttribute( 'aria-live', 'assertive' );
+						invalidFieldNotice.ariaLive = 'assertive';
 						form.appendChild( invalidFieldNotice );
 					}
 					
@@ -319,6 +365,10 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			
 			if ( formErrors ) {
 				for ( const formError of formErrors ) {
+					if ( formError.classList.contains( 'has-sub-elements' ) ) {
+						continue;
+					}
+					
 					if ( formError.classList.contains( 'wp-block-form-block-input' ) ) {
 						formError.querySelector( 'input' ).ariaInvalid = true;
 					}
