@@ -148,11 +148,7 @@ final class Data {
 	public function get_attributes( string $element, string $tag_name ): array {
 		$dom = new DOMDocument();
 		$dom->loadHTML(
-			mb_convert_encoding(
-				'<html>' . $element . '</html>',
-				'HTML-ENTITIES',
-				'UTF-8'
-			),
+			'<html><meta charset="UTF-8">' . $element . '</html>',
 			LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
 		);
 		
