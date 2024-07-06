@@ -340,7 +340,7 @@ final class Custom_Date {
 	public static function set_output_format( mixed $value, string $name, array $field_data ): mixed {
 		$field = Data::get_instance()->get_field_data_by_name( $name, $field_data['fields'] );
 		
-		if ( ! \in_array( $field['type'], self::$field_types, true ) ) {
+		if ( ! isset( $field['type'] ) || ! \in_array( $field['type'], self::$field_types, true ) ) {
 			return $value;
 		}
 		
