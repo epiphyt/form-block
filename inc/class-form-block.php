@@ -347,6 +347,35 @@ final class Form_Block {
 	}
 	
 	/**
+	 * Get the directory and URL.
+	 * 
+	 * @param	string	$sub_dir Optional sub-directory
+	 * @return	string[] Thumbnail directory and URL
+	 */
+	public static function get_upload_directory( string $sub_dir = '' ) {
+		$upload_dir = \wp_get_upload_dir();
+		
+		if ( ! $upload_dir || $upload_dir['error'] !== false ) {
+			return [
+				'base_dir' => '',
+				'base_url' => '',
+			];
+		}
+		
+		$path = $upload_dir['basedir'] . '/form-block' . ( ! empty( $sub_dir ) ? '/' . \ltrim( $sub_dir ) : '' );
+		$url = $upload_dir['baseurl'] . '/form-block' . ( ! empty( $sub_dir ) ? '/' . \ltrim( $sub_dir ) : '' );
+		
+		if ( ! \file_exists( $path ) ) {
+			\wp_mkdir_p( $path );
+		}
+		
+		return [
+			'base_dir' => $path,
+			'base_url' => $url,
+		];
+	}
+	
+	/**
 	 * Reset the block name attributes.
 	 */
 	public function reset_block_name_attributes(): void {
