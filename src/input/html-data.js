@@ -112,6 +112,7 @@ export const types = applyFilters(
 				'autoComplete',
 				'capture',
 				'disabled',
+				'dropzone',
 				'label',
 				'multiple',
 				'readOnly',
