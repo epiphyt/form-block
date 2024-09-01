@@ -31,6 +31,8 @@
 		}
 	}
 	
+	&.is-type-hidden,
+	&.is-type-system,
 	&:last-child {
 		margin-bottom: 0;
 	}
