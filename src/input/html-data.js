@@ -122,7 +122,9 @@ export const types = applyFilters(
 			label: __( 'File', 'form-block' ),
 		},
 		hidden: {
-			allowedAttributes: [],
+			allowedAttributes: [
+				'value',
+			],
 			label: __( 'Hidden', 'form-block' ),
 		},
 		image: {
