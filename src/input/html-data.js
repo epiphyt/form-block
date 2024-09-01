@@ -114,6 +114,7 @@ export const types = applyFilters(
 				'disabled',
 				'dropzone',
 				'label',
+				'localFiles',
 				'multiple',
 				'readOnly',
 				'required',
