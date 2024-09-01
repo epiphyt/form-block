@@ -29,7 +29,7 @@ export default function SelectSave( props ) {
 				{ options.map( ( option, index ) => (
 					<option
 						key={ index }
-						label={ option.label }
+						label={ option.label || false }
 					>
 						{ option.value }
 					</option>
