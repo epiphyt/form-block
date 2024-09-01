@@ -104,6 +104,8 @@ final class Data {
 						break;
 				}
 				
+				$field_data = \array_merge( $block['attrs'], $field_data );
+				
 				/**
 				 * Filter the field data.
 				 * 
