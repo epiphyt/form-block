@@ -317,7 +317,7 @@ final class Data {
 		/**
 		 * Filter whether the honeypot is filled.
 		 * 
-		 * @param	bool	$is_filled Whethter the honeypot is filled.
+		 * @param	bool	$is_filled Whether the honeypot is filled.
 		 */
 		$is_filled = apply_filters( 'form_block_is_honeypot_filled', $is_filled );
 		
@@ -325,12 +325,12 @@ final class Data {
 	}
 	
 	/**
-	 * Check wheter a form ID is valid. That means, there are form fields stored.
+	 * Check, whether a form ID is valid. That means, there are form fields stored.
 	 * 
 	 * @since	1.0.2
 	 * 
 	 * @param	string	$form_id The form ID to check
-	 * @return	bool Weter a form ID is valid
+	 * @return	bool Whether a form ID is valid
 	 */
 	public function is_valid_form_id( string $form_id ): bool {
 		$maybe_data = (array) get_option( 'form_block_data_' . $form_id, [] );
