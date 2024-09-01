@@ -331,6 +331,7 @@ final class Validation {
 					
 					$filesize += $file['size'];
 					$validated[] = [
+						'field_name' => $field_name,
 						'name' => $file['name'],
 						'path' => $file['tmp_name'],
 						'size' => $file['size'],
@@ -346,6 +347,7 @@ final class Validation {
 				
 				$filesize += $files['size'];
 				$validated[] = [
+					'field_name' => $field_name,
 					'name' => $files['name'],
 					'path' => $files['tmp_name'],
 					'size' => $files['size'],
