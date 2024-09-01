@@ -502,7 +502,7 @@ Your "%1$s" WordPress', 'form-block' ),
 		 * 
 		 * @param	array	$success List of emails and whether they were sent
 		 * @param	string	$email_text The sent email text
-		 * @param	array	$attachments The  sentattachments
+		 * @param	array	$attachments The sent attachments
 		 */
 		do_action( 'form_block_sent_emails', $success, $email_text, $attachments );
 		
