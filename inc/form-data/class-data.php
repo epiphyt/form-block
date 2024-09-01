@@ -418,7 +418,77 @@ final class Data {
 			 */
 			$output = apply_filters( 'form_block_output_field_output', $output, $name, $value, $field_data );
 			
-			$field_output[] = $output;
+			if ( ! empty( $output ) ) {
+				$field_output[] = $output;
+			}
+		}
+		
+		$attachments = [];
+		
+		if ( ! empty( $files ) ) {
+			foreach ( $files as $file ) {
+				$file_data = $this->get_field_data_by_name( $file['field_name'], $field_data['fields'] );
+				$new_path = sys_get_temp_dir() . $file['name'];
+				
+				/**
+				 * Filter the new path of an uploaded file.
+				 * 
+				 * @since	1.4.1
+				 * 
+				 * @param	string	$new_path New path of the file
+				 * @param	array	$file Uploaded file information array
+				 * @param	array	$file_data Form field data for this file
+				 */
+				$new_path = \apply_filters( 'form_block_attachment_file_path', $new_path, $file, $file_data );
+				
+				/**
+				 * Whether the file should be added as attachment.
+				 * 
+				 * @since	1.4.1
+				 * 
+				 * @param	bool	$add_to_attachments Whether the field should be added
+				 * @param	array	$file Uploaded file information array
+				 * @param	array	$file_data Form field data for this file
+				 */
+				$add_to_attachments = \apply_filters( 'form_block_attachment_add_to_mail', true, $file, $file_data );
+				
+				if ( $add_to_attachments ) {
+					$attachments[] = $new_path;
+				}
+				
+				move_uploaded_file( $file['path'], $new_path );
+				
+				/**
+				 * Fires after the file has been moved.
+				 * 
+				 * @param	array	$file Uploaded file information array
+				 * @param	array	$file_data Form field data for this file
+				 */
+				\do_action( 'form_field_attachment_after_moved', $file, $file_data );
+				
+				/**
+				 * Filter the file output.
+				 * 
+				 * @since	1.4.1
+				 * 
+				 * @param	string	$output The field output
+				 * @param	string	$name The field name
+				 * @param	mixed	$new_path File path
+				 * @param	array	$file data File data array
+				 */
+				$output = \apply_filters( 'form_block_output_file_output', '', $file['field_name'], $new_path, $file_data );
+				
+				/**
+				 * This filter is documented in inc/form-data/class.data.php
+				 * 
+				 * @since	1.4.1 Added filter for file inputs
+				 */
+				$output = \apply_filters( 'form_block_output_field_output', $output, $file['field_name'], $new_path, $field_data );
+				
+				if ( ! empty( $output ) ) {
+					$field_output[] = $output;
+				}
+			}
 		}
 		
 		$headers = [];
@@ -457,17 +527,6 @@ Your "%1$s" WordPress', 'form-block' ),
 		 * @param	array	$fields The validated fields
 		 */
 		$email_text = apply_filters( 'form_block_email_text', $email_text, $field_output, $this->form_id, $fields );
-		
-		$attachments = [];
-		
-		if ( ! empty( $files ) ) {
-			foreach ( $files as $file ) {
-				$new_path = sys_get_temp_dir() . '/' . $file['name'];
-				$attachments[] = $new_path;
-				
-				move_uploaded_file( $file['path'], $new_path );
-			}
-		}
 		
 		$success = [];
 		
