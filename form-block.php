@@ -15,16 +15,19 @@ use function substr_replace;
 use const WP_PLUGIN_DIR;
 
 /*
-Plugin Name:	Form Block
-Plugin URI:		https://formblock.pro/en/
-Description:	An extensive yet user-friendly form block.
-Version:		1.4.0
-Author:			Epiphyt
-Author URI:		https://epiph.yt
-License:		GPL2
-License URI:	https://www.gnu.org/licenses/gpl-2.0.html
-Tags:			form, blocks, block editor, email, contact form
-Text Domain:	form-block
+Plugin Name:		Form Block
+Plugin URI:			https://formblock.pro/en/
+Description:		An extensive yet user-friendly form block.
+Version:			1.4.1
+Author:				Epiphyt
+Author URI:			https://epiph.yt
+License:			GPL2
+License URI:		https://www.gnu.org/licenses/gpl-2.0.html
+Requires at least:	6.3
+Requires PHP:		5.6
+Tags:				form, blocks, block editor, email, contact form
+Tested up to:		6.6
+Text Domain:		form-block
 
 Form Block is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -43,7 +46,7 @@ along with Form Block. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
 // exit if ABSPATH is not defined
 defined( 'ABSPATH' ) || exit;
 
-define( 'FORM_BLOCK_VERSION', '1.4.0' );
+define( 'FORM_BLOCK_VERSION', '1.4.1' );
 
 if ( ! defined( 'EPI_FORM_BLOCK_BASE' ) ) {
 	define( 'EPI_FORM_BLOCK_BASE', WP_PLUGIN_DIR . '/form-block/' );

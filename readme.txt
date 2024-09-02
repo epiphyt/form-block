@@ -2,8 +2,8 @@
 Contributors: epiphyt, kittmedia
 Tags: form, contact form, gutenberg, block editor, accessibility
 Requires at least: 6.3
-Stable tag: 1.4.0
-Tested up to: 6.5
+Stable tag: 1.4.1
+Tested up to: 6.6
 Requires PHP: 7.4
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -94,6 +94,13 @@ We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin
 You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/form-block)
 
 == Changelog ==
+
+= 1.4.1 =
+* Improved: The notice for required fields is now above the form for enhanced accessibility
+* Fixed: Gaps in certain browsers from hidden input fields
+* Fixed: The value of hidden input fields is now populated in the frontend
+* Fixed: Options without a label now correctly show the value in the select
+* Fixed: Potential PHP warning for split date and time fields
 
 = 1.4.0 =
 * Added: Custom separated date fields (read [the announcement for more information](https://epiph.yt/en/blog/2024/form-block-1-4-0-release-and-opinions-on-date-pickers/))

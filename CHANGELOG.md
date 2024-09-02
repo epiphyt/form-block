@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.1
+* Improved: The notice for required fields is now above the form for enhanced accessibility
+* Fixed: Gaps in certain browsers from hidden input fields
+* Fixed: The value of hidden input fields is now populated in the frontend
+* Fixed: Options without a label now correctly show the value in the select
+* Fixed: Potential PHP warning for split date and time fields
+
 ## 1.4.0
 * Added: Custom separated date fields (read [the announcement for more information](https://epiph.yt/en/blog/2024/form-block-1-4-0-release-and-opinions-on-date-pickers/))
 * Added: All supported input types that were previously only part of the Pro version
