@@ -366,6 +366,10 @@ document.addEventListener( 'DOMContentLoaded', function() {
 			if ( formErrors ) {
 				for ( const formError of formErrors ) {
 					if ( formError.classList.contains( 'has-sub-elements' ) ) {
+						if ( ! formError.querySelector( '.form-error' ) ) {
+							formError.classList.remove( 'form-error' );
+						}
+						
 						continue;
 					}
 					
