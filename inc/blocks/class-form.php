@@ -283,7 +283,7 @@ final class Form {
 			'validatorDate' => esc_js( __( 'This field has an invalid date.', 'form-block' ) ),
 			'validatorEmail' => esc_js( __( 'This email address is invalid.', 'form-block' ) ),
 			'validatorEmpty' => esc_js( __( 'This field must not be empty.', 'form-block' ) ),
-			'validatorFileTooBig' => esc_js( __( 'The uploaded file is too big.', 'form-block' ) ),
+			'validatorFileTooBig' => esc_js( __( 'The file is to big to be uploaded.', 'form-block' ) ),
 			'validatorInvalid' => esc_js( __( 'This field is invalid.', 'form-block' ) ),
 			'validatorLong' => esc_js( __( 'This field is too long.', 'form-block' ) ),
 			'validatorMaxFilesize' => esc_js( Form_Block::get_instance()->get_maximum_upload_size() ),
