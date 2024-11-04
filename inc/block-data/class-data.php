@@ -219,6 +219,8 @@ final class Data {
 		] );
 		$iteration = 0;
 		
+		// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		/** @var	\DOMElement $tag */
 		foreach ( $dom->getElementsByTagName( $tag_name ) as $tag ) {
 			if ( ! $tag->hasAttributes() ) {
 				continue;
@@ -229,15 +231,23 @@ final class Data {
 			}
 			
 			foreach ( $tag->attributes as $attribute ) {
-				$attributes[ $iteration ][ $attribute->nodeName ] = $attribute->nodeValue; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				$attributes[ $iteration ][ $attribute->nodeName ] = $attribute->nodeValue;
 			}
 			
 			if ( $arguments['get_text_content'] ) {
-				$attributes[ $iteration ]['textContent'] = $tag->textContent; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				// textContent removes all line breaks, so get the actual HTML
+				// of the element and store them without tags, but with line breaks
+				foreach ( $tag->childNodes as $child ) {
+					$attributes[ $iteration ]['textContent'] .= $tag->ownerDocument->saveHTML( $child );
+				}
+				
+				$attributes[ $iteration ]['textContent'] = \str_replace( [ '<br>', '<br />' ], \PHP_EOL, $attributes[ $iteration ]['textContent'] );
+				$attributes[ $iteration ]['textContent'] = \wp_strip_all_tags( $attributes[ $iteration ]['textContent'] );
 			}
 			
 			$iteration++;
 		}
+		// phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		
 		if ( count( $attributes ) === 1 ) {
 			$attributes = reset( $attributes );
