@@ -2,8 +2,8 @@
 Contributors: epiphyt, kittmedia
 Tags: form, contact form, gutenberg, block editor, accessibility
 Requires at least: 6.3
-Stable tag: 1.4.1
-Tested up to: 6.6
+Stable tag: 1.4.2
+Tested up to: 6.7
 Requires PHP: 7.4
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -52,6 +52,7 @@ There is also a Pro version of Form Block available. It offers additional featur
 * Custom recipient(s) for each form
 * Custom form action
 * Upload via drag and drop
+* Storing files in WordPress instead of attaching them to an email
 * Global defined consent checkbox
 * Field dependencies
 
@@ -87,13 +88,18 @@ The code is open source and hosted on [GitHub](https://github.com/epiphyt/form-b
 
 = Who are you, folks? =
 
-We are [Epiphyt](https://epiph.yt/), your friendly neighborhood WordPress plugin shop from southern Germany.
+We are [Epiphyt](https://epiph.yt/en/), your friendly neighborhood WordPress plugin shop from southern Germany.
 
 = How can I report security bugs? =
 
 You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/form-block)
 
 == Changelog ==
+
+= 1.4.2 =
+* Fixed: Validation issues for separated date fields
+* Fixed: Line breaks in labels are no more removed in the email
+* Fixed: Error text for a field too large to upload does not indicate anymore that it has been uploaded
 
 = 1.4.1 =
 * Improved: The notice for required fields is now above the form for enhanced accessibility

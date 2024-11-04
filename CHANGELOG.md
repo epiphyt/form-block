@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.2
+* Fixed: Validation issues for separated date fields
+* Fixed: Line breaks in labels are no more removed in the email
+* Fixed: Error text for a field too large to upload does not indicate anymore that it has been uploaded
+
 ## 1.4.1
 * Improved: The notice for required fields is now above the form for enhanced accessibility
 * Fixed: Gaps in certain browsers from hidden input fields
