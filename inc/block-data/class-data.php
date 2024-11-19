@@ -3,7 +3,6 @@ namespace epiphyt\Form_Block\block_data;
 
 use DOMDocument;
 use WP_Post;
-use WP_Widget;
 
 /**
  * Block data class.
@@ -272,7 +271,7 @@ final class Data {
 	/**
 	 * Maybe delete old form data.
 	 * 
-	 * @param	int]string	$id Current object ID
+	 * @param	int|string	$id Current object ID
 	 * @param	array		$data Form data
 	 * @param	string		$type The object type
 	 */
