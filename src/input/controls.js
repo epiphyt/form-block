@@ -23,11 +23,7 @@ import CustomDateControls from './modules/custom-date/controls';
 
 export default function Controls( props ) {
 	const {
-		attributes: {
-			name,
-			label,
-			type,
-		},
+		attributes: { name, label, type },
 		setAttributes,
 	} = props;
 	const [ isHelpOpen, setIsHelpOpen ] = useState( [] );
@@ -57,41 +53,45 @@ export default function Controls( props ) {
 			attributes: {},
 		},
 	];
-	
+
 	if (
-		type === 'checkbox'
-		|| type === 'radio'
-		|| type === 'reset'
-		|| type === 'submit'
+		type === 'checkbox' ||
+		type === 'radio' ||
+		type === 'reset' ||
+		type === 'submit'
 	) {
 		defaultControlTypes.push( {
 			attributeName: 'value',
 			attributes: {},
 		} );
 	}
-	
+
 	const controls = applyFilters(
 		'formBlock.input.controlTypes',
 		defaultControlTypes,
-		props,
+		props
 	);
-	
+
 	const getControl = ( attribute, type, key, settings = {} ) => {
 		if ( ! inputAttributes[ attribute ] ) {
 			return null;
 		}
-		
+
 		if ( ! isAllowedAttribute( type, attribute ) ) {
 			return null;
 		}
-		
-		addFilter( 'formBlock.input.elementProps', 'formBlock/input-controls/element-props', ( elementProps, blockProps ) => {
-			let newProps = { ...elementProps };
-			newProps[ attribute ] = blockProps[ attribute ];
-			
-			return newProps;
-		} );
-		
+
+		addFilter(
+			'formBlock.input.elementProps',
+			'formBlock/input-controls/element-props',
+			( elementProps, blockProps ) => {
+				let newProps = { ...elementProps };
+				newProps[ attribute ] = blockProps[ attribute ];
+
+				return newProps;
+			}
+		);
+
 		switch ( inputAttributes[ attribute ].controlType ) {
 			case 'custom-date':
 				return (
@@ -108,9 +108,20 @@ export default function Controls( props ) {
 						className="form-block__block-control"
 						key={ key }
 						label={ getLabel( attribute ) }
-						onChange={ ( newValue ) => updateValue( getSanitizedAttributeValue( newValue, settings ), attribute ) }
+						onChange={ ( newValue ) =>
+							updateValue(
+								getSanitizedAttributeValue(
+									newValue,
+									settings
+								),
+								attribute
+							)
+						}
 						type="number"
-						value={ getSanitizedAttributeValue( props.attributes[ attribute ], settings ) }
+						value={ getSanitizedAttributeValue(
+							props.attributes[ attribute ],
+							settings
+						) }
 					/>
 				);
 			case 'select':
@@ -119,9 +130,20 @@ export default function Controls( props ) {
 						className="form-block__block-control"
 						key={ key }
 						label={ getLabel( attribute ) }
-						onChange={ ( newValue ) => updateValue( getSanitizedAttributeValue( newValue, settings ), attribute ) }
+						onChange={ ( newValue ) =>
+							updateValue(
+								getSanitizedAttributeValue(
+									newValue,
+									settings
+								),
+								attribute
+							)
+						}
 						options={ getOptions( attribute ) }
-						value={ getSanitizedAttributeValue( props.attributes[ attribute ], settings ) }
+						value={ getSanitizedAttributeValue(
+							props.attributes[ attribute ],
+							settings
+						) }
 					/>
 				);
 			case 'toggle':
@@ -131,7 +153,9 @@ export default function Controls( props ) {
 						className="form-block__block-control"
 						key={ key }
 						label={ getLabel( attribute ) }
-						onChange={ ( newValue ) => updateValue( newValue, attribute ) }
+						onChange={ ( newValue ) =>
+							updateValue( newValue, attribute )
+						}
 					/>
 				);
 			case 'text':
@@ -141,85 +165,139 @@ export default function Controls( props ) {
 						className="form-block__block-control"
 						key={ key }
 						label={ getLabel( attribute ) }
-						onChange={ ( newValue ) => updateValue( getSanitizedAttributeValue( newValue, settings ), attribute ) }
-						value={ getSanitizedAttributeValue( props.attributes[ attribute ], settings ) }
+						onChange={ ( newValue ) =>
+							updateValue(
+								getSanitizedAttributeValue(
+									newValue,
+									settings
+								),
+								attribute
+							)
+						}
+						value={ getSanitizedAttributeValue(
+							props.attributes[ attribute ],
+							settings
+						) }
 					/>
 				);
 		}
-	}
-	
+	};
+
 	const getLabel = ( attribute ) => {
 		if ( ! inputAttributes[ attribute ].label ) {
 			return null;
 		}
-		
+
 		return (
 			<>
 				{ inputAttributes[ attribute ].label }
-				{ inputAttributes[ attribute ].description || inputAttributes[ attribute ].examples
-					? <>
+				{ inputAttributes[ attribute ].description ||
+				inputAttributes[ attribute ].examples ? (
+					<>
 						<Tooltip
-							text={ __( 'Help/Examples for this attribute', 'form-block' ) }
+							text={ __(
+								'Help/Examples for this attribute',
+								'form-block'
+							) }
 						>
 							<Button
 								icon={ help }
 								onClick={ () => {
 									let newState = {};
 									newState[ attribute ] = true;
-									setIsHelpOpen( ( prevState ) => ( { ...prevState, ...newState } ) )
+									setIsHelpOpen( ( prevState ) => ( {
+										...prevState,
+										...newState,
+									} ) );
 								} }
 								variant="tertiary"
 							/>
 						</Tooltip>
-						{ isHelpOpen[ attribute ]
-							? <Modal
+						{ isHelpOpen[ attribute ] ? (
+							<Modal
 								className="form-block__help-modal"
 								onRequestClose={ () => {
 									let newState = {};
 									newState[ attribute ] = false;
-									setIsHelpOpen( ( prevState ) => ( { ...prevState, ...newState } ) )
+									setIsHelpOpen( ( prevState ) => ( {
+										...prevState,
+										...newState,
+									} ) );
 								} }
 								title={
 									/* translators: attribute name */
-									sprintf( __( 'Help for attribute %s', 'form-block' ), inputAttributes[ attribute ].label )
+									sprintf(
+										__(
+											'Help for attribute %s',
+											'form-block'
+										),
+										inputAttributes[ attribute ].label
+									)
 								}
 							>
 								{ getAttributeHelp( attribute ) }
 							</Modal>
-							: null
-						}
+						) : null }
 					</>
-					: null
-				}
+				) : null }
 			</>
 		);
-	}
-	
-	const getOptions = ( attribute ) => inputAttributes[ attribute ].options || [];
-	
+	};
+
+	const getOptions = ( attribute ) =>
+		inputAttributes[ attribute ].options || [];
+
 	const updateValue = ( newValue, attribute ) => {
 		let value = {};
 		value[ attribute ] = newValue;
-		
+
 		return setAttributes( value );
-	}
-	
+	};
+
 	return (
 		<InspectorControls>
 			<PanelBody>
 				<SelectControl
 					label={ _x( 'Type', 'HTML attribute name', 'form-block' ) }
 					onChange={ ( type ) => setAttributes( { type } ) }
-					options={ getTypes().map( ( type ) => ( { label: types[ type ].label, value: type } ) ) }
+					options={ getTypes().map( ( type ) => ( {
+						label: types[ type ].label,
+						value: type,
+					} ) ) }
 					value={ type }
 				/>
 				<TextControl
-					help={ ! name ? __( 'The name is auto-generated from the label.', 'form-block' ) : __( 'The name has been set manually.', 'form-block' ) }
-					label={ _x( 'Name', 'HTML attribute name', 'form-block' )  }
-					onChange={ ( name ) => setAttributes( { name: stripSpecialChars( name, false ) } ) }
-					value={ name ? stripSpecialChars( name, false ) : stripSpecialChars( label ) }
+					help={
+						! name
+							? __(
+									'The name is auto-generated from the label.',
+									'form-block'
+							  )
+							: __(
+									'The name has been set manually.',
+									'form-block'
+							  )
+					}
+					label={ _x( 'Name', 'HTML attribute name', 'form-block' ) }
+					onChange={ ( name ) =>
+						setAttributes( {
+							name: stripSpecialChars( name, false ),
+						} )
+					}
+					value={
+						name
+							? stripSpecialChars( name, false )
+							: stripSpecialChars( label )
+					}
 				/>
-				{ controls.map( ( control, index ) => getControl( control.attributeName, type, index, control.attributes ) ) }
+				{ controls.map( ( control, index ) =>
+					getControl(
+						control.attributeName,
+						type,
+						index,
+						control.attributes
+					)
+				) }
 			</PanelBody>
 		</InspectorControls>
 	);

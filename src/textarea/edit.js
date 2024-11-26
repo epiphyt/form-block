@@ -5,7 +5,7 @@ import {
 	FlexItem,
 	TextareaControl,
 	TextControl,
-	ToggleControl
+	ToggleControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -45,11 +45,11 @@ export default function TextareaEdit( props ) {
 		size,
 		value,
 	};
-	
+
 	return (
 		<div { ...blockProps }>
 			<Controls { ...props } />
-			
+
 			<Flex>
 				<FlexBlock>
 					<RichText
@@ -60,17 +60,19 @@ export default function TextareaEdit( props ) {
 						value={ label || '' }
 					/>
 				</FlexBlock>
-				
+
 				<FlexItem>
 					<ToggleControl
 						checked={ !! required }
 						label={ __( 'Required', 'form-block' ) }
-						onChange={ ( required ) => setAttributes( { required } ) }
+						onChange={ ( required ) =>
+							setAttributes( { required } )
+						}
 						value={ required }
 					/>
 				</FlexItem>
 			</Flex>
-			
+
 			<TextareaControl
 				onChange={ ( value ) => setAttributes( { value } ) }
 				{ ...elementProps }

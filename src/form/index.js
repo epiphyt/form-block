@@ -13,12 +13,9 @@ import './form-id-update';
 
 import './editor.scss';
 
-registerBlockType(
-	meta,
-	{
-		icon: form,
-		edit: FormEdit,
-		save: FormSave,
-		variations,
-	}
-);
+registerBlockType( meta, {
+	icon: form,
+	edit: FormEdit,
+	save: FormSave,
+	variations,
+} );

@@ -12,12 +12,9 @@ import meta from './block.json';
 
 import './editor.scss';
 
-registerBlockType(
-	meta,
-	{
-		icon: select,
-		edit: SelectEdit,
-		save: SelectSave,
-		deprecated,
-	}
-);
+registerBlockType( meta, {
+	icon: select,
+	edit: SelectEdit,
+	save: SelectSave,
+	deprecated,
+} );

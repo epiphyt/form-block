@@ -4,7 +4,7 @@ import {
 	FlexBlock,
 	FlexItem,
 	TextControl,
-	ToggleControl
+	ToggleControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -71,40 +71,43 @@ export default function InputEdit( props ) {
 		width,
 	};
 	const isButton = type === 'reset' || type === 'submit';
-	
+
 	blockProps.className += ' is-type-' + type;
-	
+
 	if ( type === 'hidden' ) {
-		elementProps.help = __( 'This input is hidden in the frontend.', 'form-block' );
+		elementProps.help = __(
+			'This input is hidden in the frontend.',
+			'form-block'
+		);
 		elementProps.type = 'text';
 	}
-	
+
 	if ( isButton ) {
 		blockProps.className += ' wp-block-button';
 	}
-	
+
 	return (
 		<div { ...blockProps }>
 			<Controls { ...props } />
-			
-			{ type === 'checkbox' || type === 'radio'
-				? <Flex>
+
+			{ type === 'checkbox' || type === 'radio' ? (
+				<Flex>
 					<FlexItem>
 						<TextControl
 							onChange={ ( value ) => setAttributes( { value } ) }
 							{ ...elementProps }
 						/>
 					</FlexItem>
-					
-					{ isAllowedAttribute( type, 'label' )
-						? <FlexBlock>
+
+					{ isAllowedAttribute( type, 'label' ) ? (
+						<FlexBlock>
 							<RichText
 								className="form-block__label"
 								onChange={ ( newLabel ) => {
 									const oldLabel = label;
-									
+
 									setAttributes( { label: newLabel } );
-									
+
 									if ( ! value || value === oldLabel ) {
 										setAttributes( { value: newLabel } );
 									}
@@ -114,63 +117,77 @@ export default function InputEdit( props ) {
 								value={ label || '' }
 							/>
 						</FlexBlock>
-						: null
-					}
-					
-					{ isAllowedAttribute( type, 'required' )
-						? <FlexItem>
+					) : null }
+
+					{ isAllowedAttribute( type, 'required' ) ? (
+						<FlexItem>
 							<ToggleControl
 								checked={ !! required }
 								label={ __( 'Required', 'form-block' ) }
-								onChange={ ( required ) => setAttributes( { required } ) }
+								onChange={ ( required ) =>
+									setAttributes( { required } )
+								}
 								value={ required }
 							/>
 						</FlexItem>
-						: null
-					}
+					) : null }
 				</Flex>
-				: <>
-					{ isAllowedAttribute( type, 'label' ) || isAllowedAttribute( type, 'required' )
-						? <Flex>
-							{ isAllowedAttribute( type, 'label' )
-								? <FlexBlock>
+			) : (
+				<>
+					{ isAllowedAttribute( type, 'label' ) ||
+					isAllowedAttribute( type, 'required' ) ? (
+						<Flex>
+							{ isAllowedAttribute( type, 'label' ) ? (
+								<FlexBlock>
 									<RichText
 										className="form-block__label"
-										onChange={ ( label ) => setAttributes( { label } ) }
-										placeholder={ __( 'Label', 'form-block' ) }
+										onChange={ ( label ) =>
+											setAttributes( { label } )
+										}
+										placeholder={ __(
+											'Label',
+											'form-block'
+										) }
 										tagName="label"
 										value={ label || '' }
 									/>
 								</FlexBlock>
-								: null
-							}
-							{ isAllowedAttribute( type, 'required' )
-								? <FlexItem>
+							) : null }
+							{ isAllowedAttribute( type, 'required' ) ? (
+								<FlexItem>
 									<ToggleControl
 										checked={ !! required }
 										label={ __( 'Required', 'form-block' ) }
-										onChange={ ( required ) => setAttributes( { required } ) }
+										onChange={ ( required ) =>
+											setAttributes( { required } )
+										}
 										value={ required }
 									/>
 								</FlexItem>
-								: null
-							}
+							) : null }
 						</Flex>
-						: null
-					}
-					
-					{ isCustomDate( type )
-						? <CustomDate elementProps={ elementProps } props={ props } />
-						: <TextControl
-							className={ isButton ? 'wp-block-button__link wp-element-button' : '' }
+					) : null }
+
+					{ isCustomDate( type ) ? (
+						<CustomDate
+							elementProps={ elementProps }
+							props={ props }
+						/>
+					) : (
+						<TextControl
+							className={
+								isButton
+									? 'wp-block-button__link wp-element-button'
+									: ''
+							}
 							hideLabelFromVision={ true }
 							label={ label }
 							onChange={ ( value ) => setAttributes( { value } ) }
 							{ ...elementProps }
 						/>
-					}
+					) }
 				</>
-			}
+			) }
 		</div>
 	);
 }

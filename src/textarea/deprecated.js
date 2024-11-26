@@ -59,9 +59,11 @@ const v1 = {
 				spellCheck,
 				size,
 				value,
-			}
+			},
 		} = props;
-		const blockProps = useBlockProps.save( { className: 'form-block__element' } );
+		const blockProps = useBlockProps.save( {
+			className: 'form-block__element',
+		} );
 		const elementProps = {
 			autoComplete,
 			disabled,
@@ -75,14 +77,12 @@ const v1 = {
 			spellCheck,
 			size,
 			value,
-		}
-		
+		};
+
 		return (
 			<div { ...blockProps }>
 				<textarea { ...elementProps } />
-				<label
-					className="form-block__label is-textarea-label"
-				>
+				<label className="form-block__label is-textarea-label">
 					<RichText.Content
 						className="form-block__label-content"
 						tagName="span"
@@ -92,7 +92,7 @@ const v1 = {
 				</label>
 			</div>
 		);
-	}
+	},
 };
 
 export default [ v1 ];

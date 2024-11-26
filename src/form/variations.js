@@ -8,7 +8,10 @@ const variations = [
 	{
 		name: 'wizard',
 		title: __( 'Form Wizard', 'form-block' ),
-		description: __( 'An interactive wizard for easy and fast form creation', 'form-block' ),
+		description: __(
+			'An interactive wizard for easy and fast form creation',
+			'form-block'
+		),
 		icon: wand,
 		innerBlocks: null,
 		isDefault: true,
@@ -25,7 +28,10 @@ const variations = [
 	{
 		name: 'contact',
 		title: __( 'Contact Form', 'form-block' ),
-		description: __( 'Basic contact form with name, email, phone and message field', 'form-block' ),
+		description: __(
+			'Basic contact form with name, email, phone and message field',
+			'form-block'
+		),
 		icon: contact,
 		innerBlocks: contactForm,
 		scope: [ 'block' ],

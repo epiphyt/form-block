@@ -5,18 +5,16 @@ import { __ } from '@wordpress/i18n';
 
 export default function Controls( { props } ) {
 	const {
-		attributes: {
-			subject,
-		},
+		attributes: { subject },
 		setAttributes,
 	} = props;
-	
+
 	const additionalPrimaryPanelControls = applyFilters(
 		'formBlock.controls.additionalPrimaryPanelControls',
 		null,
-		props,
+		props
 	);
-	
+
 	return (
 		<InspectorControls>
 			<PanelBody>
@@ -26,7 +24,7 @@ export default function Controls( { props } ) {
 					type="text"
 					value={ subject || '' }
 				/>
-				
+
 				{ additionalPrimaryPanelControls }
 			</PanelBody>
 		</InspectorControls>

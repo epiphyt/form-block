@@ -41,11 +41,11 @@ export default function SelectEdit( props ) {
 		value,
 	};
 	const [ isOptionModalOpen, setIsOptionModalOpen ] = useState( false );
-	
+
 	return (
 		<div { ...blockProps }>
 			<Controls { ...props } />
-			
+
 			<Flex>
 				<FlexBlock>
 					<RichText
@@ -56,17 +56,19 @@ export default function SelectEdit( props ) {
 						value={ label || '' }
 					/>
 				</FlexBlock>
-				
+
 				<FlexItem>
 					<ToggleControl
 						checked={ !! required }
 						label={ __( 'Required', 'form-block' ) }
-						onChange={ ( required ) => setAttributes( { required } ) }
+						onChange={ ( required ) =>
+							setAttributes( { required } )
+						}
 						value={ required }
 					/>
 				</FlexItem>
 			</Flex>
-			
+
 			<Flex align="center">
 				<FlexBlock>
 					<SelectControl
@@ -75,7 +77,7 @@ export default function SelectEdit( props ) {
 						{ ...elementProps }
 					/>
 				</FlexBlock>
-				
+
 				<FlexItem className="form-block__flexible-flex-item">
 					<Button
 						isSmall
@@ -83,9 +85,11 @@ export default function SelectEdit( props ) {
 						text={ __( 'Manage options', 'form-block' ) }
 						variant="secondary"
 					/>
-					{ isOptionModalOpen
-						? <Modal
-							onRequestClose={ () => setIsOptionModalOpen( false ) }
+					{ isOptionModalOpen ? (
+						<Modal
+							onRequestClose={ () =>
+								setIsOptionModalOpen( false )
+							}
 							title={ __( 'Manage options', 'form-block' ) }
 						>
 							{ options.map( ( option, index ) => (
@@ -97,27 +101,35 @@ export default function SelectEdit( props ) {
 									setAttributes={ setAttributes }
 								/>
 							) ) }
-							
+
 							<div className="form-block__inline-block-container">
 								<Button
-									onClick={ () => setIsOptionModalOpen( false ) }
+									onClick={ () =>
+										setIsOptionModalOpen( false )
+									}
 									text={ __( 'Save options', 'form-block' ) }
 									variant="primary"
 								/>
 								<Button
 									onClick={ () => {
-										let newOptions = JSON.parse( JSON.stringify( options ) );
-										newOptions.push( { label: '', value: '' } );
-										
-										setAttributes( { options: newOptions } );
+										let newOptions = JSON.parse(
+											JSON.stringify( options )
+										);
+										newOptions.push( {
+											label: '',
+											value: '',
+										} );
+
+										setAttributes( {
+											options: newOptions,
+										} );
 									} }
 									text={ __( 'Add option', 'form-block' ) }
 									variant="tertiary"
 								/>
 							</div>
 						</Modal>
-						: null
-					}
+					) : null }
 				</FlexItem>
 			</Flex>
 		</div>
@@ -132,11 +144,14 @@ function OptionEdit( { index, option, options, setAttributes } ) {
 					<h2>
 						{
 							/* translators: option index */
-							sprintf( __( 'Option %d', 'form-block' ), index + 1 )
+							sprintf(
+								__( 'Option %d', 'form-block' ),
+								index + 1
+							)
 						}
 					</h2>
 				</FlexItem>
-				
+
 				<FlexItem>
 					<Button
 						className="form-block__select-option--remove"
@@ -144,12 +159,17 @@ function OptionEdit( { index, option, options, setAttributes } ) {
 						isSmall
 						label={
 							/* translators: option index */
-							sprintf( __( 'Remove option %d', 'form-block' ), index + 1 )
+							sprintf(
+								__( 'Remove option %d', 'form-block' ),
+								index + 1
+							)
 						}
 						onClick={ () => {
-							let newOptions = JSON.parse( JSON.stringify( options ) );
+							let newOptions = JSON.parse(
+								JSON.stringify( options )
+							);
 							newOptions.splice( index, 1 );
-							
+
 							setAttributes( { options: newOptions } );
 						} }
 						showTooltip={ true }
@@ -157,29 +177,33 @@ function OptionEdit( { index, option, options, setAttributes } ) {
 					/>
 				</FlexItem>
 			</Flex>
-			
+
 			<div className="form-block__select-option">
 				<Flex>
 					<FlexBlock>
 						<TextControl
 							label={ __( 'Label', 'form-block' ) }
 							onChange={ ( label ) => {
-								let newOptions = JSON.parse( JSON.stringify( options ) );
+								let newOptions = JSON.parse(
+									JSON.stringify( options )
+								);
 								newOptions[ index ].label = label;
-								
+
 								setAttributes( { options: newOptions } );
 							} }
 							value={ option?.label }
 						/>
 					</FlexBlock>
-					
+
 					<FlexBlock>
 						<TextControl
 							label={ __( 'Value', 'form-block' ) }
 							onChange={ ( value ) => {
-								let newOptions = JSON.parse( JSON.stringify( options ) );
+								let newOptions = JSON.parse(
+									JSON.stringify( options )
+								);
 								newOptions[ index ].value = value;
-								
+
 								setAttributes( { options: newOptions } );
 							} }
 							value={ option?.value }

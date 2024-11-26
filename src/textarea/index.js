@@ -10,12 +10,9 @@ import { textarea } from './icon';
 import TextareaSave from './save';
 import meta from './block.json';
 
-registerBlockType( 
-	meta,
-	{
-		icon: textarea,
-		edit: TextareaEdit,
-		save: TextareaSave,
-		deprecated,
-	}
-);
+registerBlockType( meta, {
+	icon: textarea,
+	edit: TextareaEdit,
+	save: TextareaSave,
+	deprecated,
+} );

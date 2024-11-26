@@ -6,7 +6,7 @@ import {
 	SelectControl,
 	TextControl,
 	ToggleControl,
-	Tooltip
+	Tooltip,
 } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
@@ -21,10 +21,7 @@ import { getSanitizedAttributeValue, stripSpecialChars } from '../data/util';
 
 export default function Controls( props ) {
 	const {
-		attributes: {
-			label,
-			name,
-		},
+		attributes: { label, name },
 		setAttributes,
 	} = props;
 	const [ isHelpOpen, setIsHelpOpen ] = useState( [] );
@@ -44,20 +41,15 @@ export default function Controls( props ) {
 				},
 			},
 		],
-		props.attributes,
+		props.attributes
 	);
-	
+
 	const getControl = ( control, key ) => {
 		const {
 			attributeName,
-			attributes: {
-				help,
-				label,
-				inputType,
-				type,
-			},
+			attributes: { help, label, inputType, type },
 		} = control;
-		
+
 		switch ( type ) {
 			case 'select':
 				return (
@@ -65,9 +57,20 @@ export default function Controls( props ) {
 						className="form-block__block-control"
 						key={ key }
 						label={ getLabel( attributeName ) }
-						onChange={ ( newValue ) => updateValue( getSanitizedAttributeValue( newValue, control.attributes ), attributeName ) }
+						onChange={ ( newValue ) =>
+							updateValue(
+								getSanitizedAttributeValue(
+									newValue,
+									control.attributes
+								),
+								attributeName
+							)
+						}
 						options={ getOptions( attributeName ) }
-						value={ getSanitizedAttributeValue( props.attributes[ attributeName ], control.attributes ) }
+						value={ getSanitizedAttributeValue(
+							props.attributes[ attributeName ],
+							control.attributes
+						) }
 					/>
 				);
 			case 'toggle':
@@ -78,7 +81,9 @@ export default function Controls( props ) {
 						help={ help || null }
 						key={ key }
 						label={ label || getLabel( attributeName ) }
-						onChange={ ( newValue ) => updateValue( newValue, attributeName ) }
+						onChange={ ( newValue ) =>
+							updateValue( newValue, attributeName )
+						}
 					/>
 				);
 			case 'text':
@@ -89,80 +94,126 @@ export default function Controls( props ) {
 						help={ help || null }
 						key={ key }
 						label={ label || getLabel( attributeName ) }
-						onChange={ ( newValue ) => updateValue( getSanitizedAttributeValue( newValue, control.attributes ), attributeName ) }
+						onChange={ ( newValue ) =>
+							updateValue(
+								getSanitizedAttributeValue(
+									newValue,
+									control.attributes
+								),
+								attributeName
+							)
+						}
 						type={ inputType || 'text' }
-						value={ getSanitizedAttributeValue( props.attributes[ attributeName ], control.attributes ) }
+						value={ getSanitizedAttributeValue(
+							props.attributes[ attributeName ],
+							control.attributes
+						) }
 					/>
 				);
 		}
-	}
-	
+	};
+
 	const getLabel = ( attribute ) => {
-		if (  ! textareaAttributes[ attribute ].label ) {
+		if ( ! textareaAttributes[ attribute ].label ) {
 			return null;
 		}
-		
+
 		return (
 			<>
 				{ textareaAttributes[ attribute ].label }
-				{ textareaAttributes[ attribute ].description || textareaAttributes[ attribute ].examples
-					? <>
+				{ textareaAttributes[ attribute ].description ||
+				textareaAttributes[ attribute ].examples ? (
+					<>
 						<Tooltip
-							text={ __( 'Help/Examples for this attribute', 'form-block' ) }
+							text={ __(
+								'Help/Examples for this attribute',
+								'form-block'
+							) }
 						>
 							<Button
 								icon={ help }
 								onClick={ () => {
 									let newState = {};
 									newState[ attribute ] = true;
-									setIsHelpOpen( ( prevState ) => ( { ...prevState, ...newState } ) )
+									setIsHelpOpen( ( prevState ) => ( {
+										...prevState,
+										...newState,
+									} ) );
 								} }
 								variant="tertiary"
 							/>
 						</Tooltip>
-						{ isHelpOpen[ attribute ]
-							? <Modal
+						{ isHelpOpen[ attribute ] ? (
+							<Modal
 								className="form-block__help-modal"
 								onRequestClose={ () => {
 									let newState = {};
 									newState[ attribute ] = false;
-									setIsHelpOpen( ( prevState ) => ( { ...prevState, ...newState } ) )
+									setIsHelpOpen( ( prevState ) => ( {
+										...prevState,
+										...newState,
+									} ) );
 								} }
 								title={
 									/* translators: attribute name */
-									sprintf( __( 'Help for attribute %s', 'form-block' ), textareaAttributes[ attribute ].label )
+									sprintf(
+										__(
+											'Help for attribute %s',
+											'form-block'
+										),
+										textareaAttributes[ attribute ].label
+									)
 								}
 							>
 								{ getAttributeHelp( attribute ) }
 							</Modal>
-							: null
-						}
+						) : null }
 					</>
-					: null
-				}
+				) : null }
 			</>
 		);
-	}
-	
-	const getOptions = ( attribute ) => textareaAttributes[ attribute ].options || [];
-	
+	};
+
+	const getOptions = ( attribute ) =>
+		textareaAttributes[ attribute ].options || [];
+
 	const updateValue = ( newValue, attribute ) => {
 		let value = {};
 		value[ attribute ] = newValue;
-		
+
 		return setAttributes( value );
-	}
-	
+	};
+
 	return (
 		<InspectorControls>
 			<PanelBody>
 				<TextControl
-					help={ ! name ? __( 'The name is auto-generated from the label.', 'form-block' ) : __( 'The name has been set manually.', 'form-block' ) }
-					label={ _x( 'Name', 'HTML attribute name', 'form-block' )  }
-					onChange={ ( name ) => setAttributes( { name: stripSpecialChars( name, false ) } ) }
-					value={ name ? stripSpecialChars( name, false ) : stripSpecialChars( label ) }
+					help={
+						! name
+							? __(
+									'The name is auto-generated from the label.',
+									'form-block'
+							  )
+							: __(
+									'The name has been set manually.',
+									'form-block'
+							  )
+					}
+					label={ _x( 'Name', 'HTML attribute name', 'form-block' ) }
+					onChange={ ( name ) =>
+						setAttributes( {
+							name: stripSpecialChars( name, false ),
+						} )
+					}
+					value={
+						name
+							? stripSpecialChars( name, false )
+							: stripSpecialChars( label )
+					}
 				/>
-				{ controls.map( ( control, index ) => getControl( control, index ) ) }
+				{ controls.map( ( control, index ) =>
+					getControl( control, index )
+				) }
 			</PanelBody>
 		</InspectorControls>
 	);

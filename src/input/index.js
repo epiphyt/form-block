@@ -13,13 +13,10 @@ import meta from './block.json';
 
 import './editor.scss';
 
-registerBlockType(
-	meta,
-	{
-		attributes,
-		icon: input,
-		edit: InputEdit,
-		save: InputSave,
-		deprecated,
-	}
-);
+registerBlockType( meta, {
+	attributes,
+	icon: input,
+	edit: InputEdit,
+	save: InputSave,
+	deprecated,
+} );

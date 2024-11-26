@@ -17,30 +17,28 @@ import { form } from './icon';
 import Wizard from './wizard';
 
 export default function FormEdit( props ) {
-	const {
-		clientId,
-		name,
-		setAttributes,
-	} = props;
+	const { clientId, name, setAttributes } = props;
 	const blockProps = useBlockProps();
 	const hasInnerBlocks = useSelect(
 		( select ) =>
 			select( blockEditorStore ).getBlocks( clientId ).length > 0,
 		[ clientId ]
 	);
-	
+
 	if ( ! hasInnerBlocks ) {
-		return <Placeholder
-			clientId={ clientId }
-			name={ name }
-			setAttributes={ setAttributes }
-		/>;
+		return (
+			<Placeholder
+				clientId={ clientId }
+				name={ name }
+				setAttributes={ setAttributes }
+			/>
+		);
 	}
-	
+
 	return (
 		<div { ...blockProps }>
 			<Controls props={ props } />
-			
+
 			<InnerBlocks />
 		</div>
 	);
@@ -50,11 +48,9 @@ function Placeholder( { clientId, name, setAttributes } ) {
 	const [ isWizardOpen, setIsWizardOpen ] = useState( false );
 	const { defaultVariation, variations } = useSelect(
 		( select ) => {
-			const {
-				getBlockVariations,
-				getDefaultBlockVariation,
-			} = select( blocksStore );
-			
+			const { getBlockVariations, getDefaultBlockVariation } =
+				select( blocksStore );
+
 			return {
 				defaultVariation: getDefaultBlockVariation( name, 'block' ),
 				variations: getBlockVariations( name, 'block' ),
@@ -64,19 +60,22 @@ function Placeholder( { clientId, name, setAttributes } ) {
 	);
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 	const blockProps = useBlockProps();
-	
+
 	return (
 		<div { ...blockProps }>
 			<BlockVariationPicker
 				icon={ form }
-				instructions={ __( 'Create a form with the wizard or select one of the variations. You can adjust them at any time.', 'form-block' ) }
+				instructions={ __(
+					'Create a form with the wizard or select one of the variations. You can adjust them at any time.',
+					'form-block'
+				) }
 				label={ __( 'Form Type', 'form-block' ) }
 				variations={ variations }
 				onSelect={ ( nextVariation = defaultVariation ) => {
 					if ( nextVariation.attributes ) {
 						setAttributes( nextVariation.attributes );
 					}
-					
+
 					if ( nextVariation.innerBlocks ) {
 						replaceInnerBlocks(
 							clientId,
@@ -85,14 +84,13 @@ function Placeholder( { clientId, name, setAttributes } ) {
 							),
 							true
 						);
-					}
-					else if ( nextVariation.name === 'wizard' ) {
+					} else if ( nextVariation.name === 'wizard' ) {
 						setIsWizardOpen( true );
 					}
 				} }
 				allowSkip
 			/>
-			
+
 			<Wizard
 				clientId={ clientId }
 				isWizardOpen={ isWizardOpen }
