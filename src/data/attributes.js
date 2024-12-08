@@ -119,7 +119,14 @@ export const getAttributeHelp = ( attribute ) => {
 						mdnAttributeLinkBase + '#' + attribute.toLowerCase()
 					}
 				>
-					{ __( 'More information', 'form-block' ) }
+					{ sprintf(
+						/* translators: attribute name */
+						__(
+							'More information about attribute %s',
+							'form-block'
+						),
+						attributes[ attribute ].label
+					) }
 				</ExternalLink>
 			) : null }
 		</>
