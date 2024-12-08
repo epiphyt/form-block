@@ -7,15 +7,7 @@
 @import '~@wordpress/base-styles/z-index';
 @import '~@wordpress/base-styles/default-custom-properties';
 
-[data-type="form-block/select"] {
-	.components-base-control__field {
-		margin-bottom: 0;
-	}
-	
-	.components-button.is-small {
-		height: 30px; // identical height to select
-	}
-	
+[data-type="form-block/textarea"] {
 	.editor-styles-wrapper & {
 		margin-bottom: $grid-unit-20 !important;
 		margin-top: $grid-unit-20 !important;

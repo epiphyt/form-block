@@ -10,6 +10,8 @@ import { textarea } from './icon';
 import TextareaSave from './save';
 import meta from './block.json';
 
+import './editor.scss';
+
 registerBlockType( meta, {
 	icon: textarea,
 	edit: TextareaEdit,

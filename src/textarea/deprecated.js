@@ -37,6 +37,13 @@ const v1 = {
 			source: 'attribute',
 			type: 'boolean',
 		},
+		spellCheck: {
+			attribute: 'spellcheck',
+			default: true,
+			selector: 'input',
+			source: 'attribute',
+			type: 'boolean',
+		},
 		value: {
 			selector: 'textarea',
 			source: 'text',
@@ -138,6 +145,13 @@ const v2 = {
 		required: {
 			attribute: 'required',
 			selector: 'textarea',
+			source: 'attribute',
+			type: 'boolean',
+		},
+		spellCheck: {
+			attribute: 'spellcheck',
+			default: true,
+			selector: 'input',
 			source: 'attribute',
 			type: 'boolean',
 		},
