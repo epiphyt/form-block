@@ -1,0 +1,35 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "form-block/fieldset",
+	"title": "Fieldset",
+	"category": "formatting",
+	"description": "A fieldset to group fields with a context.",
+	"keywords": [ "group", "field group", "container" ],
+	"textdomain": "form-block",
+	"ancestor": [ "form-block/form" ],
+	"attributes": {
+		"legend": {
+			"selector": ".form-block__legend-content",
+			"source": "html",
+			"type": "string"
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"color": {
+			"gradients": true
+		},
+		"html": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": [ "file:./index.css" ]
+}

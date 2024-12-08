@@ -4,6 +4,7 @@ namespace epiphyt\Form_Block;
 use DOMDocument;
 use epiphyt\Form_Block\modules\Custom_Date;
 use epiphyt\Form_Block\block_data\Data as Block_Data_Data;
+use epiphyt\Form_Block\blocks\Fieldset;
 use epiphyt\Form_Block\blocks\Form;
 use epiphyt\Form_Block\blocks\Input;
 use epiphyt\Form_Block\blocks\Select;
@@ -49,6 +50,7 @@ final class Form_Block {
 		Block_Data_Data::get_instance()->init();
 		// initialize before any block
 		Theme_Styles::get_instance()->init();
+		Fieldset::init();
 		Form::get_instance()->init();
 		Form_Data_Data::get_instance()->init();
 		Input::get_instance()->init();
