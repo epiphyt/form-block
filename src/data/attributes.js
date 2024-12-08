@@ -6,6 +6,14 @@ const mdnAttributeLinkBase =
 	'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input';
 
 export const attributes = applyFilters( 'formBlock.data.attributes', {
+	autoComplete: {
+		controlType: 'autocomplete',
+		description: __(
+			'A value to tell browsers how to autofill the form field.',
+			'form-block'
+		),
+		label: _x( 'Autocomplete', 'HTML attribute name', 'form-block' ),
+	},
 	checked: {
 		controlType: 'toggle',
 		description: __(
@@ -93,7 +101,11 @@ export const getAttributeHelp = ( attribute ) => {
 				</>
 			) : null }
 			{ ! attributes[ attribute ].hideLink ? (
-				<ExternalLink href={ mdnAttributeLinkBase + '#' + attribute }>
+				<ExternalLink
+					href={
+						mdnAttributeLinkBase + '#' + attribute.toLowerCase()
+					}
+				>
 					{ __( 'More information', 'form-block' ) }
 				</ExternalLink>
 			) : null }

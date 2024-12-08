@@ -1,6 +1,12 @@
 import { getTypes } from './html-data';
 
 const attributes = {
+	autoComplete: {
+		attribute: 'autocomplete',
+		selector: 'input',
+		source: 'attribute',
+		type: 'string',
+	},
 	checked: {
 		attribute: 'checked',
 		selector: 'input',

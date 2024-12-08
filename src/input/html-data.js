@@ -30,6 +30,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'disabled',
 			'label',
 		],
@@ -39,6 +40,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'disabled',
 			'label',
 			'max',
@@ -53,6 +55,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'customDate',
 			'disabled',
 			'label',
@@ -65,6 +68,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'disabled',
 			'label',
 			'max',
@@ -79,6 +83,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'customDate',
 			'disabled',
 			'label',
@@ -90,6 +95,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	email: {
 		allowedAttributes: [
 			'autoComplete',
+			'autoCompleteSection',
 			'disabled',
 			'isReplyTo',
 			'label',
@@ -108,6 +114,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'accept',
 			'autoComplete',
+			'autoCompleteSection',
 			'capture',
 			'disabled',
 			'dropzone',
@@ -128,6 +135,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'ariaDescription',
 			'alt',
 			'autoComplete',
+			'autoCompleteSection',
 			'disabled',
 			'height',
 			'label',
@@ -142,6 +150,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'disabled',
 			'label',
 			'max',
@@ -156,6 +165,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'customDate',
 			'disabled',
 			'label',
@@ -167,6 +177,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	number: {
 		allowedAttributes: [
 			'autoComplete',
+			'autoCompleteSection',
 			'disabled',
 			'label',
 			'max',
@@ -182,6 +193,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'disabled',
 			'label',
 			'maxLength',
@@ -208,6 +220,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'disabled',
 			'label',
 			'max',
@@ -224,6 +237,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'dirname',
 			'disabled',
 			'label',
@@ -244,6 +258,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	tel: {
 		allowedAttributes: [
 			'autoComplete',
+			'autoCompleteSection',
 			'disabled',
 			'label',
 			'maxLength',
@@ -259,6 +274,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	text: {
 		allowedAttributes: [
 			'autoComplete',
+			'autoCompleteSection',
 			'dirname',
 			'disabled',
 			'label',
@@ -276,6 +292,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'disabled',
 			'label',
 			'max',
@@ -290,6 +307,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'customDate',
 			'disabled',
 			'label',
@@ -302,6 +320,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'disabled',
 			'label',
 			'maxLength',
@@ -318,6 +337,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'disabled',
 			'label',
 			'max',
@@ -332,6 +352,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		allowedAttributes: [
 			'ariaDescription',
 			'autoComplete',
+			'autoCompleteSection',
 			'customDate',
 			'disabled',
 			'label',

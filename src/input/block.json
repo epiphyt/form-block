@@ -9,6 +9,15 @@
 	"textdomain": "form-block",
 	"ancestor": [ "form-block/form" ],
 	"attributes": {
+		"autoComplete": {
+			"attribute": "autocomplete",
+			"selector": "input",
+			"source": "attribute",
+			"type": "string"
+		},
+		"autoCompleteSection": {
+			"type": "string"
+		},
 		"checked": {
 			"attribute": "checked",
 			"selector": "input",

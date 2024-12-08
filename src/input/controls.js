@@ -1,22 +1,16 @@
 import { InspectorControls } from '@wordpress/block-editor';
 import {
-	Button,
-	Modal,
 	PanelBody,
 	SelectControl,
 	TextControl,
 	ToggleControl,
-	Tooltip,
 } from '@wordpress/components';
-import { useState } from '@wordpress/element';
 import { addFilter, applyFilters } from '@wordpress/hooks';
-import { __, _x, sprintf } from '@wordpress/i18n';
-import { help } from '@wordpress/icons';
+import { __, _x } from '@wordpress/i18n';
 
-import {
-	attributes as inputAttributes,
-	getAttributeHelp,
-} from '../data/attributes';
+import { getLabel } from '../controls/label';
+import { attributes as inputAttributes } from '../data/attributes';
+import Autocomplete from '../data/autocomplete/control';
 import { getSanitizedAttributeValue, stripSpecialChars } from '../data/util';
 import { getTypes, isAllowedAttribute, types } from './html-data';
 import CustomDateControls from './modules/custom-date/controls';
@@ -26,7 +20,6 @@ export default function Controls( props ) {
 		attributes: { name, label, type },
 		setAttributes,
 	} = props;
-	const [ isHelpOpen, setIsHelpOpen ] = useState( [] );
 	const defaultControlTypes = [
 		{
 			attributeName: 'isReplyTo',
@@ -93,6 +86,8 @@ export default function Controls( props ) {
 		);
 
 		switch ( inputAttributes[ attribute ].controlType ) {
+			case 'autocomplete':
+				return <Autocomplete key={ key } { ...props } />;
 			case 'custom-date':
 				return (
 					<CustomDateControls
@@ -181,67 +176,6 @@ export default function Controls( props ) {
 					/>
 				);
 		}
-	};
-
-	const getLabel = ( attribute ) => {
-		if ( ! inputAttributes[ attribute ].label ) {
-			return null;
-		}
-
-		return (
-			<>
-				{ inputAttributes[ attribute ].label }
-				{ inputAttributes[ attribute ].description ||
-				inputAttributes[ attribute ].examples ? (
-					<>
-						<Tooltip
-							text={ __(
-								'Help/Examples for this attribute',
-								'form-block'
-							) }
-						>
-							<Button
-								icon={ help }
-								onClick={ () => {
-									let newState = {};
-									newState[ attribute ] = true;
-									setIsHelpOpen( ( prevState ) => ( {
-										...prevState,
-										...newState,
-									} ) );
-								} }
-								variant="tertiary"
-							/>
-						</Tooltip>
-						{ isHelpOpen[ attribute ] ? (
-							<Modal
-								className="form-block__help-modal"
-								onRequestClose={ () => {
-									let newState = {};
-									newState[ attribute ] = false;
-									setIsHelpOpen( ( prevState ) => ( {
-										...prevState,
-										...newState,
-									} ) );
-								} }
-								title={
-									/* translators: attribute name */
-									sprintf(
-										__(
-											'Help for attribute %s',
-											'form-block'
-										),
-										inputAttributes[ attribute ].label
-									)
-								}
-							>
-								{ getAttributeHelp( attribute ) }
-							</Modal>
-						) : null }
-					</>
-				) : null }
-			</>
-		);
 	};
 
 	const getOptions = ( attribute ) =>

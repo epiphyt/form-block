@@ -16,6 +16,7 @@ import {
 	attributes as selectAttributes,
 	getAttributeHelp,
 } from '../data/attributes';
+import Autocomplete from '../data/autocomplete/control';
 import { getSanitizedAttributeValue, stripSpecialChars } from '../data/util';
 
 export default function Controls( props ) {
@@ -27,6 +28,12 @@ export default function Controls( props ) {
 	const controls = applyFilters(
 		'formBlock.select.controlTypes',
 		[
+			{
+				attributeName: 'autoComplete',
+				attributes: {
+					type: 'autocomplete',
+				},
+			},
 			{
 				attributeName: 'disabled',
 				attributes: {
@@ -44,6 +51,8 @@ export default function Controls( props ) {
 		} = control;
 
 		switch ( type ) {
+			case 'autocomplete':
+				return <Autocomplete key={ key } { ...props } />;
 			case 'toggle':
 				return (
 					<ToggleControl

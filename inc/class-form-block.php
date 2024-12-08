@@ -137,6 +137,10 @@ final class Form_Block {
 			$element->setAttribute( 'class', trim( $element->getAttribute( 'class' ) . ' optional' ) );
 		}
 		
+		if ( $element->hasAttribute( 'autocomplete' ) && ! empty( $block['attrs']['autoCompleteSection'] ) ) {
+			$element->setAttribute( 'autocomplete', \esc_attr( $block['attrs']['autoCompleteSection'] . ' ' . $element->getAttribute( 'autocomplete' ) ) );
+		}
+		
 		if ( $element->hasAttribute( 'capture' ) && empty( $element->getAttribute( 'capture' ) ) ) {
 			$element->removeAttribute( 'capture' );
 		}
