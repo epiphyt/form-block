@@ -47,6 +47,12 @@ export default function Controls( props ) {
 					type: 'text',
 				},
 			},
+			{
+				attributeName: 'spellCheck',
+				attributes: {
+					type: 'toggle',
+				},
+			},
 		],
 		props.attributes
 	);

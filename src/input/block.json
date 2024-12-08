@@ -68,6 +68,13 @@
 			"source": "attribute",
 			"type": "boolean"
 		},
+		"spellCheck": {
+			"attribute": "spellcheck",
+			"default": true,
+			"selector": "input",
+			"source": "attribute",
+			"type": "boolean"
+		},
 		"type": {
 			"attribute": "type",
 			"default": "text",

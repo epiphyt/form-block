@@ -65,6 +65,13 @@ const attributes = {
 		source: 'attribute',
 		type: 'boolean',
 	},
+	spellCheck: {
+		attribute: 'spellcheck',
+		default: true,
+		selector: 'input',
+		source: 'attribute',
+		type: 'string',
+	},
 	type: {
 		attribute: 'type',
 		default: 'text',

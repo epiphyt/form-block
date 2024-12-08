@@ -40,6 +40,12 @@ export default function Controls( props ) {
 					type: 'toggle',
 				},
 			},
+			{
+				attributeName: 'spellCheck',
+				attributes: {
+					type: 'toggle',
+				},
+			},
 		],
 		props.attributes
 	);

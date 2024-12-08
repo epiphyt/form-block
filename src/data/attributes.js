@@ -67,6 +67,18 @@ export const attributes = applyFilters( 'formBlock.data.attributes', {
 		),
 		label: _x( 'Readonly', 'HTML attribute name', 'form-block' ),
 	},
+	spellCheck: {
+		controlType: 'toggle',
+		description: __(
+			'Whether the field should be spell checked by the browser.',
+			'form-block'
+		),
+		label: _x( 'Spellcheck', 'HTML attribute name', 'form-block' ),
+		linkOverride: __(
+			'https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck',
+			'form-block'
+		),
+	},
 	value: {
 		controlType: 'text',
 		description: __( 'The value of the input.', 'form-block' ),
@@ -103,6 +115,7 @@ export const getAttributeHelp = ( attribute ) => {
 			{ ! attributes[ attribute ].hideLink ? (
 				<ExternalLink
 					href={
+						attributes[ attribute ].linkOverride ||
 						mdnAttributeLinkBase + '#' + attribute.toLowerCase()
 					}
 				>

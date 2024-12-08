@@ -22,7 +22,7 @@ const v1 = {
 		},
 		options: {
 			default: [
-				{ label: __( '- Please select -', 'form-block' ), value: '' }
+				{ label: __( '- Please select -', 'form-block' ), value: '' },
 			],
 			query: {
 				label: {
@@ -63,9 +63,11 @@ const v1 = {
 				options,
 				required,
 				size,
-			}
+			},
 		} = props;
-		const blockProps = useBlockProps.save( { className: 'form-block__element' } );
+		const blockProps = useBlockProps.save( {
+			className: 'form-block__element',
+		} );
 		const elementProps = {
 			autoComplete,
 			disabled,
@@ -73,23 +75,18 @@ const v1 = {
 			name,
 			required,
 			size,
-		}
-		
+		};
+
 		return (
 			<div { ...blockProps }>
 				<select { ...elementProps }>
 					{ options.map( ( option, index ) => (
-						<option
-							key={ index }
-							label={ option.label }
-						>
+						<option key={ index } label={ option.label }>
 							{ option.value }
 						</option>
 					) ) }
 				</select>
-				<label
-					className="form-block__label is-textarea-label"
-				>
+				<label className="form-block__label is-textarea-label">
 					<RichText.Content
 						className="form-block__label-content"
 						tagName="span"
@@ -99,7 +96,125 @@ const v1 = {
 				</label>
 			</div>
 		);
-	}
+	},
 };
 
-export default [ v1 ];
+const v2 = {
+	attributes: {
+		autoComplete: {
+			attribute: 'autocomplete',
+			selector: 'input',
+			source: 'attribute',
+			type: 'string',
+		},
+		autoCompleteSection: {
+			type: 'string',
+		},
+		disabled: {
+			attribute: 'disabled',
+			selector: 'select',
+			source: 'attribute',
+			type: 'boolean',
+		},
+		label: {
+			selector: '.form-block__label-content',
+			source: 'html',
+			type: 'string',
+		},
+		name: {
+			attribute: 'name',
+			selector: 'select',
+			source: 'attribute',
+			type: 'string',
+		},
+		options: {
+			default: [
+				{ label: __( '- Please select -', 'form-block' ), value: '' },
+			],
+			query: {
+				label: {
+					attribute: 'label',
+					source: 'attribute',
+					type: 'string',
+				},
+				value: {
+					source: 'text',
+					type: 'string',
+				},
+			},
+			selector: 'option',
+			source: 'query',
+			type: 'array',
+		},
+		required: {
+			attribute: 'required',
+			selector: 'select',
+			source: 'attribute',
+			type: 'boolean',
+		},
+		value: {
+			attribute: 'value',
+			selector: 'select',
+			source: 'attribute',
+			type: 'string',
+		},
+	},
+	migrate( attributes ) {
+		attributes.spellCheck = true;
+
+		return attributes;
+	},
+	save( props ) {
+		const {
+			attributes: {
+				autoComplete,
+				disabled,
+				label,
+				multiple,
+				name,
+				options,
+				required,
+				size,
+			},
+		} = props;
+		const blockProps = useBlockProps.save( {
+			className: 'form-block__element',
+		} );
+		const elementProps = {
+			autoComplete,
+			disabled,
+			multiple,
+			name,
+			required,
+			size,
+		};
+
+		return (
+			<div { ...blockProps }>
+				<select { ...elementProps }>
+					{ options.map( ( option, index ) => (
+						<option key={ index } label={ option.label || false }>
+							{ option.value }
+						</option>
+					) ) }
+				</select>
+				<label className="form-block__label is-textarea-label">
+					<RichText.Content
+						className="form-block__label-content"
+						tagName="span"
+						value={ label }
+					/>
+					{ required ? (
+						<span className="is-required" aria-hidden="true">
+							*
+						</span>
+					) : (
+						''
+					) }
+				</label>
+			</div>
+		);
+	},
+};
+
+export default [ v2, v1 ];

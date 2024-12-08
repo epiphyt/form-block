@@ -45,6 +45,10 @@ export default function Controls( props ) {
 			attributeName: 'checked',
 			attributes: {},
 		},
+		{
+			attributeName: 'spellCheck',
+			attributes: {},
+		},
 	];
 
 	if (
