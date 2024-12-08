@@ -179,7 +179,6 @@ const v2 = {
 				readOnly,
 				required,
 				rows,
-				spellCheck,
 				size,
 				value,
 			},
@@ -197,7 +196,6 @@ const v2 = {
 			readOnly,
 			required,
 			rows,
-			spellCheck,
 			size,
 			value,
 		};
