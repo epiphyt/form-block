@@ -59,6 +59,12 @@ export default function Autocomplete( props ) {
 }
 
 const addControlTypes = ( controlTypes ) => {
+	if (
+		controlTypes.some( ( item ) => item.attributeName === 'autoComplete' )
+	) {
+		return controlTypes;
+	}
+
 	controlTypes.push( {
 		attributeName: 'autoComplete',
 		attributes: {},
