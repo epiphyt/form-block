@@ -11,6 +11,9 @@
 		"formId": {
 			"type": "string"
 		},
+		"label": {
+			"type": "string"
+		},
 		"subject": {
 			"type": "string"
 		}

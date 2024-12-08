@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 
 export default function Controls( { props } ) {
 	const {
-		attributes: { subject },
+		attributes: { label, subject },
 		setAttributes,
 	} = props;
 
@@ -23,6 +23,17 @@ export default function Controls( { props } ) {
 					onChange={ ( subject ) => setAttributes( { subject } ) }
 					type="text"
 					value={ subject || '' }
+				/>
+
+				<TextControl
+					help={ __(
+						'Give your form a label to tell users what type of form this is.',
+						'form-block'
+					) }
+					label={ __( 'Label', 'form-block' ) }
+					onChange={ ( label ) => setAttributes( { label } ) }
+					type="text"
+					value={ label || '' }
 				/>
 
 				{ additionalPrimaryPanelControls }

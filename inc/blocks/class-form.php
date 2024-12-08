@@ -27,6 +27,7 @@ final class Form {
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_action' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_form_id_input' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_honeypot' ], 10, 2 );
+		\add_filter( 'render_block_form-block/form', [ $this, 'add_label' ], 20, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_maximum_upload_sizes' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_method' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_required_notice' ], 10, 2 );
@@ -110,6 +111,39 @@ final class Form {
 		$honeypot = apply_filters( 'form_block_honeypot_code', $honeypot, $block_content, $block );
 		
 		return str_replace( '</form>', $honeypot . '</form>', $block_content );
+	}
+	
+	/**
+	 * Add the form label.
+	 * 
+	 * @param	string	$block_content Block content
+	 * @param	array	$block Block attributes
+	 * @return	string Updated block content
+	 */
+	public function add_label( string $block_content, array $block ): string {
+		if ( empty( $block['attrs']['label'] ) || empty( $block['attrs']['formId'] ) ) {
+			return $block_content;
+		}
+		
+		$label_id = $block['attrs']['formId'] . '-label';
+		$block_content = \str_replace( '<form', '<form aria-labelledby="' . $label_id . '"', $block_content );
+		
+		/**
+		 * Filter the form label.
+		 * 
+		 * @since	1.5.0
+		 * 
+		 * @param	string	$label Form label
+		 * @param	string	$block_content Block content
+		 * @param	array	$block Block attributes
+		 */
+		$label = (string) \apply_filters( 'form_block_form_label', (string) $block['attrs']['label'], $block_content, $block );
+		
+		return \str_replace(
+			'enctype="multipart/form-data" novalidate>',
+			'enctype="multipart/form-data" novalidate>' . \PHP_EOL . '<span class="screen-reader-text" id="' . \esc_attr( $label_id ) . '">' . \esc_html( $label ) . '</span>',
+			$block_content
+		);
 	}
 	
 	/**
