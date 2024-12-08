@@ -254,18 +254,22 @@ export default function Wizard( props ) {
 
 		if ( blocks.length ) {
 			if ( includeConsentCheckbox ) {
-				blocks.push( [
-					'form-block/input',
-					{
-						label: __(
-							'I agree that my data will be stored and processed for the purpose of contacting me. You can find more information in our privacy policy.',
-							'form-block'
-						),
-						name: 'data-processing',
-						required: true,
-						type: 'checkbox',
-					},
-				] );
+				const consentCheckboxBlock = applyFilters(
+					'formBlock.wizard.consentCheckboxBlock',
+					[
+						'form-block/input',
+						{
+							label: __(
+								'I agree that my data will be stored and processed for the purpose of contacting me. You can find more information in our privacy policy.',
+								'form-block'
+							),
+							name: 'data-processing',
+							required: true,
+							type: 'checkbox',
+						},
+					]
+				);
+				blocks.push( consentCheckboxBlock );
 			}
 
 			blocks.push( [
