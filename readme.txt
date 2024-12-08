@@ -96,11 +96,6 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
-TODO:
-- Show fieldset fields combined in email
-- Spellcheck attribute for radio buttons and checkboxes
-- Changing input type breaks block
-
 = 1.4.2 =
 * Fixed: Validation issues for separated date fields
 * Fixed: Line breaks in labels are no more removed in the email
