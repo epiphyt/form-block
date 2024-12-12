@@ -65,7 +65,14 @@ export default function Controls( props ) {
 
 		switch ( type ) {
 			case 'autocomplete':
-				return <Autocomplete key={ key } { ...props } />;
+				return (
+					<Autocomplete
+						isHelpOpen={ isHelpOpen }
+						key={ key }
+						setIsHelpOpen={ setIsHelpOpen }
+						{ ...props }
+					/>
+				);
 			case 'select':
 				return (
 					<SelectControl

@@ -1,5 +1,4 @@
 import { Button, Modal, Tooltip } from '@wordpress/components';
-import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { help } from '@wordpress/icons';
 
@@ -8,9 +7,7 @@ import {
 	getAttributeHelp,
 } from '../data/attributes';
 
-export const getLabel = ( attribute ) => {
-	const [ isHelpOpen, setIsHelpOpen ] = useState( [] );
-
+export const getLabel = ( attribute, isHelpOpen, setIsHelpOpen ) => {
 	if ( ! inputAttributes[ attribute ].label ) {
 		return null;
 	}

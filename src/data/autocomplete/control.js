@@ -10,7 +10,9 @@ import { getLabel } from '../../controls/label';
 export default function Autocomplete( props ) {
 	const {
 		attributes: { label, name },
+		isHelpOpen,
 		setAttributes,
+		setIsHelpOpen,
 	} = props;
 	const autoComplete = getSanitizedAttributeValue(
 		props.attributes.autoComplete,
@@ -32,7 +34,7 @@ export default function Autocomplete( props ) {
 		<>
 			<SelectControl
 				className="form-block__block-control"
-				label={ getLabel( 'autoComplete' ) }
+				label={ getLabel( 'autoComplete', isHelpOpen, setIsHelpOpen ) }
 				onChange={ ( autoComplete ) =>
 					setAttributes( { autoComplete } )
 				}

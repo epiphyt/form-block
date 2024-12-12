@@ -5,6 +5,7 @@ import {
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
+import { useState } from '@wordpress/element';
 import { addFilter, applyFilters } from '@wordpress/hooks';
 import { __, _x } from '@wordpress/i18n';
 
@@ -50,6 +51,7 @@ export default function Controls( props ) {
 			attributes: {},
 		},
 	];
+	const [ isHelpOpen, setIsHelpOpen ] = useState( {} );
 
 	if (
 		type === 'checkbox' ||
@@ -91,7 +93,14 @@ export default function Controls( props ) {
 
 		switch ( inputAttributes[ attribute ].controlType ) {
 			case 'autocomplete':
-				return <Autocomplete key={ key } { ...props } />;
+				return (
+					<Autocomplete
+						isHelpOpen={ isHelpOpen }
+						key={ key }
+						setIsHelpOpen={ setIsHelpOpen }
+						{ ...props }
+					/>
+				);
 			case 'custom-date':
 				return (
 					<CustomDateControls
@@ -106,7 +115,11 @@ export default function Controls( props ) {
 					<TextControl
 						className="form-block__block-control"
 						key={ key }
-						label={ getLabel( attribute ) }
+						label={ getLabel(
+							attribute,
+							isHelpOpen,
+							setIsHelpOpen
+						) }
 						onChange={ ( newValue ) =>
 							updateValue(
 								getSanitizedAttributeValue(
@@ -128,7 +141,11 @@ export default function Controls( props ) {
 					<SelectControl
 						className="form-block__block-control"
 						key={ key }
-						label={ getLabel( attribute ) }
+						label={ getLabel(
+							attribute,
+							isHelpOpen,
+							setIsHelpOpen
+						) }
 						onChange={ ( newValue ) =>
 							updateValue(
 								getSanitizedAttributeValue(
@@ -151,7 +168,11 @@ export default function Controls( props ) {
 						checked={ !! props.attributes[ attribute ] }
 						className="form-block__block-control"
 						key={ key }
-						label={ getLabel( attribute ) }
+						label={ getLabel(
+							attribute,
+							isHelpOpen,
+							setIsHelpOpen
+						) }
 						onChange={ ( newValue ) =>
 							updateValue( newValue, attribute )
 						}
@@ -163,7 +184,11 @@ export default function Controls( props ) {
 					<TextControl
 						className="form-block__block-control"
 						key={ key }
-						label={ getLabel( attribute ) }
+						label={ getLabel(
+							attribute,
+							isHelpOpen,
+							setIsHelpOpen
+						) }
 						onChange={ ( newValue ) =>
 							updateValue(
 								getSanitizedAttributeValue(
