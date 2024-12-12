@@ -111,8 +111,8 @@ final class Validation {
 				case 'disabled':
 				case 'readonly':
 					if (
-						! empty( $attributes['value'] ) && $attributes['value'] !== $value
-						|| empty( $attributes['value'] ) && ! empty( $value )
+						( ! empty( $attributes['value'] ) && $attributes['value'] !== $value )
+						|| ( empty( $attributes['value'] ) && ! empty( $value ) )
 					) {
 						$errors[] = [
 							'message' => __( 'The value must not change.', 'form-block' ),
@@ -258,15 +258,17 @@ final class Validation {
 		foreach ( $required_fields as $field_name ) {
 			// check if a field with this identifier is empty
 			// and if it's not a file upload
+			// phpcs:disable WordPress.Security.NonceVerification.Missing
 			if (
 				(
 					empty( $_FILES[ $field_name ]['tmp_name'] )
-					|| is_array( $_FILES[ $field_name ]['tmp_name'] ) && empty( array_filter( $_FILES[ $field_name ]['tmp_name'] ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+					|| ( is_array( $_FILES[ $field_name ]['tmp_name'] ) && empty( array_filter( $_FILES[ $field_name ]['tmp_name'] ) ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 				)
 				&& empty( $validated[ $field_name ] )
 			) {
 				$missing_fields[] = Data::get_instance()->get_field_title_by_name( $field_name, $form_data['fields'] );
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 		}
 		
 		// output error if there are missing fields
@@ -312,7 +314,7 @@ final class Validation {
 		$form_data = get_option( 'form_block_data_' . Data::get_instance()->get_form_id(), [] );
 		$validated = [];
 		
-		if ( empty( $_FILES ) ) {
+		if ( empty( $_FILES ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			return $validated;
 		}
 		
@@ -331,7 +333,7 @@ final class Validation {
 			}
 		}
 		
-		foreach ( $_FILES as $field_name => $files ) {
+		foreach ( $_FILES as $field_name => $files ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$this->by_allowed_names( $field_name, $form_data );
 			
 			if ( is_array( $files['name'] ) ) {
@@ -390,7 +392,7 @@ final class Validation {
 		 * @param	array	$form_data Current form data
 		 * @param	array	$_FILES PHP files array
 		 */
-		$validated = apply_filters( 'form_block_files_validation', $validated, $form_data, $_FILES );
+		$validated = apply_filters( 'form_block_files_validation', $validated, $form_data, $_FILES ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		
 		return $validated;
 	}
