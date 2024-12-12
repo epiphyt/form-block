@@ -8,6 +8,13 @@
 @import '~@wordpress/base-styles/default-custom-properties';
 
 [data-type="form-block/input"] {
+	&.is-type-checkbox,
+	&.is-type-radio {
+		.components-base-control__field {
+			margin-bottom: 0;
+		}
+	}
+	
 	.editor-styles-wrapper & {
 		margin-bottom: $grid-unit-20 !important;
 		margin-top: $grid-unit-20 !important;
