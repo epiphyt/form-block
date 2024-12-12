@@ -136,6 +136,25 @@ final class Validation {
 	}
 	
 	/**
+	 * Get all allowed field names of a field and its sub fields.
+	 * 
+	 * @param	mixed[]	$field Field data
+	 * @return	string[] List of allowed field names
+	 */
+	private static function get_allowed_field_names( array $field ): array {
+		$field_name = Form_Block::get_instance()->get_block_name_attribute( $field );
+		$allowed_names[] = \preg_replace( '/-\d+$/', '', $field_name );
+		
+		if ( ! empty( $field['fields'] ) ) {
+			foreach ( $field['fields'] as $sub_field ) {
+				$allowed_names = \array_merge( $allowed_names, self::get_allowed_field_names( $sub_field ) );
+			}
+		}
+		
+		return $allowed_names;
+	}
+	
+	/**
 	 * Get all allowed name attributes without their unique -\d+ part.
 	 *
 	 * @param	array	$form_data Current form data to validate
@@ -145,13 +164,14 @@ final class Validation {
 		Form_Block::get_instance()->reset_block_name_attributes();
 		
 		$allowed_names = $this->system_field_names;
+		$fields = $form_data['fields'];
 		
-		foreach ( $form_data['fields'] as $field ) {
-			$field_name = Form_Block::get_instance()->get_block_name_attribute( $field );
-			$allowed_names[] = preg_replace( '/-\d+$/', '', $field_name );
+		
+		foreach ( $fields as $field ) {
+			$allowed_names = \array_merge( $allowed_names, self::get_allowed_field_names( $field ) );
 		}
 		
-		return $allowed_names;
+		return \array_unique( $allowed_names );
 	}
 	
 	/**

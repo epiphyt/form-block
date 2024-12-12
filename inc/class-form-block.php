@@ -223,7 +223,7 @@ final class Form_Block {
 		}
 		
 		if ( ! empty( $block['attrs']['label'] ) ) {
-			return $this->get_unique_block_name_attribute( $this->get_name_by_label( $block['attrs']['label'] ), $uniqueness );
+			return $this->get_unique_block_name_attribute( Form_Data_Data::get_field_name_by_label( $block['attrs']['label'] ), $uniqueness );
 		}
 		
 		return $this->get_unique_block_name_attribute( 'unknown', $uniqueness );
@@ -278,45 +278,6 @@ final class Form_Block {
 		}
 		
 		return min( wp_max_upload_size(), $maximum_upload_size );
-	}
-	
-	/**
-	 * Get a valid name by its label.
-	 *
-	 * @param	string	$label The original label
-	 * @param	bool	$to_lowercase Whether the name should be lowercase
-	 * @return	string The valid name
-	 */
-	private function get_name_by_label( string $label, bool $to_lowercase = true ): string {
-		if ( $to_lowercase ) {
-			$label = mb_strtolower( $label );
-		}
-		
-		/**
-		 * Filter the label before generating a name out of it.
-		 * 
-		 * @param	string	$label The original label
-		 * @param	bool	$to_lowercase Whether the name should be lowercase
-		 * @return	string The updated label
-		 */
-		$label = apply_filters( 'form_block_pre_get_name_by_label', $label, $to_lowercase );
-		
-		$regex = '/[^A-Za-z0-9\-_\[\]]/';
-		$replace = [ 'ae', 'oe', 'ue', 'ss', '-' ];
-		$search = [ 'ä', 'ö', 'ü', 'ß', ' ' ];
-		$name = preg_replace( $regex, '', str_replace( $search, $replace, $label ) );
-		
-		/**
-		 * Filter the generated name from a label.
-		 * 
-		 * @param	string	$name The generated name
-		 * @param	string	$label The original label
-		 * @param	bool	$to_lowercase Whether the name should be lowercase
-		 * @return	string The updated name
-		 */
-		$name = apply_filters( 'form_block_get_name_by_label', $name, $label, $to_lowercase );
-		
-		return $name;
 	}
 	
 	/**

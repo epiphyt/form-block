@@ -31,16 +31,17 @@ final class Data {
 	 * @param	array	$blocks Blocks from parsed_blocks()
 	 * @param	array	$data Current form data
 	 * @param	string	$form_id The form ID
+	 * @param	string	$context Current context
 	 * @return	array Form data
 	 */
-	public function get( array $blocks, array $data = [], string $form_id = '' ): array {
+	public function get( array $blocks, array $data = [], string $form_id = '', string $context = '' ): array {
 		foreach ( $blocks as $block ) {
 			// don't process empty blocks
 			if ( $block['blockName'] === null ) {
 				continue;
 			}
 			
-			// reusable blocks need to be get first
+			// reusable blocks need to be processed first
 			if ( $block['blockName'] === 'core/block' && ! empty( $block['attrs']['ref'] ) ) {
 				$reusable_post = get_post( $block['attrs']['ref'] );
 				
@@ -61,9 +62,18 @@ final class Data {
 					continue;
 				}
 				
+				if ( empty( $context ) ) {
+					$context = \str_replace( 'form-block/', '', $block['blockName'] );
+				}
+				
 				$field_data = [];
 				
 				switch ( $block['blockName'] ) {
+					case 'form-block/fieldset':
+						$field_data = $this->get_attributes( $block['innerHTML'], 'fieldset' );
+						$field_data['block_type'] = 'fieldset';
+						$field_data['fields'] = $this->get( $block['innerBlocks'], [], $form_id, $context );
+						break;
 					case 'form-block/form':
 						if ( empty( $block['attrs']['formId'] ) ) {
 							break;
@@ -116,14 +126,23 @@ final class Data {
 				$field_data = apply_filters( 'form_block_get_form_data', $field_data, $block, $data, $form_id );
 				
 				if ( ! empty( $field_data ) ) {
-					$data[ $form_id ]['fields'][] = $field_data;
+					if ( $context === 'fieldset' && $block['blockName'] !== 'form-block/' . $context ) {
+						$data[] = $field_data;
+					}
+					else {
+						$data[ $form_id ]['fields'][] = $field_data;
+					}
 					
 					unset( $field_data );
 				}
 			}
-				
-			if ( ! empty( $block['innerBlocks'] ) ) {
+			
+			if ( ! empty( $block['innerBlocks'] ) && $context !== 'fieldset' ) {
 				$data = array_merge( $data, $this->get( $block['innerBlocks'], $data, $form_id ) );
+			}
+			
+			if ( $context && $block['blockName'] === 'form-block/' . $context ) {
+				$context = '';
 			}
 			
 			/**
@@ -155,16 +174,27 @@ final class Data {
 		
 		$attributes = $this->get_element_attributes( $dom, $tag_name );
 		
-		// get label data
-		$label_attributes = $this->get_element_attributes(
-			$dom,
-			'span',
-			[
-				'class_name' => 'form-block__label-content',
-				'get_text_content' => true,
-			],
-		);
-		$attributes['label'] = $label_attributes['textContent'] ?? '';
+		if ( $tag_name === 'fieldset' ) {
+			$attributes['legend'] = $this->get_element_attributes(
+				$dom,
+				'legend',
+				[
+					'get_text_content' => true,
+				]
+			);
+		}
+		else {
+			// get label data
+			$label_attributes = $this->get_element_attributes(
+				$dom,
+				'span',
+				[
+					'class_name' => 'form-block__label-content',
+					'get_text_content' => true,
+				]
+			);
+			$attributes['label'] = $label_attributes['textContent'] ?? '';
+		}
 		
 		// get options
 		if ( $tag_name === 'select' ) {
@@ -234,6 +264,10 @@ final class Data {
 			}
 			
 			if ( $arguments['get_text_content'] ) {
+				if ( ! isset( $attributes[ $iteration ]['textContent'] ) ) {
+					$attributes[ $iteration ]['textContent'] = '';
+				}
+				
 				// textContent removes all line breaks, so get the actual HTML
 				// of the element and store them without tags, but with line breaks
 				foreach ( $tag->childNodes as $child ) {

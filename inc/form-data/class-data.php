@@ -100,20 +100,113 @@ final class Data {
 	}
 	
 	/**
+	 * Get a valid name by its label.
+	 *
+	 * @param	string	$label The original label
+	 * @param	bool	$to_lowercase Whether the name should be lowercase
+	 * @return	string The valid name
+	 */
+	public static function get_field_name_by_label( string $label, bool $to_lowercase = true ): string {
+		if ( $to_lowercase ) {
+			$label = \mb_strtolower( $label );
+		}
+		
+		/**
+		 * Filter the label before generating a name out of it.
+		 * 
+		 * @param	string	$label The original label
+		 * @param	bool	$to_lowercase Whether the name should be lowercase
+		 * @return	string The updated label
+		 */
+		$label = \apply_filters( 'form_block_pre_get_name_by_label', $label, $to_lowercase );
+		
+		$regex = '/[^A-Za-z0-9\-_\[\]]/';
+		$replace = [ 'ae', 'oe', 'ue', 'ss', '-' ];
+		$search = [ 'ä', 'ö', 'ü', 'ß', ' ' ];
+		$name = \preg_replace( $regex, '', \str_replace( $search, $replace, $label ) );
+		
+		/**
+		 * Filter the generated name from a label.
+		 * 
+		 * @param	string	$name The generated name
+		 * @param	string	$label The original label
+		 * @param	bool	$to_lowercase Whether the name should be lowercase
+		 * @return	string The updated name
+		 */
+		$name = \apply_filters( 'form_block_get_name_by_label', $name, $label, $to_lowercase );
+		
+		return $name;
+	}
+	
+	/**
+	 * Get field output.
+	 * 
+	 * @param	mixed[]		$field Current field data
+	 * @param	mixed[]		$form_data Form data
+	 * @param	string[]	$fields POST fields
+	 * @param	int			$level Indentation level
+	 * @return	string Field output
+	 */
+	public function get_field_output( array $field, array $form_data, array $fields, int $level = 0 ): string {
+		$output = '';
+		
+		if ( ! isset( $field['name'] ) && isset( $field['label'] ) ) {
+			$field['name'] = self::get_field_name_by_label( $field['label'] );
+		}
+		
+		if ( isset( $field['name'] ) && isset( $fields[ $field['name'] ] ) ) {
+			$post_field = [
+				'name' => $field['name'],
+				'value' => $fields[ $field['name'] ],
+			];
+			$output = $this->get_raw_field_output( $post_field, $form_data, $level );
+		}
+		else if ( isset( $field['legend']['textContent'] ) ) {
+			/**
+			 * Filter the fieldset legend text.
+			 * 
+			 * @param	string		$legend Current legend text
+			 * @param	mixed[]		$field Form field data
+			 * @param	mixed[]		$form_data Form data
+			 * @param	string[]	$fields POST fields
+			 */
+			$legend = \apply_filters( 'form_block_output_fieldset_legend', $field['legend']['textContent'], $field, $form_data, $fields );
+			$output = $legend . ':' . \PHP_EOL;
+		}
+		
+		if ( ! empty( $field['fields'] ) ) {
+			++$level;
+			
+			foreach ( $field['fields'] as $sub_field ) {
+				$output .= $this->get_field_output( $sub_field, $form_data, $fields, $level );
+			}
+		}
+		
+		return $output;
+	}
+	
+	/**
 	 * Get the field title of a list of fields by its name.
 	 * 
 	 * @param	string	$name The name to search for
 	 * @param	array	$fields The fields to search in
+	 * @param	bool	$reset_name_attributes Whether to reset the block name attributes
 	 * @return	string The field title or the field name, if title cannot be found
 	 */
-	public function get_field_title_by_name( string $name, array $fields ): string {
-		Form_Block::get_instance()->reset_block_name_attributes();
+	public function get_field_title_by_name( string $name, array $fields, bool $reset_name_attributes = true ): string {
+		if ( $reset_name_attributes ) {
+			Form_Block::get_instance()->reset_block_name_attributes();
+		}
 		
 		foreach ( $fields as $field ) {
 			$field_name = Form_Block::get_instance()->get_block_name_attribute( $field );
 			
 			if ( $field_name === $name || preg_match( '/' . preg_quote( $field_name, '/' ) . '-\d+/', $name ) ) {
 				return $field['label'] ?? $name;
+			}
+			
+			if ( ! empty( $field['fields'] ) ) {
+				return $this->get_field_title_by_name( $name, $field['fields'], false );
 			}
 		}
 		
@@ -140,6 +233,77 @@ final class Data {
 		}
 		
 		return self::$instance;
+	}
+	
+	/**
+	 * Get raw field output.
+	 * 
+	 * @param	array{name: string, value: string}	$field POST field data
+	 * @param	array								$form_data Form data
+	 * @param	string								$level Indentation level
+	 * @return	string Raw field output
+	 */
+	private function get_raw_field_output( array $field, array $form_data, int $level = 0 ): string {
+		/**
+		 * Filter whether to omit the field from output.
+		 * 
+		 * @since	1.0.3
+		 * 
+		 * @param	bool	$omit_field Whether to omit the field from output
+		 * @param	string	$name Field name
+		 * @param	mixed	$value Field value
+		 * @param	array	$form_data Form data
+		 */
+		$omit_field = \apply_filters( 'form_block_output_field_omit', false, $field['name'], $field['value'], $form_data );
+		
+		if ( $omit_field ) {
+			return '';
+		}
+		
+		$output = $this->get_field_title_by_name( $field['name'], $form_data['fields'] ) . ': ';
+		
+		/**
+		 * Filter the field value in the output.
+		 * 
+		 * @since	1.0.3
+		 * 
+		 * @param	mixed	$value Field value
+		 * @param	string	$name Field name
+		 * @param	array	$form_data Form data
+		 */
+		$value = \apply_filters( 'form_block_output_field_value', $field['value'], $field['name'], $form_data );
+		
+		if ( \str_contains( $value, \PHP_EOL ) ) {
+			$output .= \PHP_EOL;
+		}
+		
+		if ( ! is_array( $value ) ) {
+			$output .= $value;
+		}
+		else {
+			$output .= \implode( \PHP_EOL, \array_map( function( $item ) {
+				/* translators: list element value */
+				return \sprintf( \_x( '- %s', 'list element in plaintext email', 'form-block' ), $item );
+			}, $value ) );
+		}
+		
+		if ( $level ) {
+			$output = \str_repeat( ' ', $level * 2 ) . $output . \PHP_EOL; // non-breaking space UTF-8 character
+		}
+		
+		/**
+		 * Filter the field output.
+		 * 
+		 * @since	1.1.0
+		 * 
+		 * @param	string	$output Field output
+		 * @param	string	$name Field name
+		 * @param	mixed	$value Field value
+		 * @param	array	$form_data Form data
+		 */
+		$output = \apply_filters( 'form_block_output_field_output', $output, $field['name'], $field['value'], $form_data );
+		
+		return $output;
 	}
 	
 	/**
@@ -359,64 +523,11 @@ final class Data {
 		 */
 		$recipients = apply_filters( 'form_block_recipients', $recipients, $this->form_id, $fields, $files );
 		
-		$field_data = $this->get( $this->form_id );
+		$form_data = $this->get( $this->form_id );
 		$field_output = [];
 		
-		foreach ( $fields as $name => $value ) {
-			/**
-			 * Filter whether to omit the field from output.
-			 * 
-			 * @since	1.0.3
-			 * 
-			 * @param	bool	$omit_field Whether to omit the field from output
-			 * @param	string	$name The field name
-			 * @param	mixed	$value The field value
-			 * @param	array	$field_data The form data
-			 */
-			$omit_field = apply_filters( 'form_block_output_field_omit', false, $name, $value, $field_data );
-			
-			if ( $omit_field ) {
-				continue;
-			}
-			
-			$output = $this->get_field_title_by_name( $name, $field_data['fields'] ) . ': ';
-			
-			/**
-			 * Filter the field value in the output.
-			 * 
-			 * @since	1.0.3
-			 * 
-			 * @param	mixed	$value The field value
-			 * @param	string	$name The field name
-			 * @param	array	$field_data The form data
-			 */
-			$value = apply_filters( 'form_block_output_field_value', $value, $name, $field_data );
-			
-			if ( strpos( $value, PHP_EOL ) !== false ) {
-				$output .= PHP_EOL;
-			}
-			
-			if ( ! is_array( $value ) ) {
-				$output .= $value;
-			}
-			else {
-				$output .= implode( PHP_EOL, array_map( function( $item ) {
-					/* translators: list element value */
-					return sprintf( _x( '- %s', 'list element in plaintext email', 'form-block' ), $item );
-				}, $value ) );
-			}
-			
-			/**
-			 * Filter the field output.
-			 * 
-			 * @since	1.1.0
-			 * 
-			 * @param	string	$output The field output
-			 * @param	string	$name The field name
-			 * @param	mixed	$value The field value
-			 * @param	array	$field_data The form data
-			 */
-			$output = apply_filters( 'form_block_output_field_output', $output, $name, $value, $field_data );
+		foreach ( $form_data['fields'] as $field ) {
+			$output = $this->get_field_output( $field, $form_data, $fields );
 			
 			if ( ! empty( $output ) ) {
 				$field_output[] = $output;
@@ -427,7 +538,7 @@ final class Data {
 		
 		if ( ! empty( $files ) ) {
 			foreach ( $files as $file ) {
-				$file_data = $this->get_field_data_by_name( $file['field_name'], $field_data['fields'] );
+				$file_data = $this->get_field_data_by_name( $file['field_name'], $form_data['fields'] );
 				$new_path = sys_get_temp_dir() . $file['name'];
 				
 				/**
@@ -483,7 +594,7 @@ final class Data {
 				 * 
 				 * @since	1.4.1 Added filter for file inputs
 				 */
-				$output = \apply_filters( 'form_block_output_field_output', $output, $file['field_name'], $new_path, $field_data );
+				$output = \apply_filters( 'form_block_output_field_output', $output, $file['field_name'], $new_path, $form_data );
 				
 				if ( ! empty( $output ) ) {
 					$field_output[] = $output;
@@ -492,7 +603,7 @@ final class Data {
 		}
 		
 		$headers = [];
-		$reply_to = $this->get_reply_to( $fields, $field_data['fields'] );
+		$reply_to = $this->get_reply_to( $fields, $form_data['fields'] );
 		
 		if ( ! empty( $reply_to ) ) {
 			if ( str_contains( $reply_to, ' ' ) ) {
@@ -530,8 +641,8 @@ Your "%1$s" WordPress', 'form-block' ),
 		
 		$success = [];
 		
-		if ( ! empty( $field_data['subject'] ) ) {
-			$subject = $field_data['subject'];
+		if ( ! empty( $form_data['subject'] ) ) {
+			$subject = $form_data['subject'];
 		}
 		else {
 			/* translators: blog name */
