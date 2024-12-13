@@ -14,7 +14,7 @@ final class Validation {
 	/**
 	 * @var		\epiphyt\Form_Block\form_data\Validation
 	 */
-	public static ?self $instance;
+	public static ?self $instance = null;
 	
 	/**
 	 * @since	1.0.2

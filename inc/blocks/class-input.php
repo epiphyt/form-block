@@ -14,7 +14,7 @@ final class Input {
 	/**
 	 * @var		\epiphyt\Form_Block\blocks\Input
 	 */
-	public static ?self $instance;
+	public static ?self $instance = null;
 	
 	/**
 	 * Initialize the class.

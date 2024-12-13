@@ -38,7 +38,7 @@ final class Form_Block {
 	/**
 	 * @var		\epiphyt\Form_Block\Form_Block
 	 */
-	public static ?self $instance;
+	public static ?self $instance = null;
 	
 	/**
 	 * Initialize the class.

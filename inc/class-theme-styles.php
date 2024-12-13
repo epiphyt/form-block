@@ -14,7 +14,7 @@ final class Theme_Styles {
 	/**
 	 * @var		\epiphyt\Form_Block\Theme_Styles
 	 */
-	public static ?self $instance;
+	public static ?self $instance = null;
 	
 	/**
 	 * Initialize the class.

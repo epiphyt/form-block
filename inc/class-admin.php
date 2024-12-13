@@ -12,7 +12,7 @@ final class Admin {
 	/**
 	 * @var		\epiphyt\Form_Block\Admin
 	 */
-	public static ?self $instance;
+	public static ?self $instance = null;
 	
 	/**
 	 * Initialize the class.

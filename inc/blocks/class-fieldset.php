@@ -14,7 +14,7 @@ final class Fieldset {
 	/**
 	 * @var		\epiphyt\Form_Block\blocks\Fieldset
 	 */
-	public static ?self $instance;
+	public static ?self $instance = null;
 	
 	/**
 	 * Initialize the class.

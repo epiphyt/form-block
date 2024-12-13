@@ -15,7 +15,7 @@ final class Data {
 	/**
 	 * @var		\epiphyt\Form_Block\block_data\Data
 	 */
-	public static ?self $instance;
+	public static ?self $instance = null;
 	
 	/**
 	 * Initialize the class.

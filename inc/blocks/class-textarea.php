@@ -14,7 +14,7 @@ final class Textarea {
 	/**
 	 * @var		\epiphyt\Form_Block\blocks\Textarea
 	 */
-	public static ?self $instance;
+	public static ?self $instance = null;
 	
 	/**
 	 * Initialize the class.

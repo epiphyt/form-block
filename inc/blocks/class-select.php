@@ -14,7 +14,7 @@ final class Select {
 	/**
 	 * @var		\epiphyt\Form_Block\blocks\Select
 	 */
-	public static ?self $instance;
+	public static ?self $instance = null;
 	
 	/**
 	 * Initialize the class.
