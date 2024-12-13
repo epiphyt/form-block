@@ -41,6 +41,17 @@ final class Validation {
 			return;
 		}
 		
+		$post_field = $_POST[ $name ] ?? null; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
+		
+		if ( \is_array( $post_field ) ) {
+			$name_regex = \preg_quote( $name, '/' );
+			$name_regex .= self::get_allowed_subfield_name_regex( $post_field );
+			
+			if ( ! empty( \preg_grep( '/' . $name_regex . '/', $allowed_names ) ) ) {
+				return;
+			}
+		}
+		
 		wp_send_json_error( [
 			'message' => sprintf(
 				/* translators: field title */
@@ -166,12 +177,61 @@ final class Validation {
 		$allowed_names = $this->system_field_names;
 		$fields = $form_data['fields'];
 		
-		
 		foreach ( $fields as $field ) {
 			$allowed_names = \array_merge( $allowed_names, self::get_allowed_field_names( $field ) );
 		}
 		
 		return \array_unique( $allowed_names );
+	}
+	
+	/**
+	 * Get allowed field name regular expression including subfields.
+	 * 
+	 * @param	mixed[]	$field Current post field
+	 * @return	string Regular expression for current field
+	 */
+	private static function get_allowed_subfield_name_regex( array $field ): string {
+		foreach ( $field as $key => $field_value ) {
+			$name = '\[(' . \preg_quote( $key, '/' ) . '*)\]';
+			
+			if ( \is_array( $field_value ) ) {
+				foreach ( $field_value as $subfield_key => $subfield_value ) {
+					$name .= self::get_allowed_subfield_name_regex( [ $subfield_key => $subfield_value ] );
+				}
+			}
+		}
+		
+		return $name;
+	}
+	
+	/**
+	 * Recursively sanitize array values.
+	 * 
+	 * @param	array	$array Array to sanitize
+	 * @param	array	$form_data Form field data
+	 * @return	array Sanitized array
+	 */
+	private static function sanitize_array_values( array $array, array $form_data ): array {
+		foreach ( $array as $key => &$value ) {
+			if ( \is_array( $value ) ) {
+				$value = self::sanitize_array_values( $value, $form_data );
+			}
+			else if ( \is_string( $value ) ) {
+				$value = \sanitize_textarea_field( \wp_unslash( $value ) );
+			}
+			else {
+				// unknown format, ignore
+				\wp_send_json_error( [
+					'message' => \sprintf(
+						/* translators: the field name */
+						\esc_html__( 'Wrong item format in field %s.', 'form-block' ),
+						\esc_html( Data::get_instance()->get_field_title_by_name( $key, $form_data['fields'] ) )
+					),
+				] );
+			}
+		}
+		
+		return $array;
 	}
 	
 	/**
@@ -190,23 +250,8 @@ final class Validation {
 			
 			$this->by_allowed_names( $key, $form_data );
 			
-			// iterate through an array to sanitize its fields
 			if ( is_array( $value ) ) {
-				foreach ( $value as $item_key => &$item ) {
-					// if it's not a string, die with an error message
-					if ( ! is_string( $item ) ) {
-						wp_send_json_error( [
-							'message' => sprintf(
-								/* translators: 1: the value name, 2: the field name */
-								esc_html__( 'Wrong item format of value %1$s in field %2$s.', 'form-block' ),
-								esc_html( $item_key ),
-								esc_html( Data::get_instance()->get_field_title_by_name( $key, $form_data['fields'] ) )
-							),
-						] );
-					}
-					
-					$item = sanitize_textarea_field( wp_unslash( $item ) );
-				}
+				$value = self::sanitize_array_values( $value, $form_data );
 			}
 			else {
 				// if it's not a string, die with an error message
@@ -455,5 +500,33 @@ final class Validation {
 		}
 		
 		return self::$instance;
+	}
+	
+	/**
+	 * Check, whether a field has been submitted.
+	 * 
+	 * @param	string	$field_name Field name to check
+	 * @param	array	$post_fields POST fields
+	 * @return	bool Whether a field has been submitted
+	 */
+	public static function is_field_submitted( string $field_name, array $post_fields ): bool {
+		if ( \preg_match_all( '/([^\[\]]+)/', $field_name, $matches ) ) {
+			$keys = $matches[1];
+		}
+		else {
+			return false;
+		}
+		
+		$current_fields = $post_fields;
+		
+		foreach ( $keys as $key ) {
+			if ( ! \is_array( $current_fields ) || ! \array_key_exists( $key, $current_fields ) ) {
+				return false;
+			}
+			
+			$current_fields = $current_fields[ $key ];
+		}
+		
+		return true;
 	}
 }

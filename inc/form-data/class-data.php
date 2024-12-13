@@ -143,21 +143,24 @@ final class Data {
 	 * 
 	 * @param	mixed[]		$field Current field data
 	 * @param	mixed[]		$form_data Form data
-	 * @param	string[]	$fields POST fields
+	 * @param	string[]	$post_fields POST fields
 	 * @param	int			$level Indentation level
 	 * @return	string Field output
 	 */
-	public function get_field_output( array $field, array $form_data, array $fields, int $level = 0 ): string {
+	public function get_field_output( array $field, array $form_data, array $post_fields, int $level = 0 ): string {
 		$output = '';
 		
 		if ( ! isset( $field['name'] ) && isset( $field['label'] ) ) {
 			$field['name'] = self::get_field_name_by_label( $field['label'] );
 		}
 		
-		if ( isset( $field['name'] ) && isset( $fields[ $field['name'] ] ) ) {
+		if (
+			isset( $field['name'] )
+			&& ( isset( $post_fields[ $field['name'] ] ) || Validation::is_field_submitted( $field['name'], $post_fields ) )
+		) {
 			$post_field = [
 				'name' => $field['name'],
-				'value' => $fields[ $field['name'] ],
+				'value' => self::get_post_field_value( $field['name'], $post_fields ),
 			];
 			$output = $this->get_raw_field_output( $post_field, $form_data, $level );
 		}
@@ -165,12 +168,14 @@ final class Data {
 			/**
 			 * Filter the fieldset legend text.
 			 * 
+			 * @since	1.5.0
+			 * 
 			 * @param	string		$legend Current legend text
 			 * @param	mixed[]		$field Form field data
 			 * @param	mixed[]		$form_data Form data
-			 * @param	string[]	$fields POST fields
+			 * @param	string[]	$post_fields POST fields
 			 */
-			$legend = \apply_filters( 'form_block_output_fieldset_legend', $field['legend']['textContent'], $field, $form_data, $fields );
+			$legend = \apply_filters( 'form_block_output_fieldset_legend', $field['legend']['textContent'], $field, $form_data, $post_fields );
 			$output = $legend . ':' . \PHP_EOL;
 		}
 		
@@ -178,7 +183,7 @@ final class Data {
 			++$level;
 			
 			foreach ( $field['fields'] as $sub_field ) {
-				$output .= $this->get_field_output( $sub_field, $form_data, $fields, $level );
+				$output .= $this->get_field_output( $sub_field, $form_data, $post_fields, $level );
 			}
 		}
 		
@@ -236,11 +241,85 @@ final class Data {
 	}
 	
 	/**
+	 * Get field indentation by a defined level.
+	 * 
+	 * @param	mixed[]	$field Field data
+	 * @param	int		$level Indentation level
+	 * @return	string Field output with indentation
+	 */
+	private static function get_field_indentation( array $field, int $level ): string {
+		$output = '';
+		
+		foreach ( $field as $key => $item ) {
+			$output .= \str_repeat( ' ', $level * 2 );
+			/* translators: list item key */
+			$output .= \sprintf( \_x( '- %s:', 'list element in plaintext email', 'form-block' ), $key );
+			
+			if ( \is_array( $item ) ) {
+				++$level;
+				$output .= \PHP_EOL;
+				$output .= self::get_field_indentation( $item, $level );
+				--$level;
+			}
+			else {
+				$output .= ' ' . $item;
+			}
+		}
+		
+		return $output;
+	}
+	
+	/**
+	 * Get the value of a (nested) post field.
+	 * 
+	 * @param	string	$field_name Field name
+	 * @param	array	$post_fields POST fields
+	 * @return	mixed Post field value
+	 */
+	private static function get_post_field_value( string $field_name, array $post_fields ): mixed {
+		if ( \preg_match_all( '/([^\[\]]+)/', $field_name, $matches ) ) {
+			$keys = $matches[1];
+		}
+		else {
+			$keys = $field_name;
+		}
+		
+		if ( ! empty( $keys ) ) {
+			$key = \reset( $keys );
+			
+			return $post_fields[ $key ] ?? '';
+		}
+		
+		$current_fields = $post_fields;
+		
+		foreach ( $keys as $key ) {
+			if ( ! \is_array( $current_fields ) || ! \array_key_exists( $key, $current_fields ) ) {
+				return '';
+			}
+			
+			$current_fields = $current_fields[ $key ];
+			
+			if ( \is_string( $current_fields ) ) {
+				return $current_fields;
+			}
+			else if ( isset( $current_fields[0] ) ) {
+				if ( \is_string( $current_fields[0] ) ) {
+					return $current_fields[0];
+				}
+				
+				$current_fields = $current_fields[0];
+			}
+		}
+		
+		return '';
+	}
+	
+	/**
 	 * Get raw field output.
 	 * 
 	 * @param	array{name: string, value: string}	$field POST field data
 	 * @param	array								$form_data Form data
-	 * @param	string								$level Indentation level
+	 * @param	int									$level Indentation level
 	 * @return	string Raw field output
 	 */
 	private function get_raw_field_output( array $field, array $form_data, int $level = 0 ): string {
@@ -273,7 +352,7 @@ final class Data {
 		 */
 		$value = \apply_filters( 'form_block_output_field_value', $field['value'], $field['name'], $form_data );
 		
-		if ( \str_contains( $value, \PHP_EOL ) ) {
+		if ( \is_string( $value ) && \str_contains( $value, \PHP_EOL ) ) {
 			$output .= \PHP_EOL;
 		}
 		
@@ -281,10 +360,18 @@ final class Data {
 			$output .= $value;
 		}
 		else {
-			$output .= \implode( \PHP_EOL, \array_map( function( $item ) {
-				/* translators: list element value */
-				return \sprintf( \_x( '- %s', 'list element in plaintext email', 'form-block' ), $item );
-			}, $value ) );
+			foreach ( $value as $key => $item ) {
+				$output .= \PHP_EOL;
+				
+				if ( \is_string( $item ) ) {
+					/* translators: 1: list item key, list item value */
+					$output .= \sprintf( \_x( '- %1$s: %2$s', 'list element in plaintext email', 'form-block' ), $key, $item );
+					
+					continue;
+				}
+				
+				$output .= self::get_field_indentation( [ $key => $item ], $level );
+			}
 		}
 		
 		if ( $level ) {
@@ -525,9 +612,29 @@ final class Data {
 		
 		$form_data = $this->get( $this->form_id );
 		$field_output = [];
+		$processed_fields = [];
 		
 		foreach ( $form_data['fields'] as $field ) {
+			$processed_field_name = '';
+			
+			if ( ! isset( $field['name'] ) && isset( $field['label'] ) ) {
+				$field['name'] = self::get_field_name_by_label( $field['label'] );
+			}
+			
+			if ( isset( $field['name'] ) ) {
+				$processed_field_name = \substr( $field['name'], 0, \strpos( $field['name'], '[' ) ?: \strlen( $field['name'] ) );
+			}
+			
+			// process nested fields only once
+			if ( ! empty( $processed_field_name ) && \in_array( $processed_field_name, $processed_fields, true ) ) {
+				continue;
+			}
+			
 			$output = $this->get_field_output( $field, $form_data, $fields );
+			
+			if ( ! empty( $processed_field_name ) ) {
+				$processed_fields[] = $processed_field_name;
+			}
 			
 			if ( ! empty( $output ) ) {
 				$field_output[] = $output;
