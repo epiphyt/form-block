@@ -14,15 +14,15 @@ final class Form {
 	/**
 	 * @var		\epiphyt\Form_Block\blocks\Form
 	 */
-	public static $instance;
+	public static ?self $instance;
 	
 	/**
 	 * Initialize the class.
 	 */
 	public function init(): void {
-		add_action( 'init', [ $this, 'enqueue_block_styles' ] );
+		\add_action( 'init', [ $this, 'enqueue_block_styles' ] );
 		\add_action( 'init', [ $this, 'register_block' ] );
-		add_action( 'init', [ $this, 'register_frontend_assets' ] );
+		\add_action( 'init', [ $this, 'register_frontend_assets' ] );
 		\add_filter( 'block_type_metadata', [ self::class, 'register_block_metadata' ] );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_action' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_form_id_input' ], 10, 2 );
@@ -50,9 +50,9 @@ final class Form {
 		 * @param	string	$block_content The block content
 		 * @param	array	$block Block attributes
 		 */
-		$url = apply_filters( 'form_block_form_action', $url, $block_content, $block );
+		$url = \apply_filters( 'form_block_form_action', $url, $block_content, $block );
 		
-		return str_replace( '<form', '<form action="' . esc_url( $url ) . '"', $block_content );
+		return \str_replace( '<form', '<form action="' . \esc_url( $url ) . '"', $block_content );
 	}
 	
 	/**
@@ -74,9 +74,9 @@ final class Form {
 		 * @param	string	$block_content The block content
 		 * @param	array	$block Block attributes
 		 */
-		$form_id = apply_filters( 'form_block_form_form_id', $block['attrs']['formId'], $block_content, $block );
+		$form_id = \apply_filters( 'form_block_form_form_id', $block['attrs']['formId'], $block_content, $block );
 		
-		$form_id_input = '<input type="hidden" name="_form_id" value="' . esc_attr( $form_id ) . '" />';
+		$form_id_input = '<input type="hidden" name="_form_id" value="' . \esc_attr( $form_id ) . '" />';
 		
 		/**
 		 * Filter the form ID input.
@@ -86,9 +86,9 @@ final class Form {
 		 * @param	string	$block_content The block content
 		 * @param	array	$block Block attributes
 		 */
-		$form_id_input = apply_filters( 'form_block_form_id_input', $form_id_input, $form_id, $block_content, $block );
+		$form_id_input = \apply_filters( 'form_block_form_id_input', $form_id_input, $form_id, $block_content, $block );
 		
-		return str_replace( 'enctype="multipart/form-data" novalidate>', 'enctype="multipart/form-data" novalidate>' . PHP_EOL . $form_id_input, $block_content );
+		return \str_replace( 'enctype="multipart/form-data" novalidate>', 'enctype="multipart/form-data" novalidate>' . \PHP_EOL . $form_id_input, $block_content );
 	}
 	
 	/**
@@ -108,9 +108,9 @@ final class Form {
 		 * @param	string	$block_content The block content
 		 * @param	array	$block Block attributes
 		 */
-		$honeypot = apply_filters( 'form_block_honeypot_code', $honeypot, $block_content, $block );
+		$honeypot = \apply_filters( 'form_block_honeypot_code', $honeypot, $block_content, $block );
 		
-		return str_replace( '</form>', $honeypot . '</form>', $block_content );
+		return \str_replace( '</form>', $honeypot . '</form>', $block_content );
 	}
 	
 	/**
@@ -165,7 +165,7 @@ final class Form {
 		 * @param	string	$block_content The block content
 		 * @param	array	$block Block attributes
 		 */
-		$maximum_upload_size = apply_filters( 'form_block_form_maximum_upload_size', $maximum, $block_content, $block );
+		$maximum_upload_size = \apply_filters( 'form_block_form_maximum_upload_size', $maximum, $block_content, $block );
 		
 		/**
 		 * Filter the form maximum upload size per file.
@@ -174,9 +174,9 @@ final class Form {
 		 * @param	string	$block_content The block content
 		 * @param	array	$block Block attributes
 		 */
-		$maximum_upload_size_per_file = apply_filters( 'form_block_form_maximum_upload_size_per_file', $maximum, $block_content, $block );
+		$maximum_upload_size_per_file = \apply_filters( 'form_block_form_maximum_upload_size_per_file', $maximum, $block_content, $block );
 		
-		return str_replace( '<form', '<form data-max-upload="' . esc_attr( $maximum_upload_size ) . '" data-max-upload-file="' . esc_attr( $maximum_upload_size_per_file ) . '"', $block_content );
+		return \str_replace( '<form', '<form data-max-upload="' . \esc_attr( $maximum_upload_size ) . '" data-max-upload-file="' . \esc_attr( $maximum_upload_size_per_file ) . '"', $block_content );
 	}
 	
 	/**
@@ -194,9 +194,9 @@ final class Form {
 		 * @param	string	$block_content The block content
 		 * @param	array	$block Block attributes
 		 */
-		$method = apply_filters( 'form_block_form_method', 'POST', $block_content, $block );
+		$method = \apply_filters( 'form_block_form_method', 'POST', $block_content, $block );
 		
-		return str_replace( '<form', '<form method="' . esc_attr( $method ) . '"', $block_content );
+		return \str_replace( '<form', '<form method="' . \esc_attr( $method ) . '"', $block_content );
 	}
 	
 	/**
@@ -208,7 +208,7 @@ final class Form {
 	 */
 	public function add_required_notice( string $block_content, array $block ): string {
 		/* translators: an asterisk sign */
-		$notice = '<p class="form-block__required-notice" aria-hidden="true">' . sprintf( esc_html__( 'Required fields are marked with %s', 'form-block' ), '<span class="is-required" aria-hidden="true">*</span>' ) . '</p>';
+		$notice = '<p class="form-block__required-notice" aria-hidden="true">' . \sprintf( \esc_html__( 'Required fields are marked with %s', 'form-block' ), '<span class="is-required" aria-hidden="true">*</span>' ) . '</p>';
 		
 		/**
 		 * Filter the form required notice.
@@ -217,25 +217,25 @@ final class Form {
 		 * @param	string	$block_content The block content
 		 * @param	array	$block Block attributes
 		 */
-		$notice = apply_filters( 'form_block_form_required_notice', $notice, $block_content, $block );
+		$notice = \apply_filters( 'form_block_form_required_notice', $notice, $block_content, $block );
 		
-		return str_replace( '<form', $notice . '<form', $block_content );
+		return \str_replace( '<form', $notice . '<form', $block_content );
 	}
 	
 	/**
 	 * Enqueue block styles.
 	 */
 	public function enqueue_block_styles(): void {
-		$is_debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
+		$is_debug = \defined( 'WP_DEBUG' ) && \WP_DEBUG;
 		$suffix = ( $is_debug ? '' : '.min' );
 		
-		wp_enqueue_block_style(
+		\wp_enqueue_block_style(
 			'form-block/form',
 			[
-				'handle' => 'form-block',
-				'src' => plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/form' . $suffix . '.css',
 				'deps' => [],
-				'ver' => $is_debug ? filemtime( plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/form' . $suffix . '.css' ) : FORM_BLOCK_VERSION,
+				'handle' => 'form-block',
+				'src' => \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/form' . $suffix . '.css',
+				'ver' => $is_debug ? \filemtime( \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/form' . $suffix . '.css' ) : \FORM_BLOCK_VERSION,
 			]
 		);
 	}
@@ -245,7 +245,7 @@ final class Form {
 	 * 
 	 * @return	\epiphyt\Form_Block\blocks\Form The single instance of this class
 	 */
-	public static function get_instance(): Form {
+	public static function get_instance(): self {
 		if ( self::$instance === null ) {
 			self::$instance = new self();
 		}
@@ -274,7 +274,7 @@ final class Form {
 		 * 
 		 * @param	array	$styles Current block styles
 		 */
-		$metadata['style'] = apply_filters( 'form_block_form_style', [ 'form-block' ] );
+		$metadata['style'] = \apply_filters( 'form_block_form_style', [ 'form-block' ] );
 		
 		$metadata['viewScript'][] = 'form-block-validator';
 		$metadata['viewScript'][] = 'form-block-validation';
@@ -288,68 +288,68 @@ final class Form {
 	 * @since	1.3.0
 	 */
 	public static function register_block(): void {
-		register_block_type( \EPI_FORM_BLOCK_BASE . '/build/form' );
+		\register_block_type( \EPI_FORM_BLOCK_BASE . '/build/form' );
 	}
 	
 	/**
 	 * Register frontend assets.
 	 */
 	public function register_frontend_assets(): void {
-		$is_debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
+		$is_debug = \defined( 'WP_DEBUG' ) && \WP_DEBUG;
 		$suffix = ( $is_debug ? '' : '.min' );
 		$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'multi-field' . $suffix . '.js';
 		$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'multi-field' . $suffix . '.js';
 		
 		\wp_register_script( 'form-block-multi-field', $file_url, [ 'form-block-form' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION, true );
 		
-		$file_path = plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/js/vendor/validator' . $suffix . '.js';
-		$file_url = plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/js/vendor/validator' . $suffix . '.js';
+		$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/js/vendor/validator' . $suffix . '.js';
+		$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/js/vendor/validator' . $suffix . '.js';
 		
-		wp_register_script( 'form-block-validator', $file_url, [], $is_debug ? filemtime( $file_path ) : FORM_BLOCK_VERSION, true );
+		\wp_register_script( 'form-block-validator', $file_url, [], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION, true );
 		
-		$file_path = plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'validation' . $suffix . '.js';
-		$file_url = plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'validation' . $suffix . '.js';
+		$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'validation' . $suffix . '.js';
+		$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'validation' . $suffix . '.js';
 		
-		wp_register_script( 'form-block-validation', $file_url, [ 'form-block-validator' ], $is_debug ? filemtime( $file_path ) : FORM_BLOCK_VERSION, true );
-		wp_localize_script( 'form-block-validation', 'formBlockValidationData', [
-			'validatorAllFilesTooBig' => esc_js( __( 'The uploaded files are too big.', 'form-block' ) ),
-			'validatorChecked' => esc_js( __( 'This field must be checked.', 'form-block' ) ),
-			'validatorDate' => esc_js( __( 'This field has an invalid date.', 'form-block' ) ),
-			'validatorEmail' => esc_js( __( 'This email address is invalid.', 'form-block' ) ),
-			'validatorEmpty' => esc_js( __( 'This field must not be empty.', 'form-block' ) ),
-			'validatorFileTooBig' => esc_js( __( 'The file is to big to be uploaded.', 'form-block' ) ),
-			'validatorInvalid' => esc_js( __( 'This field is invalid.', 'form-block' ) ),
-			'validatorLong' => esc_js( __( 'This field is too long.', 'form-block' ) ),
-			'validatorMaxFilesize' => esc_js( Form_Block::get_instance()->get_maximum_upload_size() ),
-			'validatorMaxFilesizePerFile' => esc_js( Form_Block::get_instance()->get_maximum_upload_size() ),
-			'validatorNumber' => esc_js( __( 'This field does not contain a number.', 'form-block' ) ),
-			'validatorNumberMax' => esc_js( __( 'This value is too low.', 'form-block' ) ),
-			'validatorNumberMin' => esc_js( __( 'This value is too high.', 'form-block' ) ),
-			'validatorOneFileTooBig' => esc_js( __( 'At least one of the uploaded files is too big.', 'form-block' ) ),
-			'validatorRadio' => esc_js( __( 'One option must be selected.', 'form-block' ) ),
-			'validatorShort' => esc_js( __( 'This field is too short.', 'form-block' ) ),
-			'validatorSelect' => esc_js( __( 'You must select an option.', 'form-block' ) ),
-			'validatorTime' => esc_js( __( 'This field has an invalid time.', 'form-block' ) ),
-			'validatorUrl' => esc_js( __( 'This field has an invalid URL.', 'form-block' ) ),
+		\wp_register_script( 'form-block-validation', $file_url, [ 'form-block-validator' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION, true );
+		\wp_localize_script( 'form-block-validation', 'formBlockValidationData', [
 			/* translators: invalid field count */
 			'validationInvalidFieldNotice' => \esc_js( \__( 'Could not submit form because %d fields are invalid.', 'form-block' ) ),
+			'validatorAllFilesTooBig' => \esc_js( \__( 'The uploaded files are too big.', 'form-block' ) ),
+			'validatorChecked' => \esc_js( \__( 'This field must be checked.', 'form-block' ) ),
+			'validatorDate' => \esc_js( \__( 'This field has an invalid date.', 'form-block' ) ),
+			'validatorEmail' => \esc_js( \__( 'This email address is invalid.', 'form-block' ) ),
+			'validatorEmpty' => \esc_js( \__( 'This field must not be empty.', 'form-block' ) ),
+			'validatorFileTooBig' => \esc_js( \__( 'The file is to big to be uploaded.', 'form-block' ) ),
+			'validatorInvalid' => \esc_js( \__( 'This field is invalid.', 'form-block' ) ),
+			'validatorLong' => \esc_js( \__( 'This field is too long.', 'form-block' ) ),
+			'validatorMaxFilesize' => \esc_js( Form_Block::get_instance()->get_maximum_upload_size() ),
+			'validatorMaxFilesizePerFile' => \esc_js( Form_Block::get_instance()->get_maximum_upload_size() ),
+			'validatorNumber' => \esc_js( \__( 'This field does not contain a number.', 'form-block' ) ),
+			'validatorNumberMax' => \esc_js( \__( 'This value is too low.', 'form-block' ) ),
+			'validatorNumberMin' => \esc_js( \__( 'This value is too high.', 'form-block' ) ),
+			'validatorOneFileTooBig' => \esc_js( \__( 'At least one of the uploaded files is too big.', 'form-block' ) ),
+			'validatorRadio' => \esc_js( \__( 'One option must be selected.', 'form-block' ) ),
+			'validatorSelect' => \esc_js( \__( 'You must select an option.', 'form-block' ) ),
+			'validatorShort' => \esc_js( \__( 'This field is too short.', 'form-block' ) ),
+			'validatorTime' => \esc_js( \__( 'This field has an invalid time.', 'form-block' ) ),
+			'validatorUrl' => \esc_js( \__( 'This field has an invalid URL.', 'form-block' ) ),
 		] );
-		wp_add_inline_script( 'form-block-validation', 'let formBlockIsValidated = false;', 'before' );
+		\wp_add_inline_script( 'form-block-validation', 'let formBlockIsValidated = false;', 'before' );
 		
-		$file_path = plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'form' . $suffix . '.js';
-		$file_url = plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'form' . $suffix . '.js';
+		$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'form' . $suffix . '.js';
+		$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'form' . $suffix . '.js';
 		
-		wp_register_script( 'form-block-form', $file_url, [ 'form-block-validator', 'form-block-validation' ], $is_debug ? filemtime( $file_path ) : FORM_BLOCK_VERSION, true );
-		wp_localize_script( 'form-block-form', 'formBlockData', [
-			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+		\wp_register_script( 'form-block-form', $file_url, [ 'form-block-validator', 'form-block-validation' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION, true );
+		\wp_localize_script( 'form-block-form', 'formBlockData', [
+			'ajaxUrl' => \admin_url( 'admin-ajax.php' ),
 			'i18n' => [
-				'backendError' => esc_js( __( 'There was a problem with the backend. Please contact the administrator otherwise.', 'form-block' ) ),
-				'isLoading' => esc_js( __( 'Loading …', 'form-block' ) ),
-				'requestError' => esc_js( __( 'There was a problem with your request. Please try again.', 'form-block' ) ),
-				'requestSuccess' => esc_js( __( 'The form has been submitted successfully.', 'form-block' ) ),
-				'requestSuccessRedirect' => esc_js( __( 'The form has been submitted successfully. Redirecting …', 'form-block' ) ),
+				'backendError' => \esc_js( \__( 'There was a problem with the backend. Please contact the administrator otherwise.', 'form-block' ) ),
+				'isLoading' => \esc_js( \__( 'Loading …', 'form-block' ) ),
+				'requestError' => \esc_js( \__( 'There was a problem with your request. Please try again.', 'form-block' ) ),
+				'requestSuccess' => \esc_js( \__( 'The form has been submitted successfully.', 'form-block' ) ),
+				'requestSuccessRedirect' => \esc_js( \__( 'The form has been submitted successfully. Redirecting …', 'form-block' ) ),
 			],
-			'requestUrl' => esc_js( Form_Block::get_instance()->get_current_request_url() ),
+			'requestUrl' => \esc_js( Form_Block::get_instance()->get_current_request_url() ),
 		] );
 	}
 }

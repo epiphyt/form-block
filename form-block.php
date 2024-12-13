@@ -1,18 +1,5 @@
 <?php
 namespace epiphyt\Form_Block;
-use function array_pop;
-use function define;
-use function defined;
-use function explode;
-use function file_exists;
-use function plugin_dir_url;
-use function spl_autoload_register;
-use function str_replace;
-use function strlen;
-use function strrpos;
-use function strtolower;
-use function substr_replace;
-use const WP_PLUGIN_DIR;
 
 /*
 Plugin Name:		Form Block
@@ -42,29 +29,27 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Form Block. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
 */
+\defined( 'ABSPATH' ) || exit;
 
-// exit if ABSPATH is not defined
-defined( 'ABSPATH' ) || exit;
+\define( 'FORM_BLOCK_VERSION', '1.4.2' );
 
-define( 'FORM_BLOCK_VERSION', '1.4.2' );
-
-if ( ! defined( 'EPI_FORM_BLOCK_BASE' ) ) {
-	define( 'EPI_FORM_BLOCK_BASE', WP_PLUGIN_DIR . '/form-block/' );
+if ( ! \defined( 'EPI_FORM_BLOCK_BASE' ) ) {
+	\define( 'EPI_FORM_BLOCK_BASE', \WP_PLUGIN_DIR . '/form-block/' );
 }
 
-if ( ! defined( 'EPI_FORM_BLOCK_FILE' ) ) {
-	define( 'EPI_FORM_BLOCK_FILE', __FILE__ );
+if ( ! \defined( 'EPI_FORM_BLOCK_FILE' ) ) {
+	\define( 'EPI_FORM_BLOCK_FILE', __FILE__ );
 }
 
-if ( ! defined( 'EPI_FORM_BLOCK_URL' ) ) {
-	define( 'EPI_FORM_BLOCK_URL', plugin_dir_url( EPI_FORM_BLOCK_FILE ) );
+if ( ! \defined( 'EPI_FORM_BLOCK_URL' ) ) {
+	\define( 'EPI_FORM_BLOCK_URL', \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) );
 }
 
 if ( ! \extension_loaded( 'dom' ) ) {
 	/**
 	 * Disable the plugin if the php-dom extension is missing.
 	 */
-	function disable_plugin() {
+	function disable_plugin(): void {
 		?>
 		<div class="notice notice-error">
 			<p><?php \esc_html_e( 'The PHP extension "Document Object Model" (php-dom) is missing. Form Block requires this extension to be installed and enabled. Please ask your hosting provider to install and enable it. Form Block disables itself now. Please re-enable it again if the extension is installed and enabled.', 'form-block' ); ?></p>
@@ -79,26 +64,26 @@ if ( ! \extension_loaded( 'dom' ) ) {
 /**
  * Autoload all necessary classes.
  * 
- * @param	string	$class The class name of the auto-loaded class
+ * @param	string	$class_name The class name of the auto-loaded class
  */
-spl_autoload_register( function( string $class ) {
-	$namespace = strtolower( __NAMESPACE__ . '\\' );
-	$path = explode( '\\', $class );
-	$filename = str_replace( '_', '-', strtolower( array_pop( $path ) ) );
-	$class = str_replace(
+\spl_autoload_register( static function( string $class_name ): void {
+	$namespace = \strtolower( __NAMESPACE__ . '\\' );
+	$path = \explode( '\\', $class_name );
+	$filename = \str_replace( '_', '-', \strtolower( \array_pop( $path ) ) );
+	$class_name = \str_replace(
 		[ $namespace, '\\', '_' ],
 		[ '', '/', '-' ],
-		strtolower( $class )
+		\strtolower( $class_name )
 	);
-	$string_position = strrpos( $class, $filename );
+	$string_position = \strrpos( $class_name, $filename );
 	
 	if ( $string_position !== false ) {
-		$class = substr_replace( $class, 'class-' . $filename, $string_position, strlen( $filename ) );
+		$class_name = \substr_replace( $class_name, 'class-' . $filename, $string_position, \strlen( $filename ) );
 	}
 	
-	$maybe_file = __DIR__ . '/inc/' . $class . '.php';
+	$maybe_file = __DIR__ . '/inc/' . $class_name . '.php';
 	
-	if ( file_exists( $maybe_file ) ) {
+	if ( \file_exists( $maybe_file ) ) {
 		require_once $maybe_file;
 	}
 } );

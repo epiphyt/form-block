@@ -15,14 +15,14 @@ final class Data {
 	/**
 	 * @var		\epiphyt\Form_Block\block_data\Data
 	 */
-	public static $instance;
+	public static ?self $instance;
 	
 	/**
 	 * Initialize the class.
 	 */
 	public function init(): void {
-		add_action( 'save_post', [ $this, 'set' ], 20, 2 );
-		add_action( 'update_option_widget_block', [ $this, 'set_for_widget' ], 20, 2 );
+		\add_action( 'save_post', [ $this, 'set' ], 20, 2 );
+		\add_action( 'update_option_widget_block', [ $this, 'set_for_widget' ], 20, 2 );
 	}
 	
 	/**
@@ -43,20 +43,23 @@ final class Data {
 			
 			// reusable blocks need to be processed first
 			if ( $block['blockName'] === 'core/block' && ! empty( $block['attrs']['ref'] ) ) {
-				$reusable_post = get_post( $block['attrs']['ref'] );
+				$reusable_post = \get_post( $block['attrs']['ref'] );
 				
 				if ( ! $reusable_post instanceof WP_Post ) {
 					return $data;
 				}
 				
-				$reusable_blocks = parse_blocks( $reusable_post->post_content );
+				$reusable_blocks = \parse_blocks( $reusable_post->post_content );
 				$data = $this->get( $reusable_blocks, $data );
 			}
-			else if ( ! str_starts_with( $block['blockName'], 'form-block/' ) || ! str_starts_with( $block['blockName'], 'form-block-pro/' ) ) {
+			else if (
+				! \str_starts_with( $block['blockName'], 'form-block/' )
+				|| ! \str_starts_with( $block['blockName'], 'form-block-pro/' )
+			) {
 				// ignore fields without a form block
 				if ( empty( $form_id ) && $block['blockName'] !== 'form-block/form' ) {
 					if ( ! empty( $block['innerBlocks'] ) ) {
-						$data = array_merge( $data, $this->get( $block['innerBlocks'], $data, $form_id ) );
+						$data = \array_merge( $data, $this->get( $block['innerBlocks'], $data, $form_id ) );
 					}
 					
 					continue;
@@ -93,7 +96,7 @@ final class Data {
 						 * @param	array	$block The original block data
 						 * @param	string	$form_id The form ID
 						 */
-						$data[ $form_id ] = apply_filters( 'form_block_data_form', $data[ $form_id ], $block, $form_id );
+						$data[ $form_id ] = \apply_filters( 'form_block_data_form', $data[ $form_id ], $block, $form_id );
 						break;
 					case 'form-block/input':
 						$field_data = $this->get_attributes( $block['innerHTML'], 'input' );
@@ -123,7 +126,7 @@ final class Data {
 				 * @param	array	$data Current form data
 				 * @param	string	$form_id The form ID
 				 */
-				$field_data = apply_filters( 'form_block_get_form_data', $field_data, $block, $data, $form_id );
+				$field_data = \apply_filters( 'form_block_get_form_data', $field_data, $block, $data, $form_id );
 				
 				if ( ! empty( $field_data ) ) {
 					if ( $context === 'fieldset' && $block['blockName'] !== 'form-block/' . $context ) {
@@ -138,7 +141,7 @@ final class Data {
 			}
 			
 			if ( ! empty( $block['innerBlocks'] ) && $context !== 'fieldset' ) {
-				$data = array_merge( $data, $this->get( $block['innerBlocks'], $data, $form_id ) );
+				$data = \array_merge( $data, $this->get( $block['innerBlocks'], $data, $form_id ) );
 			}
 			
 			if ( $context && $block['blockName'] === 'form-block/' . $context ) {
@@ -152,7 +155,7 @@ final class Data {
 			 * @param	array	$blocks Blocks from parsed_blocks()
 			 * @param	string	$form_id The form ID
 			 */
-			$data = apply_filters( 'form_block_get_data', $data, $block, $form_id );
+			$data = \apply_filters( 'form_block_get_data', $data, $block, $form_id );
 		}
 		
 		return $data;
@@ -169,7 +172,7 @@ final class Data {
 		$dom = new DOMDocument();
 		$dom->loadHTML(
 			'<html><meta charset="UTF-8">' . $element . '</html>',
-			LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+			\LIBXML_HTML_NOIMPLIED | \LIBXML_HTML_NODEFDTD
 		);
 		
 		$attributes = $this->get_element_attributes( $dom, $tag_name );
@@ -203,17 +206,17 @@ final class Data {
 				'option',
 				[
 					'get_text_content' => true,
-				],
+				]
 			);
 			
 			// check for associative keys
-			if ( count( array_filter( array_keys( $option_attributes ), 'is_string' ) ) > 0 ) {
+			if ( \count( \array_filter( \array_keys( $option_attributes ), 'is_string' ) ) > 0 ) {
 				$option_attributes['value'] = $option_attributes['textContent'];
 				unset( $option_attributes['textContent'] );
 				$option_attributes = [ $option_attributes ];
 			}
 			else {
-				$option_attributes = array_map( function( $option ) {
+				$option_attributes = \array_map( static function( $option ) {
 					$option['value'] = $option['textContent'];
 					unset( $option['textContent'] );
 					
@@ -230,19 +233,14 @@ final class Data {
 	/**
 	 * Get all attributes of an element.
 	 * 
-	 * @param	DOMDocument	$dom The DOMDocument instance
-	 * @param	string		$tag_name The tag name
-	 * @param	array		$arguments {
-	 * 	Additional arguments
-	 * 	
-	 * 	@type	string	$class_name Class name to check the element for
-	 * 	@type	bool	$get_text_content Whether to get the text content as well
-	 * }
+	 * @param	\DOMDocument	$dom The DOMDocument instance
+	 * @param	string			$tag_name The tag name
+	 * @param	array{class_name: string, get_text_content: bool}	$arguments Additional arguments
 	 * @return	array List of element's attributes
 	 */
 	private function get_element_attributes( DOMDocument $dom, string $tag_name, array $arguments = [] ): array {
 		$attributes = [];
-		$arguments = wp_parse_args( $arguments, [
+		$arguments = \wp_parse_args( $arguments, [
 			'class_name' => '',
 			'get_text_content' => false,
 		] );
@@ -255,7 +253,10 @@ final class Data {
 				continue;
 			}
 			
-			if ( ! empty( $arguments['class_name'] ) && strpos( $tag->getAttribute( 'class' ), $arguments['class_name'] ) === false ) {
+			if (
+				! empty( $arguments['class_name'] )
+				&& \strpos( $tag->getAttribute( 'class' ), $arguments['class_name'] ) === false
+			) {
 				continue;
 			}
 			
@@ -278,12 +279,12 @@ final class Data {
 				$attributes[ $iteration ]['textContent'] = \wp_strip_all_tags( $attributes[ $iteration ]['textContent'] );
 			}
 			
-			$iteration++;
+			++$iteration;
 		}
 		// phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		
-		if ( count( $attributes ) === 1 ) {
-			$attributes = reset( $attributes );
+		if ( \count( $attributes ) === 1 ) {
+			$attributes = \reset( $attributes );
 		}
 		
 		return $attributes;
@@ -294,7 +295,7 @@ final class Data {
 	 * 
 	 * @return	\epiphyt\Form_Block\block_data\Data The single instance of this class
 	 */
-	public static function get_instance(): Data {
+	public static function get_instance(): self {
 		if ( self::$instance === null ) {
 			self::$instance = new self();
 		}
@@ -309,9 +310,9 @@ final class Data {
 	 * @param	array		$data Form data
 	 * @param	string		$type The object type
 	 */
-	private function maybe_delete( $id, array $data, string $type = 'post' ): void {
-		$data_ids = array_keys( $data );
-		$form_ids = get_option( 'form_block_form_ids', [] );
+	private function maybe_delete( int|string $id, array $data, string $type = 'post' ): void {
+		$data_ids = \array_keys( $data );
+		$form_ids = \get_option( 'form_block_form_ids', [] );
 		$original_id = $id;
 		$widgets = [];
 		$widgets_unset = [];
@@ -321,7 +322,7 @@ final class Data {
 		}
 		
 		if ( $type === 'widget' ) {
-			$widgets = get_option( 'widget_block', [] );
+			$widgets = \get_option( 'widget_block', [] );
 			$widget_content = $widgets[ $original_id ]['content'];
 			
 			if ( empty( $widget_content ) || ! Util::has_block_in_content( 'form-block/form', $widget_content ) ) {
@@ -330,7 +331,7 @@ final class Data {
 		}
 		
 		foreach ( $form_ids as $form_id => &$ids ) {
-			if ( ! in_array( $id, $ids, true ) ) {
+			if ( ! \in_array( $id, $ids, true ) ) {
 				continue;
 			}
 			
@@ -344,9 +345,9 @@ final class Data {
 				$keep = true;
 			}
 			
-			if ( ! $keep || in_array( $id, $widgets_unset, true ) ) {
+			if ( ! $keep || \in_array( $id, $widgets_unset, true ) ) {
 				// delete object ID from array
-				$key = array_search( $id, $ids, true );
+				$key = \array_search( $id, $ids, true );
 				
 				if ( $key !== false ) {
 					unset( $ids[ $key ] );
@@ -354,13 +355,13 @@ final class Data {
 				
 				// completely delete only if it's not used anywhere else
 				if ( empty( $ids ) ) {
-					delete_option( 'form_block_data_' . $form_id );
+					\delete_option( 'form_block_data_' . $form_id );
 					unset( $form_ids[ $form_id ] );
 				}
 			}
 		}
 		
-		update_option( 'form_block_form_ids', $form_ids );
+		\update_option( 'form_block_form_ids', $form_ids );
 	}
 	
 	/**
@@ -371,7 +372,7 @@ final class Data {
 	 * @return	\WP_Post Current post object
 	 */
 	public function set( int $post_id, WP_Post $post ): WP_Post {
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		if ( \defined( 'DOING_AUTOSAVE' ) && \DOING_AUTOSAVE ) {
 			return $post;
 		}
 		
@@ -383,7 +384,7 @@ final class Data {
 			return $post;
 		}
 		
-		$data = $this->get( parse_blocks( $post->post_content ) );
+		$data = $this->get( \parse_blocks( $post->post_content ) );
 		
 		$this->set_form_block_data( $data, $post_id );
 		
@@ -401,8 +402,8 @@ final class Data {
 	 * @param	mixed	$new_value The new option value
 	 * @return	mixed The new option value
 	 */
-	public function set_for_widget( $old_value, $new_value ) {
-		if ( ! is_array( $new_value ) ) {
+	public function set_for_widget( mixed $old_value, mixed $new_value ): mixed {
+		if ( ! \is_array( $new_value ) ) {
 			return $new_value;
 		}
 		
@@ -411,7 +412,7 @@ final class Data {
 				continue;
 			}
 			
-			$data = $this->get( parse_blocks( $widget_data['content'] ) );
+			$data = $this->get( \parse_blocks( $widget_data['content'] ) );
 			
 			$this->set_form_block_data( $data, $widget_id, 'widget' );
 			$this->maybe_delete( $widget_id, $data, 'widget' );
@@ -428,7 +429,7 @@ final class Data {
 	 * @param	string	$type The object type
 	 */
 	public function set_form_block_data( array $data, int $id, string $type = 'post' ): void {
-		$form_ids = get_option( 'form_block_form_ids', [] );
+		$form_ids = \get_option( 'form_block_form_ids', [] );
 		$new_form_ids = $form_ids;
 		
 		if ( $type !== 'post' ) {
@@ -439,16 +440,16 @@ final class Data {
 			if ( empty( $new_form_ids[ $form_id ] ) ) {
 				$new_form_ids[ $form_id ] = [ $id ];
 			}
-			else if ( ! in_array( $id, $new_form_ids[ $form_id ], true ) ) {
+			else if ( ! \in_array( $id, $new_form_ids[ $form_id ], true ) ) {
 				$new_form_ids[ $form_id ][] = $id;
 			}
 			
 			// store form data
-			update_option( 'form_block_data_' . $form_id, $form );
+			\update_option( 'form_block_data_' . $form_id, $form );
 		}
 		
 		if ( $form_ids !== $new_form_ids ) {
-			update_option( 'form_block_form_ids', $new_form_ids );
+			\update_option( 'form_block_form_ids', $new_form_ids );
 		}
 	}
 }

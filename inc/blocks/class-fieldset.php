@@ -14,7 +14,7 @@ final class Fieldset {
 	/**
 	 * @var		\epiphyt\Form_Block\blocks\Fieldset
 	 */
-	public static $instance;
+	public static ?self $instance;
 	
 	/**
 	 * Initialize the class.
@@ -28,7 +28,7 @@ final class Fieldset {
 	 * 
 	 * @return	\epiphyt\Form_Block\blocks\Fieldset The single instance of this class
 	 */
-	public static function get_instance(): Fieldset {
+	public static function get_instance(): self {
 		if ( self::$instance === null ) {
 			self::$instance = new self();
 		}
@@ -40,6 +40,6 @@ final class Fieldset {
 	 * Register block.
 	 */
 	public static function register_block(): void {
-		register_block_type( \EPI_FORM_BLOCK_BASE . '/build/fieldset' );
+		\register_block_type( \EPI_FORM_BLOCK_BASE . '/build/fieldset' );
 	}
 }

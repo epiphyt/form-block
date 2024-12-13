@@ -14,7 +14,7 @@ final class Input {
 	/**
 	 * @var		\epiphyt\Form_Block\blocks\Input
 	 */
-	public static $instance;
+	public static ?self $instance;
 	
 	/**
 	 * Initialize the class.
@@ -29,7 +29,7 @@ final class Input {
 	 * 
 	 * @return	\epiphyt\Form_Block\blocks\Input The single instance of this class
 	 */
-	public static function get_instance(): Input {
+	public static function get_instance(): self {
 		if ( self::$instance === null ) {
 			self::$instance = new self();
 		}
@@ -43,6 +43,6 @@ final class Input {
 	 * @since	1.3.0
 	 */
 	public static function register_block(): void {
-		register_block_type( \EPI_FORM_BLOCK_BASE . '/build/input' );
+		\register_block_type( \EPI_FORM_BLOCK_BASE . '/build/input' );
 	}
 }

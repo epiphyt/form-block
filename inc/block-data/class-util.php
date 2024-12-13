@@ -20,23 +20,23 @@ final class Util {
 	 * @param	int|string|null	$id The post ID or post content to look for
 	 * @return	bool Whether the post contains this block
 	 */
-	public static function has_block( string $block_name, $id = null ): bool {
-		$id = ( ! $id ) ? get_post() : $id;
+	public static function has_block( string $block_name, int|string|null $id = null ): bool {
+		$id = ! $id ? \get_post() : $id;
 		
 		if ( $id instanceof WP_Post ) {
 			$id = $id->post_content;
 		}
 		
-		if ( has_block( $block_name, $id ) ) {
+		if ( \has_block( $block_name, $id ) ) {
 			return true;
 		}
 		
-		if ( has_block( 'block', $id ) ) {
+		if ( \has_block( 'block', $id ) ) {
 			// check reusable blocks
-			$content = is_numeric( $id ) ? get_post_field( 'post_content', $id ) : $id;
-			$blocks = parse_blocks( $content );
+			$content = \is_numeric( $id ) ? \get_post_field( 'post_content', $id ) : $id;
+			$blocks = \parse_blocks( $content );
 			
-			if ( ! is_array( $blocks ) || empty( $blocks ) ) {
+			if ( ! \is_array( $blocks ) || empty( $blocks ) ) {
 				return false;
 			}
 			
@@ -58,17 +58,17 @@ final class Util {
 	 * @return	bool Whether the content contains the block
 	 */
 	public static function has_block_in_content( string $block_name, string $content ): bool {
-		if ( strpos( $content, '<!-- wp:' . $block_name . ' ' ) !== false ) {
+		if ( \strpos( $content, '<!-- wp:' . $block_name . ' ' ) !== false ) {
 			return true;
 		}
 		
-		if ( strpos( $content, '<!-- wp:block ' ) === false ) {
+		if ( \strpos( $content, '<!-- wp:block ' ) === false ) {
 			return false;
 		}
 		
-		$blocks = parse_blocks( $content );
+		$blocks = \parse_blocks( $content );
 		
-		if ( ! is_array( $blocks ) || empty( $blocks ) ) {
+		if ( ! \is_array( $blocks ) || empty( $blocks ) ) {
 			return false;
 		}
 		
@@ -88,26 +88,26 @@ final class Util {
 	 * @return	bool Whether a widget area contains the block
 	 */
 	public static function has_block_in_widgets( string $block_name ): bool {
-		$widget_block = get_option( 'widget_block' );
+		$widget_block = \get_option( 'widget_block' );
 		
-		foreach ( wp_get_sidebars_widgets() as $sidebar => $widgets ) {
+		foreach ( \wp_get_sidebars_widgets() as $sidebar => $widgets ) {
 			// ignore inactive widgets
 			if ( $sidebar === 'wp_inactive_widgets' ) {
 				continue;
 			}
 			
-			if ( empty( $widgets ) || ! is_array( $widgets ) ) {
+			if ( empty( $widgets ) || ! \is_array( $widgets ) ) {
 				continue;
 			}
 			
 			foreach ( $widgets as $widget ) {
 				// ignore any widgets that are no block widgets
-				if ( strpos( $widget, 'block-' ) !== 0 ) {
+				if ( \strpos( $widget, 'block-' ) !== 0 ) {
 					continue;
 				}
 				
 				// block ID is part of the widget ID
-				$block_id = (string) str_replace( 'block-', '', $widget );
+				$block_id = (string) \str_replace( 'block-', '', $widget );
 				$block = $widget_block[ $block_id ];
 				
 				if ( empty( $block['content'] ) ) {
@@ -116,14 +116,14 @@ final class Util {
 				
 				// don't use self::has_block() since this only allows to pass
 				// an ID and not the content directly
-				if ( has_block( $block_name, $block['content'] ) ) {
+				if ( \has_block( $block_name, $block['content'] ) ) {
 					return true;
 				}
 				
 				// search in reusable blocks
-				$parsed_blocks = parse_blocks( $block['content'] );
+				$parsed_blocks = \parse_blocks( $block['content'] );
 				
-				if ( ! is_array( $parsed_blocks ) || empty( $parsed_blocks ) ) {
+				if ( ! \is_array( $parsed_blocks ) || empty( $parsed_blocks ) ) {
 					continue;
 				}
 				
@@ -146,7 +146,7 @@ final class Util {
 	 * @return	bool Whether the post contains this block
 	 */
 	private static function has_block_recursive( string $block_name, array $block ): bool {
-		if ( ! empty( $block['attrs']['ref'] ) && has_block( $block_name, $block['attrs']['ref'] ) ) {
+		if ( ! empty( $block['attrs']['ref'] ) && \has_block( $block_name, $block['attrs']['ref'] ) ) {
 			return true;
 		}
 		
@@ -160,8 +160,8 @@ final class Util {
 		
 		// check reusable blocks inside reusable blocks
 		if ( ! empty( $block['attrs']['ref'] ) ) {
-			$content = get_post_field( 'post_content', $block['attrs']['ref'] );
-			$blocks = parse_blocks( $content );
+			$content = \get_post_field( 'post_content', $block['attrs']['ref'] );
+			$blocks = \parse_blocks( $content );
 			
 			foreach ( $blocks as $block ) {
 				if ( self::has_block_recursive( $block_name, $block ) ) {

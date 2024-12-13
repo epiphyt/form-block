@@ -14,13 +14,13 @@ final class Validation {
 	/**
 	 * @var		\epiphyt\Form_Block\form_data\Validation
 	 */
-	public static $instance;
+	public static ?self $instance;
 	
 	/**
 	 * @since	1.0.2
 	 * @var		array List of field names used by the system
 	 */
-	private $system_field_names = [
+	private array $system_field_names = [
 		'_form_id',
 		'_town',
 		'_wpnonce',
@@ -29,15 +29,15 @@ final class Validation {
 	
 	/**
 	 * Validate form fields by allowed names.
-	 *
+	 * 
 	 * @param	string	$name The field name
 	 * @param	array	$form_data The form data
 	 */
 	private function by_allowed_names( string $name, array $form_data ): void {
 		$allowed_names = $this->get_allowed_names( $form_data );
-		$name = preg_replace( '/-\d+$/', '', $name );
+		$name = \preg_replace( '/-\d+$/', '', $name );
 		
-		if ( in_array( $name, $allowed_names, true ) ) {
+		if ( \in_array( $name, $allowed_names, true ) ) {
 			return;
 		}
 		
@@ -52,11 +52,11 @@ final class Validation {
 			}
 		}
 		
-		wp_send_json_error( [
-			'message' => sprintf(
+		\wp_send_json_error( [
+			'message' => \sprintf(
 				/* translators: field title */
-				esc_html__( 'The following field is not allowed: %s', 'form-block' ),
-				esc_html( Data::get_instance()->get_field_title_by_name( $name, $form_data['fields'] ) )
+				\esc_html__( 'The following field is not allowed: %s', 'form-block' ),
+				\esc_html( Data::get_instance()->get_field_title_by_name( $name, $form_data['fields'] ) )
 			),
 		] );
 	}
@@ -80,7 +80,7 @@ final class Validation {
 		 * @param	array	$fields Field data from request
 		 * @param	string	$form_id Current form ID
 		 */
-		$errors = apply_filters( 'form_block_field_data_errors', $errors, $form_data, $fields, $form_id );
+		$errors = \apply_filters( 'form_block_field_data_errors', $errors, $form_data, $fields, $form_id );
 		
 		return $errors;
 	}
@@ -92,7 +92,7 @@ final class Validation {
 	 * @param	array	$attributes Form field attributes
 	 * @return	array List of validation errors
 	 */
-	private function by_attributes( $value, array $attributes ): array {
+	private function by_attributes( mixed $value, array $attributes ): array {
 		$errors = [];
 		
 		foreach ( $attributes as $attribute => $attribute_value ) {
@@ -100,21 +100,21 @@ final class Validation {
 				case 'block_type':
 					switch ( $attribute_value ) {
 						case 'textarea':
-							$validated = sanitize_textarea_field( $value );
+							$validated = \sanitize_textarea_field( $value );
 							break;
 						default:
 							if ( \is_array( $value ) ) {
 								$validated = \array_map( 'sanitize_text_field', $value );
 							}
 							else {
-								$validated = sanitize_text_field( $value );
+								$validated = \sanitize_text_field( $value );
 							}
 							break;
 					}
 					
 					if ( $value !== $validated ) {
 						$errors[] = [
-							'message' => __( 'The entered value is invalid.', 'form-block' ),
+							'message' => \__( 'The entered value is invalid.', 'form-block' ),
 							'type' => $attribute,
 						];
 					}
@@ -126,7 +126,7 @@ final class Validation {
 						|| ( empty( $attributes['value'] ) && ! empty( $value ) )
 					) {
 						$errors[] = [
-							'message' => __( 'The value must not change.', 'form-block' ),
+							'message' => \__( 'The value must not change.', 'form-block' ),
 							'type' => $attribute,
 						];
 					}
@@ -141,7 +141,7 @@ final class Validation {
 		 * @param	mixed	$value The field value
 		 * @param	array	$attributes Form field attributes
 		 */
-		$errors = apply_filters( 'form_block_field_attributes_validation', $errors, $value, $attributes );
+		$errors = \apply_filters( 'form_block_field_attributes_validation', $errors, $value, $attributes );
 		
 		return $errors;
 	}
@@ -167,7 +167,7 @@ final class Validation {
 	
 	/**
 	 * Get all allowed name attributes without their unique -\d+ part.
-	 *
+	 * 
 	 * @param	array	$form_data Current form data to validate
 	 * @return	array List of allowed name attributes
 	 */
@@ -192,7 +192,7 @@ final class Validation {
 	 */
 	private static function get_allowed_subfield_name_regex( array $field ): string {
 		foreach ( $field as $key => $field_value ) {
-			$name = '\[(' . \preg_quote( $key, '/' ) . '*)\]';
+			$name = '\[(' . \preg_quote( (string) $key, '/' ) . '*)\]';
 			
 			if ( \is_array( $field_value ) ) {
 				foreach ( $field_value as $subfield_key => $subfield_value ) {
@@ -240,32 +240,32 @@ final class Validation {
 	 * @return	array The validated fields
 	 */
 	public function fields(): array {
-		$form_data = get_option( 'form_block_data_' . Data::get_instance()->get_form_id(), [] );
+		$form_data = \get_option( 'form_block_data_' . Data::get_instance()->get_form_id(), [] );
 		$validated = [];
 		
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		foreach ( $_POST as $key => $value ) {
 			// sanitize_key() but with support for uppercase
-			$key = preg_replace( '/[^A-Za-z0-9_\-]/', '', wp_unslash( $key ) );
+			$key = \preg_replace( '/[^A-Za-z0-9_\-]/', '', \wp_unslash( $key ) );
 			
 			$this->by_allowed_names( $key, $form_data );
 			
-			if ( is_array( $value ) ) {
+			if ( \is_array( $value ) ) {
 				$value = self::sanitize_array_values( $value, $form_data );
 			}
 			else {
 				// if it's not a string, die with an error message
-				if ( ! is_string( $value ) ) {
-					wp_send_json_error( [
-						'message' => sprintf(
+				if ( ! \is_string( $value ) ) {
+					\wp_send_json_error( [
+						'message' => \sprintf(
 							/* translators: the field name */
-							esc_html__( 'Wrong item format in field %s.', 'form-block' ),
-							esc_html( Data::get_instance()->get_field_title_by_name( $key, $form_data['fields'] ) )
+							\esc_html__( 'Wrong item format in field %s.', 'form-block' ),
+							\esc_html( Data::get_instance()->get_field_title_by_name( $key, $form_data['fields'] ) )
 						),
 					] );
 				}
 				
-				$value = sanitize_textarea_field( wp_unslash( $value ) );
+				$value = \sanitize_textarea_field( \wp_unslash( $value ) );
 			}
 			
 			$validated[ $key ] = $value;
@@ -292,7 +292,7 @@ final class Validation {
 		 * @param	string	$form_id The form ID
 		 * @param	array	$form_data The form data
 		 */
-		$validated = apply_filters( 'form_block_validated_fields', $validated, Data::get_instance()->get_form_id(), $form_data );
+		$validated = \apply_filters( 'form_block_validated_fields', $validated, Data::get_instance()->get_form_id(), $form_data );
 		
 		$required_fields = Data::get_instance()->get_required_fields( Data::get_instance()->get_form_id(), $validated );
 		
@@ -307,7 +307,7 @@ final class Validation {
 			if (
 				(
 					empty( $_FILES[ $field_name ]['tmp_name'] )
-					|| ( is_array( $_FILES[ $field_name ]['tmp_name'] ) && empty( array_filter( $_FILES[ $field_name ]['tmp_name'] ) ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+					|| ( \is_array( $_FILES[ $field_name ]['tmp_name'] ) && empty( \array_filter( $_FILES[ $field_name ]['tmp_name'] ) ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 				)
 				&& empty( $validated[ $field_name ] )
 			) {
@@ -318,11 +318,11 @@ final class Validation {
 		
 		// output error if there are missing fields
 		if ( ! empty( $missing_fields ) ) {
-			wp_send_json_error( [
-				'message' => sprintf(
+			\wp_send_json_error( [
+				'message' => \sprintf(
 					/* translators: missing fields */
-					esc_html( _n( 'The following field is missing: %s', 'The following fields are missing: %s', count( $missing_fields ), 'form-block' ) ),
-					esc_html( implode( ', ', $missing_fields ) )
+					\esc_html( \_n( 'The following field is missing: %s', 'The following fields are missing: %s', \count( $missing_fields ), 'form-block' ) ),
+					\esc_html( \implode( ', ', $missing_fields ) )
 				),
 			] );
 		}
@@ -333,16 +333,16 @@ final class Validation {
 			$message = '';
 			
 			foreach ( $field_data_errors as $field_errors ) {
-				$message .= esc_html( $field_errors['field_title'] ) . ': ';
+				$message .= \esc_html( $field_errors['field_title'] ) . ': ';
 				
 				foreach ( $field_errors['errors'] as $error ) {
-					$message .= esc_html( $error['message'] );
+					$message .= \esc_html( $error['message'] );
 				}
 				
-				$message .= PHP_EOL;
+				$message .= \PHP_EOL;
 			}
 			
-			wp_send_json_error( [
+			\wp_send_json_error( [
 				'message' => $message,
 			] );
 		}
@@ -356,7 +356,7 @@ final class Validation {
 	 * @return	array The validated files
 	 */
 	public function files(): array {
-		$form_data = get_option( 'form_block_data_' . Data::get_instance()->get_form_id(), [] );
+		$form_data = \get_option( 'form_block_data_' . Data::get_instance()->get_form_id(), [] );
 		$validated = [];
 		
 		if ( empty( $_FILES ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
@@ -364,16 +364,16 @@ final class Validation {
 		}
 		
 		$filesize = 0;
-		$maximum_file_size = wp_convert_hr_to_bytes( ini_get( 'upload_max_filesize' ) );
-		$maximum_post_size = wp_convert_hr_to_bytes( ini_get( 'post_max_size' ) );
-		$maximum_upload_size = max( $maximum_file_size, $maximum_post_size );
+		$maximum_file_size = \wp_convert_hr_to_bytes( \ini_get( 'upload_max_filesize' ) );
+		$maximum_post_size = \wp_convert_hr_to_bytes( \ini_get( 'post_max_size' ) );
+		$maximum_upload_size = \max( $maximum_file_size, $maximum_post_size );
 		
 		if ( isset( $_SERVER['CONTENT_LENGTH'] ) || isset( $_SERVER['HTTP_CONTENT_LENGTH'] ) ) {
-			$content_length = (int) sanitize_text_field( wp_unslash( $_SERVER['CONTENT_LENGTH'] ?? $_SERVER['HTTP_CONTENT_LENGTH'] ?? $maximum_upload_size ) );
+			$content_length = (int) \sanitize_text_field( \wp_unslash( $_SERVER['CONTENT_LENGTH'] ?? $_SERVER['HTTP_CONTENT_LENGTH'] ?? $maximum_upload_size ) );
 			
 			if ( $content_length >= $maximum_upload_size ) {
-				wp_send_json_error( [
-					'message' => esc_html__( 'The uploaded file(s) are too big.', 'form-block' ),
+				\wp_send_json_error( [
+					'message' => \esc_html__( 'The uploaded file(s) are too big.', 'form-block' ),
 				] );
 			}
 		}
@@ -381,7 +381,7 @@ final class Validation {
 		foreach ( $_FILES as $field_name => $files ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$this->by_allowed_names( $field_name, $form_data );
 			
-			if ( is_array( $files['name'] ) ) {
+			if ( \is_array( $files['name'] ) ) {
 				// if multiple files, resort
 				$files = Data::get_instance()->unify_files_array( $files );
 				
@@ -390,9 +390,9 @@ final class Validation {
 						continue;
 					}
 					
-					if ( $file['size'] > wp_max_upload_size() ) {
-						wp_send_json_error( [
-							'message' => esc_html__( 'The uploaded file is too big.', 'form-block' ),
+					if ( $file['size'] > \wp_max_upload_size() ) {
+						\wp_send_json_error( [
+							'message' => \esc_html__( 'The uploaded file is too big.', 'form-block' ),
 						] );
 					}
 					
@@ -406,9 +406,9 @@ final class Validation {
 				}
 			}
 			else if ( ! empty( $files['tmp_name'] ) ) {
-				if ( $files['size'] > wp_max_upload_size() ) {
-					wp_send_json_error( [
-						'message' => esc_html__( 'The uploaded file is too big.', 'form-block' ),
+				if ( $files['size'] > \wp_max_upload_size() ) {
+					\wp_send_json_error( [
+						'message' => \esc_html__( 'The uploaded file is too big.', 'form-block' ),
 					] );
 				}
 				
@@ -422,9 +422,9 @@ final class Validation {
 			}
 		}
 		
-		if ( $filesize > wp_max_upload_size() ) {
-			wp_send_json_error( [
-				'message' => esc_html__( 'The uploaded file(s) are too big.', 'form-block' ),
+		if ( $filesize > \wp_max_upload_size() ) {
+			\wp_send_json_error( [
+				'message' => \esc_html__( 'The uploaded file(s) are too big.', 'form-block' ),
 			] );
 		}
 		
@@ -437,7 +437,7 @@ final class Validation {
 		 * @param	array	$form_data Current form data
 		 * @param	array	$_FILES PHP files array
 		 */
-		$validated = apply_filters( 'form_block_files_validation', $validated, $form_data, $_FILES ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$validated = \apply_filters( 'form_block_files_validation', $validated, $form_data, $_FILES ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		
 		return $validated;
 	}
@@ -494,7 +494,7 @@ final class Validation {
 	 * 
 	 * @return	\epiphyt\Form_Block\form_data\Validation The single instance of this class
 	 */
-	public static function get_instance(): Validation {
+	public static function get_instance(): self {
 		if ( self::$instance === null ) {
 			self::$instance = new self();
 		}

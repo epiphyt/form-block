@@ -3,7 +3,6 @@ namespace epiphyt\Form_Block\modules;
 
 use DOMDocument;
 use DOMElement;
-use DOMException;
 use DOMXPath;
 use epiphyt\Form_Block\form_data\Data;
 
@@ -38,11 +37,11 @@ final class Custom_Date {
 	/**
 	 * Add single date fields to an input element.
 	 * 
-	 * @param	array		$fields Fields to add
-	 * @param	DOMDocument	$dom DOM object
-	 * @param	DOMElement	$element DOM element object
-	 * @param	array		$field_data Data of the input field
-	 * @param	array		$block_data Data of the block
+	 * @param	array			$fields Fields to add
+	 * @param	\DOMDocument	$dom DOM object
+	 * @param	\DOMElement		$element DOM element object
+	 * @param	array			$field_data Data of the input field
+	 * @param	array			$block_data Data of the block
 	 */
 	private static function add_date_fields( array $fields, DOMDocument $dom, DOMElement $element, array $field_data, array $block_data ): void {
 		foreach ( $fields as $type => $field ) {
@@ -314,8 +313,8 @@ final class Custom_Date {
 		$block_data = \wp_parse_args(
 			$block['attrs']['customDate'] ?? [],
 			[
-				'showPlaceholder' => true,
 				'showLabel' => false,
+				'showPlaceholder' => true,
 				'value' => [],
 			]
 		);
@@ -326,7 +325,7 @@ final class Custom_Date {
 		$input_node->parentNode->removeChild( $input_node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		$label_node->parentNode->removeChild( $label_node ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		
-		return str_replace( [ '<html><meta charset="UTF-8">', '</html>' ], '', $dom->saveHTML( $dom->documentElement ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		return \str_replace( [ '<html><meta charset="UTF-8">', '</html>' ], '', $dom->saveHTML( $dom->documentElement ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
 	
 	/**

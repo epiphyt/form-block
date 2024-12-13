@@ -14,15 +14,15 @@ final class Theme_Styles {
 	/**
 	 * @var		\epiphyt\Form_Block\Theme_Styles
 	 */
-	public static $instance;
+	public static ?self $instance;
 	
 	/**
 	 * Initialize the class.
 	 */
 	public function init(): void {
-		add_action( 'init', [ $this, 'register_styles' ], 20 );
+		\add_action( 'init', [ $this, 'register_styles' ], 20 );
 		
-		add_filter( 'form_block_form_style', [ $this, 'register_block_styles' ] );
+		\add_filter( 'form_block_form_style', [ $this, 'register_block_styles' ] );
 	}
 	
 	/**
@@ -30,7 +30,7 @@ final class Theme_Styles {
 	 * 
 	 * @return	\epiphyt\Form_Block\Theme_Styles The single instance of this class
 	 */
-	public static function get_instance(): Theme_Styles {
+	public static function get_instance(): self {
 		if ( self::$instance === null ) {
 			self::$instance = new self();
 		}
@@ -44,14 +44,11 @@ final class Theme_Styles {
 	 * @param	string	$name The theme name to test
 	 * @return	bool True if the current theme is matching, false otherwise
 	 */
-	public function is_theme( $name ) {
-		$name = strtolower( $name );
+	public function is_theme( string $name ): bool {
+		$name = \strtolower( $name );
 		
-		if ( strtolower( wp_get_theme()->get( 'Name' ) ) === $name || strtolower( wp_get_theme()->get( 'Template' ) ) === $name ) {
-			return true;
-		}
-		
-		return false;
+		return \strtolower( \wp_get_theme()->get( 'Name' ) ) === $name
+			|| \strtolower( \wp_get_theme()->get( 'Template' ) ) === $name;
 	}
 	
 	/**
@@ -78,26 +75,26 @@ final class Theme_Styles {
 	 * Register frontend styles.
 	 */
 	public function register_styles(): void {
-		$is_debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
+		$is_debug = \defined( 'WP_DEBUG' ) && \WP_DEBUG;
 		$suffix = ( $is_debug ? '' : '.min' );
 		
 		if ( $this->is_theme( 'Twenty Twenty-Four' ) ) {
-			$file_path = \plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-four' . $suffix . '.css';
-			$file_url = \plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-four' . $suffix . '.css';
+			$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-four' . $suffix . '.css';
+			$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-four' . $suffix . '.css';
 			
 			\wp_register_style( 'form-block-twenty-twenty-four', $file_url, [ 'form-block' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION );
 		}
 		else if ( $this->is_theme( 'Twenty Twenty-Three' ) ) {
-			$file_path = plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-three' . $suffix . '.css';
-			$file_url = plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-three' . $suffix . '.css';
+			$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-three' . $suffix . '.css';
+			$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-three' . $suffix . '.css';
 			
-			wp_register_style( 'form-block-twenty-twenty-three', $file_url, [ 'form-block' ], $is_debug ? filemtime( $file_path ) : FORM_BLOCK_VERSION );
+			\wp_register_style( 'form-block-twenty-twenty-three', $file_url, [ 'form-block' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION );
 		}
 		else if ( $this->is_theme( 'Twenty Twenty-Two' ) ) {
-			$file_path = plugin_dir_path( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-two' . $suffix . '.css';
-			$file_url = plugin_dir_url( EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-two' . $suffix . '.css';
+			$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-two' . $suffix . '.css';
+			$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-two' . $suffix . '.css';
 			
-			wp_register_style( 'form-block-twenty-twenty-two', $file_url, [ 'form-block' ], $is_debug ? filemtime( $file_path ) : FORM_BLOCK_VERSION );
+			\wp_register_style( 'form-block-twenty-twenty-two', $file_url, [ 'form-block' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION );
 		}
 	}
 }
