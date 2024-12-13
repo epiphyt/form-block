@@ -24,7 +24,7 @@ Author URI:			https://epiph.yt
 License:			GPL2
 License URI:		https://www.gnu.org/licenses/gpl-2.0.html
 Requires at least:	6.3
-Requires PHP:		5.6
+Requires PHP:		7.4
 Tags:				form, blocks, block editor, email, contact form
 Tested up to:		6.7
 Text Domain:		form-block
