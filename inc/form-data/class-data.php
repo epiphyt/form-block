@@ -33,6 +33,29 @@ final class Data {
 	}
 	
 	/**
+	 * Filter an array recursively.
+	 * 
+	 * @param	mixed[]	$input Input array
+	 * @return	mixed[] Filtered array
+	 */
+	private static function array_filter_recursive( array $input ): array {
+		foreach ( $input as $key => &$value ) {
+			if ( \is_array( $value ) ) {
+				$value = self::array_filter_recursive( $value );
+				
+				if ( empty( $value ) ) {
+					unset( $input[ $key ] );
+				}
+			}
+			else if ( empty( $value ) ) {
+				unset( $input[ $key ] );
+			}
+		}
+		
+		return $input;
+	}
+	
+	/**
 	 * Create a nonce via Ajax.
 	 * 
 	 * @since	1.0.2
@@ -162,7 +185,14 @@ final class Data {
 				'name' => $field['name'],
 				'value' => self::get_post_field_value( $field['name'], $post_fields ),
 			];
-			$output = $this->get_raw_field_output( $post_field, $form_data, $level );
+			
+			if ( \is_array( $post_field['value'] ) ) {
+				$post_field['value'] = self::array_filter_recursive( $post_field['value'] );
+			}
+			
+			if ( ! empty( $post_field['value'] ) ) {
+				$output = $this->get_raw_field_output( $post_field, $form_data, $level );
+			}
 		}
 		else if ( isset( $field['legend']['textContent'] ) ) {
 			/**
@@ -180,10 +210,16 @@ final class Data {
 		}
 		
 		if ( ! empty( $field['fields'] ) ) {
+			$subfields_output = '';
 			++$level;
 			
 			foreach ( $field['fields'] as $sub_field ) {
-				$output .= $this->get_field_output( $sub_field, $form_data, $post_fields, $level );
+				$subfields_output .= $this->get_field_output( $sub_field, $form_data, $post_fields, $level );
+			}
+			
+			// don't output fieldset legend if no fields in the fieldset are available
+			if ( empty( $subfields_output ) && isset( $field['legend']['textContent'] ) ) {
+				$output = '';
 			}
 		}
 		
