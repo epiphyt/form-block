@@ -544,13 +544,15 @@ final class Data {
 	/**
 	 * Get all required fields of a form.
 	 * 
-	 * @since	1.3.0 Add $fields parameter
+	 * @since	1.3.0 Add $post_fields parameter
+	 * @since	1.5.0 Add $fields_to_check parameter
 	 * 
 	 * @param	string	$form_id Current form ID
-	 * @param	array	$fields Submitted form fields
+	 * @param	array	$post_fields Submitted form fields
+	 * @param	array	$fields_to_check Optional fields to check
 	 * @return	array List of required field names
 	 */
-	public function get_required_fields( string $form_id = '', array $fields = [] ): array {
+	public function get_required_fields( string $form_id = '', array $post_fields = [], array $fields_to_check = [] ): array {
 		if ( ! $form_id ) {
 			$form_id = $this->form_id;
 		}
@@ -561,10 +563,18 @@ final class Data {
 		
 		Form_Block::get_instance()->reset_block_name_attributes();
 		
-		$data = $this->get( $form_id );
+		if ( empty( $fields_to_check ) ) {
+			$data = $this->get( $form_id );
+			$fields_to_check = $data['fields'];
+		}
+		
 		$required = [];
 		
-		foreach ( $data['fields'] as $field ) {
+		foreach ( $fields_to_check as $field ) {
+			if ( ! empty( $field['fields'] ) ) {
+				$required = \array_merge( $required, $this->get_required_fields( $form_id, $post_fields, $field['fields'] ) );
+			}
+			
 			if ( ! isset( $field['required'] ) ) {
 				continue;
 			}
