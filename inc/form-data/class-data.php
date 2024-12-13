@@ -217,6 +217,8 @@ final class Data {
 				$subfields_output .= $this->get_field_output( $sub_field, $form_data, $post_fields, $level );
 			}
 			
+			$output .= \trim( $subfields_output );
+			
 			// don't output fieldset legend if no fields in the fieldset are available
 			if ( empty( $subfields_output ) && isset( $field['legend']['textContent'] ) ) {
 				$output = '';
