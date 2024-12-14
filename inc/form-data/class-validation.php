@@ -2,6 +2,7 @@
 namespace epiphyt\Form_Block\form_data;
 
 use epiphyt\Form_Block\Form_Block;
+use epiphyt\Form_Block\util\Array_Operations;
 
 /**
  * Form data class.
@@ -56,7 +57,7 @@ final class Validation {
 			'message' => \sprintf(
 				/* translators: field title */
 				\esc_html__( 'The following field is not allowed: %s', 'form-block' ),
-				\esc_html( Data::get_instance()->get_field_title_by_name( $name, $form_data['fields'] ) )
+				\esc_html( Field::get_title_by_name( $name, $form_data['fields'] ) )
 			),
 		] );
 	}
@@ -225,7 +226,7 @@ final class Validation {
 					'message' => \sprintf(
 						/* translators: the field name */
 						\esc_html__( 'Wrong item format in field %s.', 'form-block' ),
-						\esc_html( Data::get_instance()->get_field_title_by_name( $key, $form_data['fields'] ) )
+						\esc_html( Field::get_title_by_name( $key, $form_data['fields'] ) )
 					),
 				] );
 			}
@@ -251,6 +252,7 @@ final class Validation {
 			$this->by_allowed_names( $key, $form_data );
 			
 			if ( \is_array( $value ) ) {
+				$value = Array_Operations::filter_recursive( $value );
 				$value = self::sanitize_array_values( $value, $form_data );
 			}
 			else {
@@ -260,7 +262,7 @@ final class Validation {
 						'message' => \sprintf(
 							/* translators: the field name */
 							\esc_html__( 'Wrong item format in field %s.', 'form-block' ),
-							\esc_html( Data::get_instance()->get_field_title_by_name( $key, $form_data['fields'] ) )
+							\esc_html( Field::get_title_by_name( $key, $form_data['fields'] ) )
 						),
 					] );
 				}
@@ -311,7 +313,7 @@ final class Validation {
 				)
 				&& empty( $validated[ $field_name ] )
 			) {
-				$missing_fields[] = Data::get_instance()->get_field_title_by_name( $field_name, $form_data['fields'] );
+				$missing_fields[] = Field::get_title_by_name( $field_name, $form_data['fields'] );
 			}
 			// phpcs:enable WordPress.Security.NonceVerification.Missing
 		}
@@ -461,7 +463,7 @@ final class Validation {
 				$field_title = '';
 				
 				if ( empty( $field['name'] ) ) {
-					$field_title = Data::get_instance()->get_field_title_by_name( $name, $form_data['fields'] );
+					$field_title = Field::get_title_by_name( $name, $form_data['fields'] );
 					
 					if ( empty( $field['label'] ) || $field_title !== $field['label'] ) {
 						continue;
@@ -500,33 +502,5 @@ final class Validation {
 		}
 		
 		return self::$instance;
-	}
-	
-	/**
-	 * Check, whether a field has been submitted.
-	 * 
-	 * @param	string	$field_name Field name to check
-	 * @param	array	$post_fields POST fields
-	 * @return	bool Whether a field has been submitted
-	 */
-	public static function is_field_submitted( string $field_name, array $post_fields ): bool {
-		if ( \preg_match_all( '/([^\[\]]+)/', $field_name, $matches ) ) {
-			$keys = $matches[1];
-		}
-		else {
-			return false;
-		}
-		
-		$current_fields = $post_fields;
-		
-		foreach ( $keys as $key ) {
-			if ( ! \is_array( $current_fields ) || ! \array_key_exists( $key, $current_fields ) ) {
-				return false;
-			}
-			
-			$current_fields = $current_fields[ $key ];
-		}
-		
-		return true;
 	}
 }

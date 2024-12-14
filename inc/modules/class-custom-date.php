@@ -4,7 +4,7 @@ namespace epiphyt\Form_Block\modules;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
-use epiphyt\Form_Block\form_data\Data;
+use epiphyt\Form_Block\form_data\Field;
 
 /**
  * Custom date module.
@@ -333,11 +333,11 @@ final class Custom_Date {
 	 * 
 	 * @param	mixed	$value Post value
 	 * @param	string	$name Field name
-	 * @param	array	$field_data Form field data
+	 * @param	array	$form_fields Form fields
 	 * @return	mixed Output in proper format
 	 */
-	public static function set_output_format( mixed $value, string $name, array $field_data ): mixed {
-		$field = Data::get_instance()->get_field_data_by_name( $name, $field_data['fields'] );
+	public static function set_output_format( mixed $value, string $name, array $form_fields ): mixed {
+		$field = Field::get_by_name( $name, $form_fields );
 		
 		if ( ! isset( $field['type'] ) || ! \in_array( $field['type'], self::$field_types, true ) ) {
 			return $value;

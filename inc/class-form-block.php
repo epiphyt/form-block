@@ -9,6 +9,7 @@ use epiphyt\Form_Block\blocks\Input;
 use epiphyt\Form_Block\blocks\Select;
 use epiphyt\Form_Block\blocks\Textarea;
 use epiphyt\Form_Block\form_data\Data as Form_Data_Data;
+use epiphyt\Form_Block\form_data\Field;
 use epiphyt\Form_Block\modules\Custom_Date;
 
 /**
@@ -223,7 +224,7 @@ final class Form_Block {
 		}
 		
 		if ( ! empty( $block['attrs']['label'] ) ) {
-			return $this->get_unique_block_name_attribute( Form_Data_Data::get_field_name_by_label( $block['attrs']['label'] ), $uniqueness );
+			return $this->get_unique_block_name_attribute( Field::get_name_by_label( $block['attrs']['label'] ), $uniqueness );
 		}
 		
 		return $this->get_unique_block_name_attribute( 'unknown', $uniqueness );
