@@ -259,9 +259,6 @@ final class Data {
 	/**
 	 * Get all required fields of a form.
 	 * 
-	 * @since	1.3.0 Add $post_fields parameter
-	 * @since	1.5.0 Add $fields_to_check parameter
-	 * 
 	 * @param	string	$form_id Current form ID
 	 * @param	array	$post_fields Submitted form fields
 	 * @param	array	$fields_to_check Optional fields to check

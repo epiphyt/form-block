@@ -116,6 +116,8 @@ final class Form {
 	/**
 	 * Add the form label.
 	 * 
+	 * @since	1.5.0
+	 * 
 	 * @param	string	$block_content Block content
 	 * @param	array	$block Block attributes
 	 * @return	string Updated block content

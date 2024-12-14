@@ -4,6 +4,8 @@ namespace epiphyt\Form_Block\util;
 /**
  * Array operations class.
  * 
+ * @since	1.5.0
+ * 
  * @author	Epiphyt
  * @license	GPL2
  * @package	epiphyt\Form_Block
