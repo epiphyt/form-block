@@ -53,35 +53,6 @@ final class Field {
 	}
 	
 	/**
-	 * Get field indentation by a defined level.
-	 * 
-	 * @param	mixed[]	$field Field data
-	 * @param	int		$level Indentation level
-	 * @return	string Field output with indentation
-	 */
-	private static function get_indentation( array $field, int $level ): string {
-		$output = '';
-		
-		foreach ( $field as $key => $item ) {
-			$output .= \str_repeat( ' ', $level * 2 );
-			/* translators: list item key */
-			$output .= \sprintf( \_x( '- %s:', 'list element in plaintext email', 'form-block' ), $key );
-			
-			if ( \is_array( $item ) ) {
-				++$level;
-				$output .= \PHP_EOL;
-				$output .= self::get_indentation( $item, $level );
-				--$level;
-			}
-			else {
-				$output .= ' ' . $item;
-			}
-		}
-		
-		return $output;
-	}
-	
-	/**
 	 * Get a unique instance of the class.
 	 * 
 	 * @return	\epiphyt\Form_Block\form_data\Field The single instance of this class
@@ -134,53 +105,6 @@ final class Field {
 	}
 	
 	/**
-	 * Check if a field matches the structure in the provided POST data.
-	 * 
-	 * @param	array<string, mixed>	$post_fields POST fields
-	 * @param	mixed[]					$field Field data
-	 * @return	mixed The value if the field exists, or false otherwise
-	 */
-	private static function is_matching_in_post_fields( array $post_fields, array $field ): mixed {
-		$keys = self::parse_field_name( $field['name'] );
-		$current = $post_fields;
-		
-		if ( empty( $keys ) ) {
-			return false;
-		}
-		
-		foreach ( $keys as $key ) {
-			if ( $key === '[]' ) {
-				if ( \is_array( $current ) ) {
-					if ( isset( $field['value'] ) ) {
-						if ( $field['value'] !== Array_Operations::get_last_value_recursive( $current ) ) {
-							return false;
-						}
-					}
-					
-					return $current;
-				}
-				
-				return false;
-			}
-			else if ( ! \array_key_exists( $key, $current ) ) {
-				return false;
-			}
-			else if ( $key !== $keys[0] ) {
-				$current = [ $key => $current[ $key ] ];
-			}
-			else {
-				$current = $current[ $key ];
-			}
-		}
-		
-		if ( isset( $field['value'] ) && $field['value'] !== $current ) {
-			return false;
-		}
-		
-		return $current;
-	}
-	
-	/**
 	 * Recursively format a field output.
 	 * 
 	 * @param	mixed	$value Value to format
@@ -198,6 +122,9 @@ final class Field {
 			foreach ( $value as $key => $sub_value ) {
 				if ( $level > 1 && \is_numeric( $key ) ) {
 					$key = '';
+				}
+				else if ( \is_numeric( $key ) ) {
+					$key += 1;
 				}
 				
 				$output .= self::format_output( $sub_value, $key, $level + 1 );
@@ -229,6 +156,88 @@ final class Field {
 		}
 		
 		return $output;
+	}
+	
+	/**
+	 * Merge values from a list while keeping associative items.
+	 * 
+	 * @param	array	$values List of values
+	 * @return	array|string Merged values without numeric keys
+	 */
+	private static function get_list_values( array $values ): array|string {
+		$new_value = [];
+		$string_value = '';
+		
+		foreach ( $values as $key => $value ) {
+			if ( \is_numeric( $key ) && ! \is_array( $value ) ) {
+				$string_value .= $value . ', ';
+			}
+			else {
+				$new_value[ $key ] = $value;
+			}
+		}
+		
+		$string_value = \trim( $string_value, ', ' );
+		
+		if ( ! empty( $new_value ) && ! empty( $string_value ) ) {
+			$values = \array_merge( [ $string_value ], $new_value );
+		}
+		else if ( empty( $new_value ) && ! empty( $string_value ) ) {
+			$values = $string_value;
+		}
+		else {
+			$values = $new_value;
+		}
+		
+		return $values;
+	}
+	
+	/**
+	 * Get matching field values from POST data.
+	 * 
+	 * @param	array<string, mixed>	$post_fields POST fields
+	 * @param	mixed[]					$field Field data
+	 * @return	mixed The value if the field exists, or false otherwise
+	 */
+	private static function get_matching_post_field_values( array $post_fields, array $field ): mixed {
+		$keys = self::parse_field_name( $field['name'] );
+		$current = $post_fields;
+		
+		if ( empty( $keys ) ) {
+			return false;
+		}
+		
+		foreach ( $keys as $key ) {
+			if ( $key === '[]' ) {
+				if ( \is_array( $current ) ) {
+					if (
+						isset( $field['value'] )
+						&& $field['value'] !== Array_Operations::get_last_value_recursive( $current )
+					) {
+						return false;
+					}
+					
+					return $current;
+				}
+				
+				return false;
+			}
+			else if ( ! \array_key_exists( $key, $current ) ) {
+				return false;
+			}
+			else if ( $key !== $keys[0] ) {
+				$current = [ $key => $current[ $key ] ];
+			}
+			else {
+				$current = $current[ $key ];
+			}
+		}
+		
+		if ( isset( $field['value'] ) && $field['value'] !== $current ) {
+			return false;
+		}
+		
+		return $current;
 	}
 	
 	/**
@@ -267,8 +276,8 @@ final class Field {
 					continue;
 				}
 				
-				if ( \preg_match( '/\[(\d*)\]/', $field['name'] ) ) {
-					$values = self::is_matching_in_post_fields( $post_fields, $field );
+				if ( \preg_match( '/\[(\d*)\]/', $field['name'], $matches ) ) {
+					$values = self::get_matching_post_field_values( $post_fields, $field );
 					
 					if ( \is_array( $values ) ) {
 						/**
@@ -285,11 +294,29 @@ final class Field {
 						 */
 						$values = \apply_filters( 'form_block_output_field_value', $values, $field['name'], $fields, $level );
 						
+						if ( $matches[0] === '[]' && \is_array( $values ) ) {
+							$values = self::get_list_values( $values );
+						}
+						
 						$current_output .= self::format_output( $values, $field['label'], $level );
+						$field_keys = self::parse_field_name( $field['name'] );
+						$first_post_key = \reset( $field_keys );
+						
+						// make sure to process repeater fields only once
+						unset( $post_fields[ $first_post_key ] );
+					}
+					else if ( $values !== false ) {
+						\wp_send_json_error( [
+							'message' => \sprintf(
+								/* translators: the field name */
+								\esc_html__( 'Wrong item format in field %s.', 'form-block' ),
+								\esc_html( self::get_title_by_name( $field['name'], $fields ) )
+							),
+						] );
 					}
 				}
 				else {
-					$value = self::is_matching_in_post_fields( $post_fields, $field );
+					$value = self::get_matching_post_field_values( $post_fields, $field );
 					
 					if (
 						empty( $value )
