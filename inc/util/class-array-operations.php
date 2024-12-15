@@ -40,11 +40,11 @@ final class Array_Operations {
 	 * @param	array	$array Array to get value from
 	 * @return	mixed Most nested value
 	 */
-	public static function get_last_value_recursive( array $array ): mixed {
+	public static function get_most_nested_value( array $array ): mixed {
 		$end = \end( $array );
 		
 		if ( \is_array( $end ) ) {
-			return self::get_last_value_recursive( $end );
+			return self::get_most_nested_value( $end );
 		}
 		
 		return $end;

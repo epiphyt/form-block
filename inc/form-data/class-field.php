@@ -117,13 +117,14 @@ final class Field {
 		$prefix = \str_repeat( ' ', ( $level > 0 ? $level - 1 : $level ) * 2 ) . ( $level > 0 ? '- ' : '' );
 		
 		if ( \is_array( $value ) ) {
+			$increment_keys = \array_key_first( $value ) === 0;
 			$output .= "{$prefix}{$label}:" . \PHP_EOL;
 			
 			foreach ( $value as $key => $sub_value ) {
-				if ( $level > 1 && \is_numeric( $key ) ) {
+				if ( $level > 1 && \is_numeric( $key ) && ! \is_array( $sub_value ) ) {
 					$key = '';
 				}
-				else if ( \is_numeric( $key ) ) {
+				else if ( $increment_keys ) {
 					$key += 1;
 				}
 				
@@ -193,6 +194,40 @@ final class Field {
 	}
 	
 	/**
+	 * Get the matching value of an array in a given flat structure.
+	 * 
+	 * @param	array|string	$value Value to get the matching one from
+	 * @param	string[]		$structure Target structure in a flat version
+	 * @return	array|string Matching value
+	 */
+	private static function get_matching_value( array|string $value, array $structure ): array|string {
+		if ( empty( $structure ) ) {
+			return $value;
+		}
+		
+		$key = \array_shift( $structure );
+		
+		if ( $key === '[]' ) {
+			$filtered = [];
+			
+			foreach ( $value as $k => $v ) {
+				$nested = self::get_matching_value( $v, $structure );
+				
+				if ( ! empty( $nested ) ) {
+					$filtered[ $k ] = $nested;
+				}
+			}
+			
+			return $filtered;
+		}
+		else if ( isset( $value[ $key ] ) ) {
+			return [ $key => self::get_matching_value( $value[ $key ], $structure ) ];
+		}
+		
+		return [];
+	}
+	
+	/**
 	 * Get matching field values from POST data.
 	 * 
 	 * @param	array<string, mixed>	$post_fields POST fields
@@ -200,35 +235,49 @@ final class Field {
 	 * @return	mixed The value if the field exists, or false otherwise
 	 */
 	private static function get_matching_post_field_values( array $post_fields, array $field ): mixed {
-		$keys = self::parse_field_name( $field['name'] );
 		$current = $post_fields;
+		$keys = self::parse_field_name( $field['name'] );
+		$structure = [];
 		
 		if ( empty( $keys ) ) {
 			return false;
 		}
 		
-		foreach ( $keys as $key ) {
+		foreach ( $keys as $index => $key ) {
 			if ( $key === '[]' ) {
 				if ( \is_array( $current ) ) {
 					if (
 						isset( $field['value'] )
-						&& $field['value'] !== Array_Operations::get_last_value_recursive( $current )
+						&& $field['value'] !== Array_Operations::get_most_nested_value( $current )
 					) {
 						return false;
 					}
 					
-					return $current;
+					if ( ! self::has_matching_value( $current, \array_slice( $keys, $index ) ) ) {
+						return false;
+					}
+					
+					$structure[] = $key;
+					
+					return self::get_matching_value( $post_fields, $structure );
 				}
 				
 				return false;
 			}
+			else if ( \is_numeric( $key ) && isset( $current[ $key ] ) ) {
+				$subsequent_keys = \array_slice( $keys, $index );
+				
+				if ( ! self::has_matching_value( $current, $subsequent_keys ) ) {
+					return false;
+				}
+				
+				return self::get_matching_value( $current, $subsequent_keys );
+			}
 			else if ( ! \array_key_exists( $key, $current ) ) {
 				return false;
 			}
-			else if ( $key !== $keys[0] ) {
-				$current = [ $key => $current[ $key ] ];
-			}
 			else {
+				$structure[] = $key;
 				$current = $current[ $key ];
 			}
 		}
@@ -299,11 +348,6 @@ final class Field {
 						}
 						
 						$current_output .= self::format_output( $values, $field['label'], $level );
-						$field_keys = self::parse_field_name( $field['name'] );
-						$first_post_key = \reset( $field_keys );
-						
-						// make sure to process repeater fields only once
-						unset( $post_fields[ $first_post_key ] );
 					}
 					else if ( $values !== false ) {
 						\wp_send_json_error( [
@@ -322,6 +366,7 @@ final class Field {
 						empty( $value )
 						|| (
 							\is_array( $value )
+							&& isset( $field['type'] )
 							&& $field['type'] !== 'date-custom'
 							&& $field['type'] !== 'datetime-local-custom'
 							&& $field['type'] !== 'month-custom'
@@ -430,14 +475,16 @@ final class Field {
 			else if ( $field_data['type'] === 'radio' ) {
 				list( $output_label, $output_value ) = \array_map( 'trim', \explode( ': ', $output ) );
 				$clear_output = true;
+				$output_label = \trim( \mb_substr( $output_label, 0, \mb_strpos( $output_label, ':' ) ?: \mb_strlen( $output_label ) ) );
+				$output_label = \preg_replace( '/^- /', '', $output_label );
 				
-				if ( $output_label !== $label || $output_value !== $value ) {
+				if ( $output_label !== $label || ( $value !== null && $output_value !== $value ) ) {
 					continue;
 				}
 				
 				$clear_output = false;
 				
-				if ( ! \is_array( $value ) && $value !== 'on' ) {
+				if ( ! \is_array( $value ) && $value !== null && $value !== 'on' ) {
 					/* translators: form field title or value */
 					$return_value = \sprintf( \__( 'Selected: %s', 'form-block' ), $value );
 				}
@@ -448,8 +495,18 @@ final class Field {
 			}
 			
 			if ( \count( $field_keys ) > 1 ) {
+				$last_key = \end( $field_keys );
+				
+				if ( $last_key === '[]' ) {
+					$last_key = '1';
+				}
+				
+				if ( \str_contains( $return_value, \PHP_EOL ) ) {
+					$return_value = \str_replace( \PHP_EOL, \PHP_EOL . \str_repeat( ' ', \count( $field_keys ) * 2 ), $return_value );
+				}
+				
 				$return_value = \preg_replace(
-					'/- ' . \preg_quote( \end( $field_keys ) . ': ', '/' ) . '(.*)(\r\n|\r|\n)?/',
+					'/- ' . \preg_quote( $last_key . ': ', '/' ) . '(.*)(\r\n|\r|\n)?/',
 					"- {$return_value}",
 					$output
 				);
@@ -519,6 +576,34 @@ final class Field {
 		}
 		
 		return $name;
+	}
+	
+	/**
+	 * Check whether a (nested) list of fields has the structure of given keys.
+	 * 
+	 * @param	array	$fields List of fields
+	 * @param	array	$keys Desired array keys
+	 * @return	bool Whether a list of fields has desired structure
+	 */
+	private static function has_matching_value( array $fields, array $keys ): bool {
+		$current = $fields;
+		
+		foreach ( $keys as $index => $key ) {
+			if ( isset( $current[ $key ] ) ) {
+				$current = $current[ $key ];
+			}
+			else if ( $key === '[]' && \is_array( $current ) ) {
+				$current = \reset( $current );
+			}
+			else if ( ! \is_array( $current ) ) {
+				return \count( $keys ) === $index + 1;
+			}
+			else {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	/**
