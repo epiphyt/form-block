@@ -375,7 +375,7 @@ final class Data {
 		
 		$form_data = $this->get( $this->form_id );
 		$field_output = [
-			\trim( Field::get_output( $form_data['fields'], $fields ) ),
+			\trim( Field::get_instance()->get_output( $form_data['fields'], $fields ) ),
 		];
 		
 		$attachments = [];
