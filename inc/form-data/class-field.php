@@ -297,7 +297,7 @@ final class Field {
 	 * @param	int 											$level Current indentation level
 	 * @return	string Aggregated output for all matched fields
 	 */
-	public static function get_output( array $fields, array $post_fields, int $level = 0 ): string {
+	public function get_output( array $fields, array $post_fields, int $level = 0 ): string {
 		$output = '';
 		
 		foreach ( $fields as $field ) {
@@ -420,7 +420,7 @@ final class Field {
 					continue;
 				}
 				
-				$subfields_output = self::get_output( $field['fields'], $post_fields, $level + 1 );
+				$subfields_output = $this->get_output( $field['fields'], $post_fields, $level + 1 );
 				
 				if ( \trim( $subfields_output ) ) {
 					$current_output .= $legend . ':' . \PHP_EOL;
