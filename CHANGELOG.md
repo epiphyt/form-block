@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0
+* Added: Support for input groups based on HTML `fieldset` element
+* Added: Support for lists in the output
+* Added: Support for adding a form label
+* Added: Support for `autocomplete` attribute
+* Added: Support for the `spellcheck` attribute
+* Removed: Default added consent checkbox (since it’s not legally required)
+
 ## 1.4.2
 * Fixed: Validation issues for separated date fields
 * Fixed: Line breaks in labels are no more removed in the email

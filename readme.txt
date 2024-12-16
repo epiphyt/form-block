@@ -2,7 +2,7 @@
 Contributors: epiphyt, kittmedia
 Tags: form, contact form, gutenberg, block editor, accessibility
 Requires at least: 6.3
-Stable tag: 1.4.2
+Stable tag: 1.5.0
 Tested up to: 6.7
 Requires PHP: 7.4
 License: GPL2
@@ -95,6 +95,14 @@ We are [Epiphyt](https://epiph.yt/en/), your friendly neighborhood WordPress plu
 You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/form-block)
 
 == Changelog ==
+
+= 1.5.0 =
+* Added: Support for input groups based on HTML `fieldset` element
+* Added: Support for lists in the output
+* Added: Support for adding a form label
+* Added: Support for `autocomplete` attribute
+* Added: Support for the `spellcheck` attribute
+* Removed: Default added consent checkbox (since it’s not legally required)
 
 = 1.4.2 =
 * Fixed: Validation issues for separated date fields
