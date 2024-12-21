@@ -402,7 +402,7 @@ final class Data {
 	 * @param	mixed	$new_value The new option value
 	 * @return	mixed The new option value
 	 */
-	public function set_for_widget( mixed $old_value, mixed $new_value ): mixed {
+	public function set_for_widget( mixed $old_value, mixed $new_value ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
 		if ( ! \is_array( $new_value ) ) {
 			return $new_value;
 		}

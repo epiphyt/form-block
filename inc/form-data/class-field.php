@@ -165,7 +165,7 @@ final class Field {
 	 * @param	array	$values List of values
 	 * @return	array|string Merged values without numeric keys
 	 */
-	private static function get_list_values( array $values ): array|string {
+	private static function get_list_values( array $values ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
 		$new_value = [];
 		$string_value = '';
 		
@@ -200,7 +200,7 @@ final class Field {
 	 * @param	string[]		$structure Target structure in a flat version
 	 * @return	array|string Matching value
 	 */
-	private static function get_matching_value( array|string $value, array $structure ): array|string {
+	private static function get_matching_value( array|string $value, array $structure ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
 		if ( empty( $structure ) ) {
 			return $value;
 		}
@@ -234,7 +234,7 @@ final class Field {
 	 * @param	mixed[]					$field Field data
 	 * @return	mixed The value if the field exists, or false otherwise
 	 */
-	private static function get_matching_post_field_values( array $post_fields, array $field ): mixed {
+	private static function get_matching_post_field_values( array $post_fields, array $field ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
 		$current = $post_fields;
 		$keys = self::parse_field_name( $field['name'] );
 		$structure = [];

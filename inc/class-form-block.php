@@ -360,7 +360,7 @@ final class Form_Block {
 	 * @param	string			$context The context
 	 * @return	array[]|string The updated allowed tags
 	 */
-	public function set_allow_tags( array|string $tags, string $context ): array|string {
+	public function set_allow_tags( array|string $tags, string $context ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
 		if ( $context !== 'post' ) {
 			return $tags;
 		}

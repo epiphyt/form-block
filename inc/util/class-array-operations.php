@@ -40,7 +40,7 @@ final class Array_Operations {
 	 * @param	array	$array Array to get value from
 	 * @return	mixed Most nested value
 	 */
-	public static function get_most_nested_value( array $array ): mixed {
+	public static function get_most_nested_value( array $array ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
 		$end = \end( $array );
 		
 		if ( \is_array( $end ) ) {

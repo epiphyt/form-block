@@ -336,7 +336,7 @@ final class Custom_Date {
 	 * @param	array	$form_fields Form fields
 	 * @return	mixed Output in proper format
 	 */
-	public static function set_output_format( mixed $value, string $name, array $form_fields ): mixed {
+	public static function set_output_format( mixed $value, string $name, array $form_fields ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
 		$field = Field::get_by_name( $name, $form_fields );
 		
 		if ( ! isset( $field['type'] ) || ! \in_array( $field['type'], self::$field_types, true ) ) {
