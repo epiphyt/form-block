@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.1
+* Fixed: Support for PHP 7.4
+
 ## 1.5.0
 * Added: Support for input groups based on HTML `fieldset` element
 * Added: Support for lists in the output
