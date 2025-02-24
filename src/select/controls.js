@@ -166,6 +166,9 @@ export default function Controls( props ) {
 			</>
 		);
 	};
+	const nameAttribute = name
+		? stripSpecialChars( name, false )
+		: stripSpecialChars( label );
 
 	const updateValue = ( newValue, attribute ) => {
 		let value = {};
@@ -195,15 +198,15 @@ export default function Controls( props ) {
 							name: stripSpecialChars( name, false ),
 						} )
 					}
-					value={
-						name
-							? stripSpecialChars( name, false )
-							: stripSpecialChars( label )
-					}
+					value={ nameAttribute }
 				/>
 				{ controls.map( ( control, index ) =>
 					getControl( control, index )
 				) }
+				{ applyFilters( 'formBlock.select.controls', {
+					props,
+					nameAttribute,
+				} ) }
 			</PanelBody>
 		</InspectorControls>
 	);

@@ -1,34 +1,20 @@
 import { applyFilters } from '@wordpress/hooks';
-import { getTypes } from './html-data';
+import { __ } from '@wordpress/i18n';
 
-const attributes = applyFilters( 'formBlock.input.attributes', {
+const attributes = applyFilters( 'formBlock.textarea.attributes', {
 	autoComplete: {
 		attribute: 'autocomplete',
 		selector: 'input',
 		source: 'attribute',
 		type: 'string',
 	},
-	checked: {
-		attribute: 'checked',
-		selector: 'input',
-		source: 'attribute',
-		type: 'boolean',
-	},
-	customDate: {
-		default: {
-			showLabel: false,
-			showPlaceholder: true,
-			value: {},
-		},
-		type: 'object',
+	autoCompleteSection: {
+		type: 'string',
 	},
 	disabled: {
 		attribute: 'disabled',
-		selector: 'input',
+		selector: 'textarea',
 		source: 'attribute',
-		type: 'boolean',
-	},
-	isReplyTo: {
 		type: 'boolean',
 	},
 	label: {
@@ -38,31 +24,25 @@ const attributes = applyFilters( 'formBlock.input.attributes', {
 	},
 	name: {
 		attribute: 'name',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	pattern: {
-		attribute: 'pattern',
-		selector: 'input',
+		selector: 'textarea',
 		source: 'attribute',
 		type: 'string',
 	},
 	placeholder: {
 		attribute: 'placeholder',
-		selector: 'input',
+		selector: 'textarea',
 		source: 'attribute',
 		type: 'string',
 	},
 	readOnly: {
 		attribute: 'readonly',
-		selector: 'input',
+		selector: 'textarea',
 		source: 'attribute',
 		type: 'boolean',
 	},
 	required: {
 		attribute: 'required',
-		selector: 'input',
+		selector: 'textarea',
 		source: 'attribute',
 		type: 'boolean',
 	},
@@ -71,20 +51,11 @@ const attributes = applyFilters( 'formBlock.input.attributes', {
 		default: true,
 		selector: 'input',
 		source: 'attribute',
-		type: 'string',
-	},
-	type: {
-		attribute: 'type',
-		default: 'text',
-		enum: getTypes(),
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
+		type: 'boolean',
 	},
 	value: {
-		attribute: 'value',
-		selector: 'input',
-		source: 'attribute',
+		selector: 'textarea',
+		source: 'text',
 		type: 'string',
 	},
 } );
