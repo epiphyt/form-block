@@ -1,6 +1,7 @@
 .form-block__element {
 	input:not([type="reset"]):not([type="submit"]),
 	textarea {
+		border-radius: .25rem;
 		border: 1px solid #949494;
 		font-family: inherit;
 		font-size: 1em;
@@ -12,11 +13,16 @@
 		display: block;
 		padding: calc(.667em + 2px);
 		width: 100%;
+		
+		+ .form-block__label {
+			font-size: var(--wp--preset--font-size--small);
+		}
 	}
 	
 	input[type="reset"],
 	input[type="submit"] {
 		align-self: flex-start;
+		border-radius: 5px;
 	}
 	
 	select {
@@ -40,6 +46,11 @@
 		.form-block__label {
 			margin-left: .3em;
 		}
+	}
+	
+	.inline-error {
+		margin-top: .35em;
+		font-size: var(--wp--preset--font-size--small);
 	}
 }
 
