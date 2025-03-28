@@ -53,8 +53,8 @@ final class Data {
 				$data = $this->get( $reusable_blocks, $data );
 			}
 			else if (
-				! \str_starts_with( $block['blockName'], 'form-block/' )
-				|| ! \str_starts_with( $block['blockName'], 'form-block-pro/' )
+				\str_starts_with( $block['blockName'], 'form-block/' )
+				|| \str_starts_with( $block['blockName'], 'form-block-pro/' )
 			) {
 				// ignore fields without a form block
 				if ( empty( $form_id ) && $block['blockName'] !== 'form-block/form' ) {
