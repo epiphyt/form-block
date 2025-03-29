@@ -105,10 +105,12 @@ export default function Controls( props ) {
 							)
 						}
 						type={ inputType || 'text' }
-						value={ getSanitizedAttributeValue(
-							props.attributes[ attributeName ],
-							control.attributes
-						) }
+						value={
+							getSanitizedAttributeValue(
+								props.attributes[ attributeName ],
+								control.attributes
+							) || ''
+						}
 					/>
 				);
 		}

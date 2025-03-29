@@ -130,7 +130,7 @@ export default function InputEdit( props ) {
 								onChange={ ( required ) =>
 									setAttributes( { required } )
 								}
-								value={ required }
+								value={ required || false }
 							/>
 						</FlexItem>
 					) : null }
@@ -164,7 +164,7 @@ export default function InputEdit( props ) {
 										onChange={ ( required ) =>
 											setAttributes( { required } )
 										}
-										value={ required }
+										value={ required || false }
 									/>
 								</FlexItem>
 							) : null }

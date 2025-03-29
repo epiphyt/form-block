@@ -68,7 +68,7 @@ export default function TextareaEdit( props ) {
 						onChange={ ( required ) =>
 							setAttributes( { required } )
 						}
-						value={ required }
+						value={ required || false }
 					/>
 				</FlexItem>
 			</Flex>

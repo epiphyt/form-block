@@ -138,10 +138,12 @@ export default function Controls( props ) {
 							)
 						}
 						type="number"
-						value={ getSanitizedAttributeValue(
-							props.attributes[ attribute ],
-							settings
-						) }
+						value={
+							getSanitizedAttributeValue(
+								props.attributes[ attribute ],
+								settings
+							) || ''
+						}
 					/>
 				);
 			case 'select':

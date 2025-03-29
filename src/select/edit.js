@@ -64,7 +64,7 @@ export default function SelectEdit( props ) {
 						onChange={ ( required ) =>
 							setAttributes( { required } )
 						}
-						value={ required }
+						value={ required || false }
 					/>
 				</FlexItem>
 			</Flex>
