@@ -2,8 +2,8 @@
 Contributors: epiphyt, kittmedia
 Tags: form, contact form, gutenberg, block editor, accessibility
 Requires at least: 6.3
-Stable tag: 1.5.1
-Tested up to: 6.7
+Stable tag: 1.5.2
+Tested up to: 6.8
 Requires PHP: 7.4
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -95,6 +95,12 @@ We are [Epiphyt](https://epiph.yt/en/), your friendly neighborhood WordPress plu
 You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/form-block)
 
 == Changelog ==
+
+= 1.5.2 =
+* Added: Design for Twenty Twenty-Five
+* Added: Support for new features in Form Block Pro 1.3
+* Fixed: Broken textarea after saving
+* Fixed: Various non-critical React-related issues
 
 = 1.5.1 =
 * Fixed: Support for PHP 7.4

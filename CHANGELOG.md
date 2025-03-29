@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.2
+* Added: Design for Twenty Twenty-Five
+* Added: Support for new features in Form Block Pro 1.3
+* Fixed: Broken textarea after saving
+* Fixed: Various non-critical React-related issues
+
 ## 1.5.1
 * Fixed: Support for PHP 7.4
 
