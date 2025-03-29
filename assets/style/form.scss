@@ -1,8 +1,12 @@
+:root {
+	--form-block--gap--element: 20px;
+}
+
 .form-block__element {
 	display: flex;
 	flex-direction: column;
 	flex-wrap: wrap;
-	margin-bottom: 20px;
+	margin-block-end: var(--form-block--gap--element);
 	
 	.form-block__label {
 		order: -1;

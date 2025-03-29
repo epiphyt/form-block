@@ -434,7 +434,7 @@ final class Data {
 				$output = \apply_filters( 'form_block_output_file_output', '', $file['field_name'], $new_path, $file_data );
 				
 				/**
-				 * This filter is documented in inc/form-data/class.data.php
+				 * This filter is documented in inc/form-data/class-data.php
 				 * 
 				 * @since	1.4.1 Added filter for file inputs
 				 */

@@ -156,6 +156,7 @@ final class Validation {
 	private static function get_allowed_field_names( array $field ): array {
 		$field_name = Form_Block::get_instance()->get_block_name_attribute( $field );
 		$allowed_names[] = \preg_replace( '/-\d+$/', '', $field_name );
+		$allowed_names[] = \preg_replace( '/\[([^\]]*)\]/', '', $field_name );
 		
 		if ( ! empty( $field['fields'] ) ) {
 			foreach ( $field['fields'] as $sub_field ) {
@@ -294,7 +295,7 @@ final class Validation {
 		 * @param	string	$form_id The form ID
 		 * @param	array	$form_data The form data
 		 */
-		$validated = \apply_filters( 'form_block_validated_fields', $validated, Data::get_instance()->get_form_id(), $form_data );
+		$validated = (array) \apply_filters( 'form_block_validated_fields', $validated, Data::get_instance()->get_form_id(), $form_data );
 		
 		$required_fields = Data::get_instance()->get_required_fields( Data::get_instance()->get_form_id(), $validated );
 		
@@ -313,10 +314,22 @@ final class Validation {
 				)
 				&& empty( $validated[ $field_name ] )
 			) {
-				$missing_fields[] = Field::get_title_by_name( $field_name, $form_data['fields'] );
+				$missing_fields[ $field_name ] = Field::get_title_by_name( $field_name, $form_data['fields'] );
 			}
 			// phpcs:enable WordPress.Security.NonceVerification.Missing
 		}
+		
+		/**
+		 * Filter missing fields.
+		 * 
+		 * @since	1.5.2
+		 * 
+		 * @param	string[]	$missing_fields List of missing field names/titles
+		 * @param	mixed[]		$form_data Form data
+		 * @param	mixed[]		$validated List of validated field names and values
+		 * @param	string[]	$required_fields List of required field names
+		 */
+		$missing_fields = (array) \apply_filters( 'form_block_missing_fields', $missing_fields, $form_data, $validated, $required_fields );
 		
 		// output error if there are missing fields
 		if ( ! empty( $missing_fields ) ) {

@@ -23,6 +23,7 @@ final class Data {
 	public function init(): void {
 		\add_action( 'save_post', [ $this, 'set' ], 20, 2 );
 		\add_action( 'update_option_widget_block', [ $this, 'set_for_widget' ], 20, 2 );
+		\add_filter( 'form_block_get_data', [ $this, 'set_contextual_block_data' ], 5, 5 );
 	}
 	
 	/**
@@ -40,6 +41,8 @@ final class Data {
 			if ( $block['blockName'] === null ) {
 				continue;
 			}
+			
+			$field_data = [];
 			
 			// reusable blocks need to be processed first
 			if ( $block['blockName'] === 'core/block' && ! empty( $block['attrs']['ref'] ) ) {
@@ -66,10 +69,8 @@ final class Data {
 				}
 				
 				if ( empty( $context ) ) {
-					$context = \str_replace( 'form-block/', '', $block['blockName'] );
+					$context = self::get_block_context( $block );
 				}
-				
-				$field_data = [];
 				
 				switch ( $block['blockName'] ) {
 					case 'form-block/fieldset':
@@ -116,7 +117,9 @@ final class Data {
 						break;
 				}
 				
-				$field_data = \array_merge( $block['attrs'], $field_data );
+				if ( $block['blockName'] !== 'form-block/form' ) {
+					$field_data = \array_merge( $block['attrs'], $field_data );
+				}
 				
 				/**
 				 * Filter the field data.
@@ -126,56 +129,48 @@ final class Data {
 				 * @param	array	$data Current form data
 				 * @param	string	$form_id The form ID
 				 */
-				$field_data = \apply_filters( 'form_block_get_form_data', $field_data, $block, $data, $form_id );
-				
-				if ( ! empty( $field_data ) ) {
-					if ( $context === 'fieldset' && $block['blockName'] !== 'form-block/' . $context ) {
-						$data[] = $field_data;
-					}
-					else {
-						$data[ $form_id ]['fields'][] = $field_data;
-					}
-					
-					unset( $field_data );
-				}
-			}
-			
-			if ( ! empty( $block['innerBlocks'] ) && $context !== 'fieldset' ) {
-				$data = \array_merge( $data, $this->get( $block['innerBlocks'], $data, $form_id ) );
-			}
-			
-			if ( $context && $block['blockName'] === 'form-block/' . $context ) {
-				$context = '';
+				$field_data = (array) \apply_filters( 'form_block_get_form_data', $field_data, $block, $data, $form_id );
 			}
 			
 			/**
 			 * Filter the form data.
 			 * 
-			 * @param	array	$data Current form data
-			 * @param	array	$blocks Blocks from parsed_blocks()
+			 * @since	1.5.2 Added parameters $field_data and $context
+			 * 
+			 * @param	mixed[]	$data Current form data
+			 * @param	mixed[]	$block Current parsed block
 			 * @param	string	$form_id The form ID
+			 * @param	mixed[]	$field_data Field data
+			 * @param	string	$context Block context
 			 */
-			$data = \apply_filters( 'form_block_get_data', $data, $block, $form_id );
+			$data = (array) \apply_filters( 'form_block_get_data', $data, $block, $form_id, $field_data, $context );
+			
+			if ( $context && self::is_current_context( $block, $context ) ) {
+				$context = '';
+			}
 		}
 		
-		return $data;
+		return \array_filter( $data );
 	}
 	
 	/**
 	 * Get all attributes from a HTML element.
 	 * 
+	 * @1.5.2	Added $context parameter
+	 * 
 	 * @param	string	$element The HTML element
 	 * @param	string	$tag_name The tag name
+	 * @param	string	$context Current context
 	 * @return	array List of attributes
 	 */
-	public function get_attributes( string $element, string $tag_name ): array {
+	public function get_attributes( string $element, string $tag_name, string $context = '' ): array {
 		$dom = new DOMDocument();
 		$dom->loadHTML(
 			'<html><meta charset="UTF-8">' . $element . '</html>',
 			\LIBXML_HTML_NOIMPLIED | \LIBXML_HTML_NODEFDTD
 		);
 		
-		$attributes = $this->get_element_attributes( $dom, $tag_name );
+		$attributes = $this->get_element_attributes( $dom, $tag_name, [ 'context' => $context ] );
 		
 		if ( $tag_name === 'fieldset' ) {
 			$attributes['legend'] = $this->get_element_attributes(
@@ -193,6 +188,7 @@ final class Data {
 				'span',
 				[
 					'class_name' => 'form-block__label-content',
+					'context' => $context,
 					'get_text_content' => true,
 				]
 			);
@@ -205,6 +201,7 @@ final class Data {
 				$dom,
 				'option',
 				[
+					'context' => $context,
 					'get_text_content' => true,
 				]
 			);
@@ -242,6 +239,7 @@ final class Data {
 		$attributes = [];
 		$arguments = \wp_parse_args( $arguments, [
 			'class_name' => '',
+			'context' => '',
 			'get_text_content' => false,
 		] );
 		$iteration = 0;
@@ -256,6 +254,13 @@ final class Data {
 			if (
 				! empty( $arguments['class_name'] )
 				&& \strpos( $tag->getAttribute( 'class' ), $arguments['class_name'] ) === false
+			) {
+				continue;
+			}
+			
+			if (
+				! empty( $arguments['context'] )
+				&& \strpos( $tag->getAttribute( 'class' ), $arguments['context'] ) === false
 			) {
 				continue;
 			}
@@ -291,6 +296,39 @@ final class Data {
 	}
 	
 	/**
+	 * Get context by a block.
+	 * 
+	 * @param	mixed[]	$block Block data
+	 * @return	string Block context
+	 */
+	public static function get_block_context( array $block ): string {
+		return \str_replace( self::get_block_context_prefixes(), '', $block['blockName'] );
+	}
+	
+	/**
+	 * Get block context prefixes.
+	 * 
+	 * @return	string[] Block context prefixes
+	 */
+	private static function get_block_context_prefixes(): array {
+		$context_prefixes = [
+			'form-block/',
+			'form-block-pro/',
+		];
+		
+		/**
+		 * Filter replacements to get block context.
+		 * 
+		 * @since	1.5.2
+		 * 
+		 * @param	string[]	$replacements List of replacements
+		 */
+		$context_prefixes = (array) \apply_filters( 'form_block_block_context_prefixes', $context_prefixes );
+		
+		return $context_prefixes;
+	}
+	
+	/**
 	 * Get a unique instance of the class.
 	 * 
 	 * @return	\epiphyt\Form_Block\block_data\Data The single instance of this class
@@ -301,6 +339,25 @@ final class Data {
 		}
 		
 		return self::$instance;
+	}
+	
+	/**
+	 * Check, whether the current block is in the current context.
+	 * 
+	 * @param	mixed[]	$block Block data
+	 * @param	string	$context Current context
+	 * @return	bool Whether the current block is in the current context
+	 */
+	public static function is_current_context( array $block, string $context ): bool {
+		$prefixes = self::get_block_context_prefixes();
+		
+		foreach ( $prefixes as $prefix ) {
+			if ( $block['blockName'] === $prefix . $context ) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -393,6 +450,55 @@ final class Data {
 		}
 		
 		return $post;
+	}
+	
+	/**
+	 * Set block data depending on context.
+	 * 
+	 * @param	mixed[]	$data Current form data
+	 * @param	mixed[]	$block Current parsed block
+	 * @param	string	$form_id The form ID
+	 * @param	mixed[]	$field_data Field data
+	 * @param	string	$context Block context
+	 * @return	mixed[] Updated blocks form data
+	 */
+	public function set_contextual_block_data( array $data, array $block, string $form_id, array $field_data, string $context ): array {
+		$ignored_contexts = [ 'fieldset' ];
+		
+		/**
+		 * Filter ignored context.
+		 * 
+		 * @since	1.5.2
+		 * 
+		 * @param	string[]	$ignored_contexts Current contexts to ignore
+		 * @param	mixed[]		$block Current parsed block
+		 */
+		$ignored_contexts = (array) \apply_filters( 'form_block_data_ignored_context', $ignored_contexts, $block );
+		
+		if ( empty( $field_data ) ) {
+			if ( ! empty( $block['innerBlocks'] ) && ! \in_array( $context, $ignored_contexts, true ) ) {
+				$data = \array_merge( $data, $this->get( $block['innerBlocks'], $data, $form_id ) );
+			}
+			
+			return $data;
+		}
+		
+		if ( ! empty( $field_data ) ) {
+			if ( \in_array( $context, $ignored_contexts, true ) && ! self::is_current_context( $block, $context ) ) {
+				unset( $data[ $form_id ] );
+				
+				$data[] = $field_data;
+			}
+			else {
+				$data[ $form_id ]['fields'][] = $field_data;
+			}
+		}
+		
+		if ( ! empty( $block['innerBlocks'] ) && ! \in_array( $context, $ignored_contexts, true ) ) {
+			$data = \array_merge( $data, $this->get( $block['innerBlocks'], $data, $form_id ) );
+		}
+		
+		return $data;
 	}
 	
 	/**

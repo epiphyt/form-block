@@ -273,6 +273,18 @@ final class Field {
 				
 				return self::get_matching_value( $current, $subsequent_keys );
 			}
+			else if ( isset( $current[ $index - 1 ] ) ) {
+				$subsequent_keys = \array_slice( $keys, $index );
+				
+				if (
+					! empty( $subsequent_keys )
+					&& ! self::has_matching_value( $current[ $index - 1 ], $subsequent_keys )
+				) {
+					return false;
+				}
+				
+				return self::get_matching_value( $current[ $index - 1 ], $subsequent_keys );
+			}
 			else if ( ! \array_key_exists( $key, $current ) ) {
 				return false;
 			}
@@ -325,7 +337,7 @@ final class Field {
 					continue;
 				}
 				
-				if ( \preg_match( '/\[(\d*)\]/', $field['name'], $matches ) ) {
+				if ( \preg_match( '/\[([^\]]*)\]/', $field['name'], $matches ) || $level > 0 ) {
 					$values = self::get_matching_post_field_values( $post_fields, $field );
 					
 					if ( \is_array( $values ) ) {
@@ -343,7 +355,7 @@ final class Field {
 						 */
 						$values = \apply_filters( 'form_block_output_field_value', $values, $field['name'], $fields, $level );
 						
-						if ( $matches[0] === '[]' && \is_array( $values ) ) {
+						if ( ! empty( $matches[0] ) && $matches[0] === '[]' && \is_array( $values ) ) {
 							$values = self::get_list_values( $values );
 						}
 						
@@ -364,6 +376,7 @@ final class Field {
 					
 					if (
 						empty( $value )
+						&& empty( $field['fields'] )
 						|| (
 							\is_array( $value )
 							&& isset( $field['type'] )
@@ -383,6 +396,14 @@ final class Field {
 					$value = \apply_filters( 'form_block_output_field_value', $value, $field['name'], $fields, $level );
 					
 					$current_output .= self::format_output( $value, $field['label'], $level );
+				}
+				
+				if ( ! empty( $field['fields'] ) ) {
+					$subfields_output = $this->get_output( $field['fields'], $post_fields, $level + 1 );
+					
+					if ( \trim( $subfields_output ) ) {
+						$current_output .= $subfields_output;
+					}
 				}
 				
 				/**
