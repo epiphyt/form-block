@@ -1,7 +1,7 @@
 import { FIELD_MAPPING } from './constants';
 import { getSanitizedAttributeValue } from '../util';
 
-export const autoAssign = ( autoComplete, label, name, setAttributes ) => {
+export const autoAssign = ( autoComplete, label, name ) => {
 	if ( autoComplete ) {
 		return autoComplete;
 	}
@@ -26,8 +26,6 @@ export const autoAssign = ( autoComplete, label, name, setAttributes ) => {
 				nameLower.startsWith( mappingLabelLower ) ||
 				nameLower.startsWith( mappingLabelCssName )
 			) {
-				setAttributes( { autoCompleteAutoAssigned: key } );
-
 				return key;
 			}
 		}

@@ -15,10 +15,11 @@ import Autocomplete from '../data/autocomplete/control';
 import { getSanitizedAttributeValue, stripSpecialChars } from '../data/util';
 import { getTypes, isAllowedAttribute, types } from './html-data';
 import CustomDateControls from './modules/custom-date/controls';
+import { autoAssign } from '../data/autocomplete/auto-assign';
 
 export default function Controls( props ) {
 	const {
-		attributes: { name, label, type },
+		attributes: { autoComplete, name, label, type },
 		setAttributes,
 	} = props;
 	const defaultControlTypes = [
@@ -93,8 +94,15 @@ export default function Controls( props ) {
 
 		switch ( inputAttributes[ attribute ].controlType ) {
 			case 'autocomplete':
+				const autoAssignedValue = autoAssign(
+					autoComplete,
+					label,
+					name
+				);
+
 				return (
 					<Autocomplete
+						autoAssignedValue={ autoAssignedValue }
 						isHelpOpen={ isHelpOpen }
 						key={ key }
 						setIsHelpOpen={ setIsHelpOpen }

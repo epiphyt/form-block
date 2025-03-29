@@ -3,17 +3,12 @@ import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
 import { OPTIONS } from './constants';
-import { autoAssign } from './auto-assign';
 import { getSanitizedAttributeValue } from '../util';
 import { getLabel } from '../../controls/label';
 
 export default function Autocomplete( props ) {
-	const {
-		attributes: { label, name },
-		isHelpOpen,
-		setAttributes,
-		setIsHelpOpen,
-	} = props;
+	const { autoAssignedValue, isHelpOpen, setAttributes, setIsHelpOpen } =
+		props;
 	const autoComplete = getSanitizedAttributeValue(
 		props.attributes.autoComplete,
 		{}
@@ -21,13 +16,6 @@ export default function Autocomplete( props ) {
 	const autoCompleteSection = getSanitizedAttributeValue(
 		props.attributes.autoCompleteSection,
 		{}
-	);
-
-	const autoAssignedValue = autoAssign(
-		autoComplete,
-		label,
-		name,
-		setAttributes
 	);
 
 	return (

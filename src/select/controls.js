@@ -18,10 +18,11 @@ import {
 } from '../data/attributes';
 import Autocomplete from '../data/autocomplete/control';
 import { getSanitizedAttributeValue, stripSpecialChars } from '../data/util';
+import { autoAssign } from '../data/autocomplete/auto-assign';
 
 export default function Controls( props ) {
 	const {
-		attributes: { label, name },
+		attributes: { autoComplete, label, name },
 		setAttributes,
 	} = props;
 	const [ isHelpOpen, setIsHelpOpen ] = useState( [] );
@@ -58,8 +59,15 @@ export default function Controls( props ) {
 
 		switch ( type ) {
 			case 'autocomplete':
+				const autoAssignedValue = autoAssign(
+					autoComplete,
+					label,
+					name
+				);
+
 				return (
 					<Autocomplete
+						autoAssignedValue={ autoAssignedValue }
 						isHelpOpen={ isHelpOpen }
 						key={ key }
 						setIsHelpOpen={ setIsHelpOpen }
