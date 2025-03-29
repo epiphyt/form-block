@@ -136,7 +136,7 @@ export default function Controls( props ) {
 	};
 
 	const getLabel = ( attribute ) => {
-		if ( ! textareaAttributes[ attribute ].label ) {
+		if ( ! textareaAttributes[ attribute ]?.label ) {
 			return null;
 		}
 

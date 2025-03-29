@@ -56,7 +56,7 @@
 		"spellCheck": {
 			"attribute": "spellcheck",
 			"default": true,
-			"selector": "input",
+			"selector": "textarea",
 			"source": "attribute",
 			"type": "boolean"
 		},

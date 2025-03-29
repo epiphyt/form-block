@@ -63,7 +63,7 @@
 		"spellCheck": {
 			"attribute": "spellcheck",
 			"default": true,
-			"selector": "input",
+			"selector": "select",
 			"source": "attribute",
 			"type": "boolean"
 		},

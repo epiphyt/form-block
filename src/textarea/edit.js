@@ -30,6 +30,7 @@ export default function TextareaEdit( props ) {
 		},
 		setAttributes,
 	} = props;
+	console.log( { spellCheck } );
 	const blockProps = useBlockProps();
 	const elementProps = {
 		autoComplete,
