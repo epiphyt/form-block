@@ -5,7 +5,7 @@ namespace epiphyt\Form_Block;
 Plugin Name:		Form Block
 Plugin URI:			https://formblock.pro/en/
 Description:		An extensive yet user-friendly form block.
-Version:			1.5.2
+Version:			1.5.3
 Author:				Epiphyt
 Author URI:			https://epiph.yt
 License:			GPL2
@@ -31,19 +31,20 @@ along with Form Block. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
 */
 \defined( 'ABSPATH' ) || exit;
 
-\define( 'FORM_BLOCK_VERSION', '1.5.2' );
+\define( 'FORM_BLOCK_VERSION', '1.5.3' );
 
-if ( ! \defined( 'EPI_FORM_BLOCK_BASE' ) ) {
+if ( \file_exists( \WP_PLUGIN_DIR . '/form-block/' ) ) {
 	\define( 'EPI_FORM_BLOCK_BASE', \WP_PLUGIN_DIR . '/form-block/' );
 }
-
-if ( ! \defined( 'EPI_FORM_BLOCK_FILE' ) ) {
-	\define( 'EPI_FORM_BLOCK_FILE', __FILE__ );
+else if ( \file_exists( \WPMU_PLUGIN_DIR . '/form-block/' ) ) {
+	\define( 'EPI_FORM_BLOCK_BASE', \WPMU_PLUGIN_DIR . '/form-block/' );
+}
+else {
+	\define( 'EPI_FORM_BLOCK_BASE', \plugin_dir_path( __FILE__ ) );
 }
 
-if ( ! \defined( 'EPI_FORM_BLOCK_URL' ) ) {
-	\define( 'EPI_FORM_BLOCK_URL', \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) );
-}
+\define( 'EPI_FORM_BLOCK_FILE', __FILE__ );
+\define( 'EPI_FORM_BLOCK_URL', \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) );
 
 if ( ! \extension_loaded( 'dom' ) ) {
 	/**

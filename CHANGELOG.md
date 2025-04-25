@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.3
+* Fixed: Broken blocks after inserting them into the editor
+
 ## 1.5.2
 * Added: Design for Twenty Twenty-Five
 * Added: Support for new features in Form Block Pro 1.3
