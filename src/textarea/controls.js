@@ -218,6 +218,10 @@ export default function Controls( props ) {
 
 		return setAttributes( value );
 	};
+	const formBlockControls = applyFilters( 'formBlock.textarea.controls', {
+		props,
+		nameAttribute,
+	} );
 
 	return (
 		<InspectorControls>
@@ -245,10 +249,9 @@ export default function Controls( props ) {
 				{ controls.map( ( control, index ) =>
 					getControl( control, index )
 				) }
-				{ applyFilters( 'formBlock.textarea.controls', {
-					props,
-					nameAttribute,
-				} ) }
+				{ React.isValidElement( formBlockControls )
+					? formBlockControls
+					: null }
 			</PanelBody>
 		</InspectorControls>
 	);

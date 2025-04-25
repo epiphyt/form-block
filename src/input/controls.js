@@ -229,6 +229,10 @@ export default function Controls( props ) {
 
 		return setAttributes( value );
 	};
+	const formBlockControls = applyFilters( 'formBlock.input.controls', {
+		props,
+		nameAttribute,
+	} );
 
 	return (
 		<InspectorControls>
@@ -270,10 +274,9 @@ export default function Controls( props ) {
 						control.attributes
 					)
 				) }
-				{ applyFilters( 'formBlock.input.controls', {
-					props,
-					nameAttribute,
-				} ) }
+				{ React.isValidElement( formBlockControls )
+					? formBlockControls
+					: null }
 			</PanelBody>
 		</InspectorControls>
 	);
