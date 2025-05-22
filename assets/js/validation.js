@@ -333,7 +333,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 							'is-error-notice',
 							'screen-reader-text'
 						);
-						invalidFieldNotice.ariaLive = 'assertive';
+						invalidFieldNotice.role = 'alert';
 						form.appendChild( invalidFieldNotice );
 					}
 
