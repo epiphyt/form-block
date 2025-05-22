@@ -31,20 +31,21 @@ along with Form Block. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
 */
 \defined( 'ABSPATH' ) || exit;
 
-\define( 'FORM_BLOCK_VERSION', '1.5.3' );
+if ( ! \defined( 'EPI_FORM_BLOCK_BASE' ) ) {
+	if ( \file_exists( \WP_PLUGIN_DIR . '/form-block/' ) ) {
+		\define( 'EPI_FORM_BLOCK_BASE', \WP_PLUGIN_DIR . '/form-block/' );
+	}
+	else if ( \file_exists( \WPMU_PLUGIN_DIR . '/form-block/' ) ) {
+		\define( 'EPI_FORM_BLOCK_BASE', \WPMU_PLUGIN_DIR . '/form-block/' );
+	}
+	else {
+		\define( 'EPI_FORM_BLOCK_BASE', \plugin_dir_path( __FILE__ ) );
+	}
+}
 
-if ( \file_exists( \WP_PLUGIN_DIR . '/form-block/' ) ) {
-	\define( 'EPI_FORM_BLOCK_BASE', \WP_PLUGIN_DIR . '/form-block/' );
-}
-else if ( \file_exists( \WPMU_PLUGIN_DIR . '/form-block/' ) ) {
-	\define( 'EPI_FORM_BLOCK_BASE', \WPMU_PLUGIN_DIR . '/form-block/' );
-}
-else {
-	\define( 'EPI_FORM_BLOCK_BASE', \plugin_dir_path( __FILE__ ) );
-}
-
-\define( 'EPI_FORM_BLOCK_FILE', __FILE__ );
+\define( 'EPI_FORM_BLOCK_FILE', \EPI_FORM_BLOCK_BASE . \basename( __FILE__ ) );
 \define( 'EPI_FORM_BLOCK_URL', \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) );
+\define( 'FORM_BLOCK_VERSION', '1.5.3' );
 
 if ( ! \extension_loaded( 'dom' ) ) {
 	/**
