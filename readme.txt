@@ -2,7 +2,7 @@
 Contributors: epiphyt, kittmedia
 Tags: form, contact form, gutenberg, block editor, accessibility
 Requires at least: 6.3
-Stable tag: 1.5.3
+Stable tag: 1.5.4
 Tested up to: 6.8
 Requires PHP: 7.4
 License: GPL2
@@ -95,6 +95,9 @@ We are [Epiphyt](https://epiph.yt/en/), your friendly neighborhood WordPress plu
 You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/form-block)
 
 == Changelog ==
+
+= 1.5.4 =
+* Fixed: Displaying the value of a select option in the backend if no label is defined
 
 = 1.5.3 =
 * Fixed: Broken blocks after inserting them into the editor
