@@ -41,6 +41,16 @@ export default function SelectEdit( props ) {
 		value,
 	};
 	const [ isOptionModalOpen, setIsOptionModalOpen ] = useState( false );
+	// make sure label is identical to value if no label is defined
+	const selectOptions = JSON.parse( JSON.stringify( options ) ).map(
+		( item ) => {
+			if ( ! item.label && item.value ) {
+				item.label = item.value;
+			}
+
+			return item;
+		}
+	);
 
 	return (
 		<div { ...blockProps }>
@@ -73,7 +83,7 @@ export default function SelectEdit( props ) {
 				<FlexBlock>
 					<SelectControl
 						onChange={ ( value ) => setAttributes( { value } ) }
-						options={ options }
+						options={ selectOptions }
 						{ ...elementProps }
 					/>
 				</FlexBlock>
