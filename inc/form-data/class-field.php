@@ -315,11 +315,11 @@ final class Field {
 		foreach ( $fields as $field ) {
 			$current_output = '';
 			
-			if ( ! isset( $field['name'] ) && isset( $field['label'] ) ) {
+			if ( empty( $field['name'] ) && isset( $field['label'] ) ) {
 				$field['name'] = self::get_name_by_label( $field['label'] );
 			}
 			
-			if ( isset( $field['name'] ) ) {
+			if ( ! empty( $field['name'] ) ) {
 				/**
 				 * Filter whether to omit the field from output.
 				 * 
@@ -420,7 +420,7 @@ final class Field {
 				 */
 				$current_output = \apply_filters( 'form_block_output_field_output', $current_output, $field['name'], $field['value'] ?? null, $fields, $level );
 			}
-			else if ( isset( $field['legend']['textContent'] ) ) {
+			else if ( ! empty( $field['legend']['textContent'] ) ) {
 				/**
 				 * Filter the fieldset legend text.
 				 * 
