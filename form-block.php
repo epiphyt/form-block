@@ -5,7 +5,7 @@ namespace epiphyt\Form_Block;
 Plugin Name:		Form Block
 Plugin URI:			https://formblock.pro/en/
 Description:		An extensive yet user-friendly form block.
-Version:			1.5.4
+Version:			1.5.5
 Author:				Epiphyt
 Author URI:			https://epiph.yt
 License:			GPL2
