@@ -69,6 +69,10 @@ if ( ! \extension_loaded( 'dom' ) ) {
  * @param	string	$class_name The class name of the auto-loaded class
  */
 \spl_autoload_register( static function( string $class_name ): void {
+	if ( \strpos( $class_name, __NAMESPACE__ ) !== 0 ) {
+		return;
+	}
+	
 	$namespace = \strtolower( __NAMESPACE__ . '\\' );
 	$path = \explode( '\\', $class_name );
 	$filename = \str_replace( '_', '-', \strtolower( \array_pop( $path ) ) );
