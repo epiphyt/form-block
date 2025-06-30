@@ -2,6 +2,7 @@
 namespace epiphyt\Form_Block\form_data;
 
 use epiphyt\Form_Block\Form_Block;
+use epiphyt\Form_Block\submissions\Submission_Handler;
 
 /**
  * Form data class.
@@ -135,6 +136,21 @@ final class Data {
 	}
 	
 	/**
+	 * Get a list of registered form IDs.
+	 * 
+	 * @return	string[] List of form IDs
+	 */
+	public static function get_form_ids(): array {
+		$form_ids = \get_option( 'form_block_form_ids', [] );
+		
+		if ( ! \is_array( $form_ids ) ) {
+			$form_ids = [];
+		}
+		
+		return \array_keys( $form_ids );
+	}
+	
+	/**
 	 * Get a unique instance of the class.
 	 * 
 	 * @return	\epiphyt\Form_Block\form_data\Data The single instance of this class
@@ -253,6 +269,7 @@ final class Data {
 		 */
 		\do_action( 'form_block_validated_data', $this->form_id, $fields, $files );
 		
+		Submission_Handler::create_submission( $this->form_id, $fields, $files );
 		$this->send( $fields, $files );
 	}
 	

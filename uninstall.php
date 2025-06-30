@@ -43,6 +43,7 @@ function delete_data(): void {
 			
 			foreach ( \array_keys( $form_ids ) as $form_id ) {
 				\delete_option( 'form_block_data_' . $form_id );
+				\delete_option( 'form_block_submissions_' . $form_id );
 			}
 		}
 		

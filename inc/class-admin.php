@@ -1,6 +1,9 @@
 <?php
 namespace epiphyt\Form_Block;
 
+use epiphyt\Form_Block\submissions\Submission_List_Table;
+use WP_Screen;
+
 /**
  * Form Block admin class.
  * 
@@ -9,6 +12,8 @@ namespace epiphyt\Form_Block;
  * @package	epiphyt\Form_Block
  */
 final class Admin {
+	public const PAGE_NAME = 'form-block';
+	
 	/**
 	 * @var		\epiphyt\Form_Block\Admin
 	 */
@@ -19,7 +24,10 @@ final class Admin {
 	 */
 	public function init(): void {
 		\add_action( 'admin_init', [ $this, 'register_options' ] );
+		\add_action( 'admin_menu', [ self::class, 'register_options_page' ] );
 		\add_action( 'enqueue_block_editor_assets', [ $this, 'block_assets' ] );
+		\add_action( 'load-settings_page_' . self::PAGE_NAME, [ self::class, 'register_screen_options' ] );
+		\add_filter( 'set_screen_option_submissions_per_page', [ self::class, 'save_per_page_screen_option' ], 10, 3 );
 	}
 	
 	/**
@@ -60,6 +68,22 @@ final class Admin {
 	}
 	
 	/**
+	 * Get options page HTML.
+	 */
+	public static function get_options_page_html(): void {
+		$table = new Submission_List_Table();
+		
+		echo '<div class="wrap">';
+		echo '<h1>' . \esc_html__( 'Form Block', 'form-block' ) . '</h1>';
+		echo '<form method="post">';
+		$table->prepare_items();
+		$table->search_box( \__( 'Search Submissions', 'form-block' ), 'search_id' );
+		$table->display();
+		echo '</form';
+		echo '</div>'; // .wrap
+	}
+	
+	/**
 	 * Get the input for preserve data on uninstall option.
 	 */
 	public function get_preserve_data_on_uninstall_input(): void {
@@ -70,6 +94,20 @@ final class Admin {
 			<?php \esc_html_e( 'Preserve data on uninstall', 'form-block' ); ?>
 		</label>
 		<p><?php \esc_html_e( 'By enabling this option, all plugin data is preserved on uninstall.', 'form-block' ); ?></p>
+		<?php
+	}
+	
+	/**
+	 * Get the input for preserve data on uninstall option.
+	 */
+	public function get_save_submissions_input(): void {
+		$option_value = \get_option( 'form_block_save_submissions' );
+		?>
+		<label>
+			<input type="checkbox" id="form_block_save_submissions" name="form_block_save_submissions" value="yes"<?php \checked( $option_value, 'yes' ) ?>/>
+			<?php \esc_html_e( 'Save submissions', 'form-block' ); ?>
+		</label>
+		<p><?php \esc_html_e( 'By enabling this option, all submissions will be saved in WordPress as well.', 'form-block' ); ?></p>
 		<?php
 	}
 	
@@ -102,8 +140,23 @@ final class Admin {
 			]
 		);
 		\add_settings_field(
-			'form_block_preserve_data_on_uninstall',
+			'form_block_save_submissions',
 			\__( 'Data handling', 'form-block' ),
+			[ $this, 'get_save_submissions_input' ],
+			'writing',
+			'form_block'
+		);
+		\register_setting(
+			'writing',
+			'form_block_save_submissions',
+			[
+				'sanitize_callback' => [ $this, 'validate_save_submissions' ],
+				'type' => 'string',
+			]
+		);
+		\add_settings_field(
+			'form_block_preserve_data_on_uninstall',
+			'',
 			[ $this, 'get_preserve_data_on_uninstall_input' ],
 			'writing',
 			'form_block'
@@ -116,6 +169,80 @@ final class Admin {
 				'type' => 'string',
 			]
 		);
+	}
+	
+	/**
+	 * Register options page.
+	 */
+	public static function register_options_page(): void {
+		\add_submenu_page(
+			'options-general.php',
+			\__( 'Form Block', 'form-block' ),
+			\__( 'Form Block', 'form-block' ),
+			'manage_options',
+			self::PAGE_NAME,
+			[ self::class, 'get_options_page_html' ]
+		);
+	}
+	
+	/**
+	 * Register screen options.
+	 */
+	public static function register_screen_options(): void {
+		$screen = \get_current_screen();
+		
+		if ( ! $screen instanceof WP_Screen || $screen->id !== 'settings_page_' . self::PAGE_NAME ) {
+			return;
+		}
+		
+		\add_screen_option(
+			'per_page',
+			[
+				'default' => 20,
+				'label' => \__( 'Submissions per page', 'form-block' ),
+				'option' => 'submissions_per_page',
+			]
+		);
+	}
+	
+	/**
+	 * Save 'per page' screen option.
+	 * 
+	 * @param	mixed	$screen_option Value to save instead of the option value
+	 * @param	string	$option Option name
+	 * @param	int		$value Option value
+	 * @return	int Option value
+	 */
+	public static function save_per_page_screen_option( mixed $screen_option, string $option, int $value ): int {
+		return $value;
+	}
+	
+	/**
+	 * Validate a checkbox setting.
+	 * 
+	 * @param	string|null	$value Saved value
+	 * @param	string		$option Option name
+	 * @param	string		$title Option title
+	 * @return	string Validated value
+	 */
+	public static function validate_checkbox( ?string $value, string $option, string $title ): string {
+		// allow empty value to reset
+		if ( empty( $value ) ) {
+			return '';
+		}
+		
+		if ( $value !== 'yes' ) {
+			\add_settings_error(
+				$option,
+				'invalid_value',
+				/* translators: setting name */
+				\sprintf( \esc_html__( '%s: The value is invalid.', 'form-block' ), \esc_html( $title ) )
+			);
+			
+			return '';
+		}
+		
+		return $value;
 	}
 	
 	/**
@@ -166,23 +293,16 @@ final class Admin {
 	 * @return	string The validated value
 	 */
 	public function validate_preserve_data_on_uninstall( ?string $value ): string {
-		// allow empty value to reset
-		if ( empty( $value ) ) {
-			return '';
-		}
-		
-		if ( $value !== 'yes' ) {
-			\add_settings_error(
-				'form_block_preserve_data_on_uninstall',
-				'invalid_value',
-				/* translators: setting name */
-				\sprintf( \esc_html__( '%s: The value is invalid.', 'form-block' ), \esc_html__( 'Preserve data on uninstall', 'form-block' )
-				)
-			);
-			
-			return '';
-		}
-		
-		return $value;
+		return self::validate_checkbox( $value, 'form_block_preserve_data_on_uninstall', \__( 'Preserve data on uninstall', 'form-block' ) );
+	}
+	
+	/**
+	 * Validate save submissions setting.
+	 * 
+	 * @param	string|null	$value The saved value
+	 * @return	string The validated value
+	 */
+	public function validate_save_submissions( ?string $value ): string {
+		return self::validate_checkbox( $value, 'form_block_save_submissions', \__( 'Save submissions', 'form-block' ) );
 	}
 }
