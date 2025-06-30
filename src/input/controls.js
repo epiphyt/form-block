@@ -24,6 +24,12 @@ export default function Controls( props ) {
 	} = props;
 	const defaultControlTypes = [
 		{
+			attributeName: 'autoComplete',
+			attributes: {
+				type: 'autocomplete',
+			},
+		},
+		{
 			attributeName: 'isReplyTo',
 			attributes: {},
 		},
