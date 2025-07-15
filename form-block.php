@@ -45,7 +45,7 @@ if ( ! \defined( 'EPI_FORM_BLOCK_BASE' ) ) {
 
 \define( 'EPI_FORM_BLOCK_FILE', \EPI_FORM_BLOCK_BASE . \basename( __FILE__ ) );
 \define( 'EPI_FORM_BLOCK_URL', \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) );
-\define( 'FORM_BLOCK_VERSION', '1.5.4' );
+\define( 'FORM_BLOCK_VERSION', '1.5.6' );
 
 if ( ! \extension_loaded( 'dom' ) ) {
 	/**
