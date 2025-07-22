@@ -1,6 +1,8 @@
 .distignore
 .git
 .github
+.phpcs.xml
+.prettier*
 .wordpress-org
 node_modules/
 src/
