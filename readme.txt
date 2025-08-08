@@ -97,7 +97,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 == Changelog ==
 
 = 1.5.6 =
-* Fixed: Validating uploaded files against the file type they claim to be
+* Fixed: Validating uploaded files against the file type they claim to be ([CVE-2025-54693](https://patchstack.com/database/wordpress/plugin/form-block/vulnerability/wordpress-form-block-plugin-1-5-5-arbitrary-file-upload-vulnerability))
 
 = 1.5.5 =
 * Fixed: A cleared name value of a field now properly uses the auto-generated one to properly check for its value on form submissions
