@@ -327,6 +327,13 @@ final class Data {
 		return $required;
 	}
 	
+	/**
+	 * Get the submit URL of submitted data.
+	 * Requires _object_type and _object_id to be set in the data.
+	 * 
+	 * @param	mixed[]	$fields List of fields
+	 * @return	string URL where the data has been submitted
+	 */
 	public static function get_submit_url( array $fields ): string {
 		if ( ! isset( $fields['_object_id'] ) || ! isset( $fields['_object_type'] ) ) {
 			return '';
