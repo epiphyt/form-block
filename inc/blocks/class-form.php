@@ -100,8 +100,9 @@ final class Form {
 	 * @return	string Updated block content
 	 */
 	public function add_object_inputs( string $block_content, array $block ): string {
+		$queried_object = \get_queried_object();
 		$object_inputs = '<input type="hidden" name="_object_id" value="' . \esc_attr( \get_queried_object_id() ) . '" />' . \PHP_EOL;
-		$object_inputs .= '<input type="hidden" name="_object_type" value="' . \esc_attr( \get_class( \get_queried_object() ) ) . '" />';
+		$object_inputs .= '<input type="hidden" name="_object_type" value="' . \esc_attr( $queried_object ? $queried_object::class : '' ) . '" />';
 		
 		/**
 		 * Filter the object inputs.
