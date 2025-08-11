@@ -97,7 +97,7 @@ final class Submission_List_Table extends WP_List_Table {
 				'date' => $submission->get_date(),
 				'id' => $submission->get_data( 'form_id' ) . '/' . $key,
 				/* translators: blog name */
-				'subject' => $submission->get_form_data( 'label' ) ?: \sprintf( \__( 'Form submission', 'form-block' ), \get_bloginfo( 'name' ) ),
+				'label' => $submission->get_form_data( 'label' ) ?: \sprintf( \__( 'Form submission', 'form-block' ), \get_bloginfo( 'name' ) ),
 			];
 		}
 		
