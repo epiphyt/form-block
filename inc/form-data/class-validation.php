@@ -405,11 +405,7 @@ final class Validation {
 						continue;
 					}
 					
-					if ( $file['size'] > \wp_max_upload_size() ) {
-						\wp_send_json_error( [
-							'message' => \esc_html__( 'The uploaded file is too big.', 'form-block' ),
-						] );
-					}
+					self::validate_file_type( $file );
 					
 					$filesize += $file['size'];
 					$validated[] = [
@@ -417,15 +413,12 @@ final class Validation {
 						'name' => $file['name'],
 						'path' => $file['tmp_name'],
 						'size' => $file['size'],
+						'type' => $file['type'],
 					];
 				}
 			}
 			else if ( ! empty( $files['tmp_name'] ) ) {
-				if ( $files['size'] > \wp_max_upload_size() ) {
-					\wp_send_json_error( [
-						'message' => \esc_html__( 'The uploaded file is too big.', 'form-block' ),
-					] );
-				}
+				self::validate_file_type( $files );
 				
 				$filesize += $files['size'];
 				$validated[] = [
@@ -433,6 +426,7 @@ final class Validation {
 					'name' => $files['name'],
 					'path' => $files['tmp_name'],
 					'size' => $files['size'],
+					'type' => $files['type'],
 				];
 			}
 		}
@@ -515,5 +509,52 @@ final class Validation {
 		}
 		
 		return self::$instance;
+	}
+	
+	/**
+	 * Validate a given file type with the actual file.
+	 * Either exits with a JSON error code or allows further processing.
+	 * 
+	 * @param	array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}	$file File to validate
+	 */
+	private static function validate_file_type( array $file ): void {
+		if ( $file['size'] > \wp_max_upload_size() ) {
+			\wp_send_json_error( [
+				'message' => \esc_html__( 'The uploaded file is too big.', 'form-block' ),
+			], 413 );
+		}
+		
+		// allow all known mime types
+		if ( \is_multisite() ) {
+			\remove_filter( 'upload_mimes', 'check_upload_mimes' );
+		}
+		
+		$allowed_mime_types = \wp_get_mime_types();
+		
+		if ( \is_multisite() ) {
+			\add_filter( 'upload_mimes', 'check_upload_mimes' );
+		}
+		
+		/**
+		 * Filter allowed mime types to upload.
+		 * 
+		 * @param	string[]	$allowed_mime_types List of allowed mime types
+		 * @param	array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string} $file Current file to validate
+		 */
+		$allowed_mime_types = (array) \apply_filters( 'form_block_validate_file_type_mime_types', $allowed_mime_types, $file );
+		
+		$wp_filetype = \wp_check_filetype_and_ext( $file['tmp_name'], $file['name'], $allowed_mime_types );
+		
+		if ( $wp_filetype['ext'] === false || $wp_filetype['type'] === false ) {
+			\wp_send_json_error( [
+				'message' => \esc_html__( 'The uploaded file type is not supported.', 'form-block' ),
+			], 415 );
+		}
+		
+		if ( $wp_filetype['type'] !== $file['type'] ) {
+			\wp_send_json_error( [
+				'message' => \esc_html__( 'The uploaded file has an invalid type.', 'form-block' ),
+			], 415 );
+		}
 	}
 }
