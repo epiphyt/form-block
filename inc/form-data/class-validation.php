@@ -23,6 +23,8 @@ final class Validation {
 	 */
 	private array $system_field_names = [
 		'_form_id',
+		'_object_id',
+		'_object_type',
 		'_town',
 		'_wpnonce',
 		'action',

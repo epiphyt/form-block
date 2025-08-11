@@ -7,11 +7,13 @@ const isProduction = process.env.NODE_ENV === 'production';
 const mode = isProduction ? 'production' : 'development';
 
 const jsFiles = {
+	admin: path.resolve( process.cwd(), 'assets/js', 'admin.js' ),
 	form: path.resolve( process.cwd(), 'assets/js', 'form.js' ),
 	'multi-field': path.resolve( process.cwd(), 'assets/js', 'multi-field.js' ),
 	validation: path.resolve( process.cwd(), 'assets/js', 'validation.js' ),
 };
 const scssFiles = {
+	admin: path.resolve( process.cwd(), 'assets/style', 'admin.scss' ),
 	form: path.resolve( process.cwd(), 'assets/style', 'form.scss' ),
 	'twenty-twenty-five': path.resolve(
 		process.cwd(),

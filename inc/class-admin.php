@@ -2,7 +2,6 @@
 namespace epiphyt\Form_Block;
 
 use epiphyt\Form_Block\submissions\Submission_List_Table;
-use WP_Screen;
 
 /**
  * Form Block admin class.
@@ -23,6 +22,7 @@ final class Admin {
 	 * Initialize the class.
 	 */
 	public function init(): void {
+		\add_action( 'admin_enqueue_scripts', [ self::class, 'enqueue_assets' ] );
 		\add_action( 'admin_init', [ $this, 'register_options' ] );
 		\add_action( 'admin_menu', [ self::class, 'register_options_page' ] );
 		\add_action( 'enqueue_block_editor_assets', [ $this, 'block_assets' ] );
@@ -35,6 +35,34 @@ final class Admin {
 	 */
 	public function block_assets(): void {
 		\wp_set_script_translations( 'form-block-editor', 'form-block' );
+	}
+	
+	/**
+	 * Enqueue admin assets.
+	 */
+	public static function enqueue_assets(): void {
+		$screen = \get_current_screen();
+		
+		if ( ! $screen instanceof \WP_Screen ) {
+			return;
+		}
+		
+		$is_debug = ( \defined( 'WP_DEBUG' ) && \WP_DEBUG ) || ( \defined( 'SCRIPT_DEBUG' ) && \SCRIPT_DEBUG );
+		$suffix = $is_debug ? '' : '.min';
+		
+		if ( $screen->id === 'settings_page_form-block' ) {
+			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'admin' . $suffix . '.js';
+			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'admin' . $suffix . '.js';
+			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
+			
+			\wp_enqueue_script( 'form-block-admin', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
+			
+			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/style/build/admin' . $suffix . '.css';
+			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/style/build/admin' . $suffix . '.css';
+			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
+			
+			\wp_enqueue_style( 'form-block-admin', $asset_url, [], $version );
+		}
 	}
 	
 	/**
@@ -191,7 +219,7 @@ final class Admin {
 	public static function register_screen_options(): void {
 		$screen = \get_current_screen();
 		
-		if ( ! $screen instanceof WP_Screen || $screen->id !== 'settings_page_' . self::PAGE_NAME ) {
+		if ( ! $screen instanceof \WP_Screen || $screen->id !== 'settings_page_' . self::PAGE_NAME ) {
 			return;
 		}
 		

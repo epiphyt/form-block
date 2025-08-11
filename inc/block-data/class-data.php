@@ -87,6 +87,7 @@ final class Data {
 						$data[ $form_id ] = [
 							'block_type' => 'form',
 							'fields' => [],
+							'label' => $block['attrs']['label'] ?? '',
 							'subject' => $block['attrs']['subject'] ?? '',
 						];
 						

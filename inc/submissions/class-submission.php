@@ -2,6 +2,7 @@
 namespace epiphyt\Form_Block\submissions;
 
 use DateTimeImmutable;
+use epiphyt\Form_Block\form_data\Data;
 
 /**
  * Represents a form submission.
@@ -93,6 +94,18 @@ final class Submission {
 		}
 		
 		return \wp_date( $format, $this->date->getTimestamp() );
+	}
+	
+	/**
+	 * Get a form data field.
+	 * 
+	 * @param	string	$field Field to get
+	 * @return	mixed Form field data
+	 */
+	public function get_form_data( string $field ): mixed {
+		$form_data = Data::get_instance()->get( $this->form_id );
+		
+		return $form_data[ $field ] ?? null;
 	}
 	
 	/**

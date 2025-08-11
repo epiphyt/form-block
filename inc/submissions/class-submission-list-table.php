@@ -35,8 +35,20 @@ final class Submission_List_Table extends WP_List_Table {
 				$form_id = \substr( $item['id'], 0, \strpos( $item['id'], '/' ) );
 				$form_data = Data::get_instance()->get( $form_id );
 				$field_output = \trim( Field::get_instance()->get_output( $form_data['fields'], $item[ $column_name ]['fields'] ) );
+				$field_output = \sprintf(
+					'<details class="form-block__data-details"><summary class="button">%1$s</summary><div class="form-block__field-output">%2$s</div></details>',
+					\esc_html__( 'Show submitted data', 'form-block' ),
+					$field_output
+				);
+				$url = Data::get_submit_url( $item['data']['raw']['_POST'] );
+				$title = \sprintf(
+					/* translators: 1: form label, 2: URL */
+					'<strong>' . \esc_html__( '%1$s submitted via %2$s', 'form-block' ) . '</strong>' . \PHP_EOL,
+					\esc_html( $item['label'] ?? \__( 'Contact form', 'form-block' ) ),
+					$url ? '<a href="' . \esc_url( $url ) . '">' . \esc_url( $url ) . '</a>' : \esc_html__( 'unknown page', 'form-block' )
+				);
 				
-				return \nl2br( $field_output );
+				return $title . \nl2br( $field_output );
 			default:
 				return (string) $item[ $column_name ] ?? '';
 		}
@@ -84,6 +96,8 @@ final class Submission_List_Table extends WP_List_Table {
 				'data' => $submission->get_data(),
 				'date' => $submission->get_date(),
 				'id' => $submission->get_data( 'form_id' ) . '/' . $key,
+				/* translators: blog name */
+				'subject' => $submission->get_form_data( 'label' ) ?: \sprintf( \__( 'Form submission', 'form-block' ), \get_bloginfo( 'name' ) ),
 			];
 		}
 		
@@ -151,7 +165,13 @@ final class Submission_List_Table extends WP_List_Table {
 		$orderby = ! empty( $_GET['orderby'] ) ? \sanitize_text_field( \wp_unslash( $_GET['orderby'] ) ) : 'date';
 		$order = ! empty( $_GET['order'] ) ? \sanitize_text_field( \wp_unslash( $_GET['order'] ) ) : 'desc';
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
-		$result = \strnatcmp( $a[ $orderby ], $b[ $orderby ] );
+		
+		if ( $orderby === 'date' ) {
+			$result = \strtotime( $a[ $orderby ] ) - \strtotime( $b[ $orderby ] );
+		}
+		else {
+			$result = \strnatcmp( $a[ $orderby ], $b[ $orderby ] );
+		}
 		
 		return $order === 'asc' ? $result : -$result;
 	}

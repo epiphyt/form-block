@@ -30,6 +30,7 @@ final class Form {
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_label' ], 20, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_maximum_upload_sizes' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_method' ], 10, 2 );
+		\add_filter( 'render_block_form-block/form', [ $this, 'add_object_inputs' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_required_notice' ], 10, 2 );
 	}
 	
@@ -89,6 +90,29 @@ final class Form {
 		$form_id_input = \apply_filters( 'form_block_form_id_input', $form_id_input, $form_id, $block_content, $block );
 		
 		return \str_replace( 'enctype="multipart/form-data" novalidate>', 'enctype="multipart/form-data" novalidate>' . \PHP_EOL . $form_id_input, $block_content );
+	}
+	
+	/**
+	 * Add the object data input fields.
+	 * 
+	 * @param	string	$block_content The block content
+	 * @param	array	$block Block attributes
+	 * @return	string Updated block content
+	 */
+	public function add_object_inputs( string $block_content, array $block ): string {
+		$object_inputs = '<input type="hidden" name="_object_id" value="' . \esc_attr( \get_queried_object_id() ) . '" />' . \PHP_EOL;
+		$object_inputs .= '<input type="hidden" name="_object_type" value="' . \esc_attr( \get_class( \get_queried_object() ) ) . '" />';
+		
+		/**
+		 * Filter the object inputs.
+		 * 
+		 * @param	string	$object_inputs The object inputs
+		 * @param	string	$block_content The block content
+		 * @param	array	$block Block attributes
+		 */
+		$object_inputs = \apply_filters( 'form_block_object_inputs', $object_inputs, $block_content, $block );
+		
+		return \str_replace( 'enctype="multipart/form-data" novalidate>', 'enctype="multipart/form-data" novalidate>' . \PHP_EOL . $object_inputs, $block_content );
 	}
 	
 	/**

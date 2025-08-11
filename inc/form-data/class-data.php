@@ -327,6 +327,26 @@ final class Data {
 		return $required;
 	}
 	
+	public static function get_submit_url( array $fields ): string {
+		if ( ! isset( $fields['_object_id'] ) || ! isset( $fields['_object_type'] ) ) {
+			return '';
+		}
+		
+		if ( ! \is_numeric( $fields['_object_id'] ) || ! \is_string( $fields['_object_type'] ) ) {
+			return '';
+		}
+		
+		switch ( $fields['_object_type'] ) {
+			case 'WP_Post':
+			case 'WP_Post_Type':
+				return \get_permalink( $fields['_object_id'] );
+			case 'WP_Term':
+				return \get_term_link( $fields['_object_id'] );
+			default:
+				return '';
+		}
+	}
+	
 	/**
 	 * Check whether the honeypot is filled.
 	 * 
