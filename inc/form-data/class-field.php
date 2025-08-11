@@ -110,9 +110,10 @@ final class Field {
 	 * @param	mixed	$value Value to format
 	 * @param	string	$label Label for the field
 	 * @param	int		$level Current indentation level
+	 * @param	string	$format_type 'plain' text or 'html'
 	 * @return	string Formatted output
 	 */
-	private static function format_output( mixed $value, string $label, int $level = 0 ): string {
+	private static function format_output( mixed $value, string $label, int $level = 0, string $format_type = 'plain' ): string {
 		$output = '';
 		$prefix = \str_repeat( ' ', ( $level > 0 ? $level - 1 : $level ) * 2 ) . ( $level > 0 ? '- ' : '' );
 		
@@ -128,7 +129,7 @@ final class Field {
 					$key += 1;
 				}
 				
-				$output .= self::format_output( $sub_value, $key, $level + 1 );
+				$output .= self::format_output( $sub_value, $key, $level + 1, $format_type );
 			}
 		}
 		else if ( ! empty( $label ) ) {
@@ -143,7 +144,15 @@ final class Field {
 					$value = \implode( \PHP_EOL, $lines );
 				}
 				
-				$output .= "{$prefix}{$label}:" . \PHP_EOL . $value . \PHP_EOL;
+				if ( $format_type === 'html' ) {
+					$output .= "<dt>{$prefix}{$label}:</dt>" . \PHP_EOL . '<dd>' . $value . '</dd>' . \PHP_EOL;
+				}
+				else {
+					$output .= "{$prefix}{$label}:" . \PHP_EOL . $value . \PHP_EOL;
+				}
+			}
+			else if ( $format_type === 'html' ) {
+				$output .= "<dt>{$prefix}{$label}:</dt>" . \PHP_EOL . '<dd>' . $value . '</dd>' . \PHP_EOL;
 			}
 			else {
 				$output .= "{$prefix}{$label}: {$value}" . \PHP_EOL;
@@ -151,6 +160,9 @@ final class Field {
 		}
 		else if ( empty( $value ) ) {
 			return $output;
+		}
+		else if ( $format_type === 'html' ) {
+			$output .= "<dt></dt><dd>{$prefix}{$value}</dd>" . \PHP_EOL;
 		}
 		else {
 			$output .= "{$prefix}{$value}" . \PHP_EOL;
@@ -307,9 +319,10 @@ final class Field {
 	 * @param	array<int, array{name: string, label: string}>	$fields Fields data
 	 * @param	array<string, mixed>							$post_fields POST fields
 	 * @param	int 											$level Current indentation level
+	 * @param	string											$format_type 'plain' text or 'html'
 	 * @return	string Aggregated output for all matched fields
 	 */
-	public function get_output( array $fields, array $post_fields, int $level = 0 ): string {
+	public function get_output( array $fields, array $post_fields, int $level = 0, string $format_type = 'plain' ): string {
 		$output = '';
 		
 		foreach ( $fields as $field ) {
@@ -359,7 +372,7 @@ final class Field {
 							$values = self::get_list_values( $values );
 						}
 						
-						$current_output .= self::format_output( $values, $field['label'], $level );
+						$current_output .= self::format_output( $values, $field['label'], $level, $format_type );
 					}
 					else if ( $values !== false ) {
 						\wp_send_json_error( [
@@ -395,7 +408,7 @@ final class Field {
 					 */
 					$value = \apply_filters( 'form_block_output_field_value', $value, $field['name'], $fields, $level );
 					
-					$current_output .= self::format_output( $value, $field['label'], $level );
+					$current_output .= self::format_output( $value, $field['label'], $level, $format_type );
 				}
 				
 				if ( ! empty( $field['fields'] ) ) {
@@ -411,14 +424,17 @@ final class Field {
 				 * 
 				 * @since	1.1.0
 				 * @since	1.5.0	Replaced 4th parameter from form data to fields data
-				 * @since	1.5.0	Added 5th parameter $level
+				 * @since	1.5.0	Added parameter $level
+				 * @since	1.6.0	Added parameter $format_type
 				 * 
 				 * @param	string	$current_output Field output
 				 * @param	string	$name Field name
 				 * @param	mixed	$value Field value
 				 * @param	array	$fields Fields data
+				 * @param	int		$level Current output level
+				 * @param	string	$format_type 'plain' text or 'html'
 				 */
-				$current_output = \apply_filters( 'form_block_output_field_output', $current_output, $field['name'], $field['value'] ?? null, $fields, $level );
+				$current_output = \apply_filters( 'form_block_output_field_output', $current_output, $field['name'], $field['value'] ?? null, $fields, $level, $format_type );
 			}
 			else if ( ! empty( $field['legend']['textContent'] ) ) {
 				/**
@@ -451,7 +467,7 @@ final class Field {
 				/**
 				 * This filter is documented in inc/form-data/class-field.php
 				 */
-				$current_output = \apply_filters( 'form_block_output_field_output', $current_output, $legend, null, $fields, $level );
+				$current_output = \apply_filters( 'form_block_output_field_output', $current_output, $legend, null, $fields, $level, $format_type );
 			}
 			
 			$output .= $current_output;
@@ -468,9 +484,10 @@ final class Field {
 	 * @param	mixed	$value The field value
 	 * @param	array	$fields Field data
 	 * @param	int 	$level Current indentation level
+	 * @param	string	$format_type 'plain' text or 'html'
 	 * @return	string The updated field output
 	 */
-	public static function get_static_value_output( string $output, string $name, mixed $value, array $fields, int $level ): string {
+	public static function get_static_value_output( string $output, string $name, mixed $value, array $fields, int $level, string $format_type ): string {
 		$clear_output = false;
 		$fields_data = self::get_by_name( $name, $fields, 'all' );
 		
@@ -490,11 +507,25 @@ final class Field {
 			$field_keys = self::parse_field_name( $name );
 			
 			if ( $field_data['type'] === 'checkbox' ) {
-				/* translators: form field title */
-				$return_value = \sprintf( \__( 'Checked: %s', 'form-block' ), $label );
+				if ( $format_type === 'html' ) {
+					$output = \wp_strip_all_tags( $output );
+				}
+				
+				if ( $format_type === 'html' ) {
+					$return_value = '<dt>' . \__( 'Checked:', 'form-block' ) . '</dt>';
+					$return_value .= '<dd>' . $label . '</dd>';
+				}
+				else {
+					/* translators: form field title */
+					$return_value = \sprintf( \__( 'Checked: %s', 'form-block' ), $label );
+				}
 			}
 			else if ( $field_data['type'] === 'radio' ) {
-				list( $output_label, $output_value ) = \array_map( 'trim', \explode( ': ', $output ) );
+				if ( $format_type === 'html' ) {
+					$output = \wp_strip_all_tags( $output );
+				}
+				
+				list( $output_label, $output_value ) = \array_map( 'trim', \explode( ':', $output ) );
 				$clear_output = true;
 				$output_label = \trim( \mb_substr( $output_label, 0, \mb_strpos( $output_label, ':' ) ?: \mb_strlen( $output_label ) ) );
 				$output_label = \preg_replace( '/^- /', '', $output_label );
@@ -506,8 +537,18 @@ final class Field {
 				$clear_output = false;
 				
 				if ( ! \is_array( $value ) && $value !== null && $value !== 'on' ) {
-					/* translators: form field title or value */
-					$return_value = \sprintf( \__( 'Selected: %s', 'form-block' ), $value );
+					if ( $format_type === 'html' ) {
+						$return_value = '<dt>' . \__( 'Selected:', 'form-block' ) . '</dt>';
+						$return_value .= '<dd>' . $value . '</dd>';
+					}
+					else {
+						/* translators: form field title or value */
+						$return_value = \sprintf( \__( 'Selected: %s', 'form-block' ), $value );
+					}
+				}
+				else if ( $format_type === 'html' ) {
+						$return_value = '<dt>' . \__( 'Selected:', 'form-block' ) . '</dt>';
+					$return_value .= '<dd>' . $label . '</dd>';
 				}
 				else {
 					/* translators: form field title or value */
@@ -531,9 +572,18 @@ final class Field {
 					"- {$return_value}",
 					$output
 				);
+				
+				if ( $format_type === 'html' ) {
+					$return_value = '<dt></dt><dd>' . $return_value . '</dd>';
+				}
 			}
 			else if ( \str_starts_with( $output, '- ' ) ) {
-				$return_value = \str_repeat( ' ', $level * 2 ) . $return_value;
+				if ( $format_type === 'html' ) {
+					$return_value = '<dt></dt><dd>' . \str_repeat( ' ', $level * 2 ) . $return_value . '</dd>';
+				}
+				else {
+					$return_value = \str_repeat( ' ', $level * 2 ) . $return_value;
+				}
 			}
 			
 			return $return_value . \PHP_EOL;

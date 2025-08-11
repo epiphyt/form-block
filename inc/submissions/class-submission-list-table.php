@@ -32,14 +32,32 @@ final class Submission_List_Table extends WP_List_Table {
 	public function column_default( $item, $column_name ): string { // phpcs:ignore SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
 		switch ( $column_name ) {
 			case 'data':
+				$field_output = '';
+				$file_output = '';
 				$form_id = \substr( $item['id'], 0, \strpos( $item['id'], '/' ) );
 				$form_data = Data::get_instance()->get( $form_id );
-				$field_output = \trim( Field::get_instance()->get_output( $form_data['fields'], $item[ $column_name ]['fields'] ) );
-				$field_output = \sprintf(
-					'<details class="form-block__data-details"><summary class="button">%1$s</summary><div class="form-block__field-output">%2$s</div></details>',
-					\esc_html__( 'Show submitted data', 'form-block' ),
-					$field_output
-				);
+				
+				if ( ! empty( $item['data']['fields'] ) ) {
+					$field_output = \trim( Field::get_instance()->get_output( $form_data['fields'], $item['data']['fields'], 0, 'html' ) );
+					$field_output = \sprintf(
+						'<strong id="%2$s">%1$s</strong>
+						<dl aria-labelledby="%2$s">%3$s</dl>',
+						\esc_html__( 'Fields', 'form-block' ),
+						$item['id'] . '-fields',
+						$field_output
+					);
+				}
+				
+				if ( ! empty( $item['data']['files'] ) ) {
+					$file_output = \sprintf(
+						'<strong id="%2$s">%1$s</strong>
+						<dl aria-labelledby="%2$s">%3$s</dl>',
+						\esc_html__( 'Files', 'form-block' ),
+						$item['id'] . '-files',
+						\implode( \PHP_EOL, $item['data']['files'] )
+					);
+				}
+				
 				$url = Data::get_submit_url( $item['data']['raw']['_POST'] );
 				$title = \sprintf(
 					/* translators: 1: form label, 2: URL */
@@ -48,7 +66,20 @@ final class Submission_List_Table extends WP_List_Table {
 					$url ? '<a href="' . \esc_url( $url ) . '">' . \esc_url( $url ) . '</a>' : \esc_html__( 'unknown page', 'form-block' )
 				);
 				
-				return $title . \nl2br( $field_output );
+				return \sprintf(
+					'%1$s
+					<details class="form-block__data-details">
+						<summary class="button">%2$s</summary>
+						<div class="form-block__field-output">
+							%3$s
+							%4$s
+						</div>
+					</details>',
+					$title,
+					\esc_html__( 'View submitted data', 'form-block' ),
+					$field_output,
+					$file_output
+				);
 			default:
 				return (string) $item[ $column_name ] ?? '';
 		}

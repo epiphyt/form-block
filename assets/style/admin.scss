@@ -10,6 +10,21 @@
 
 .form-block__data-details {
 	margin-top: .5em;
+	
+	dl {
+		display: flex;
+		flex-flow: row wrap;
+		gap: 1em .4em;
+	}
+	
+	dt {
+		flex: 0 0 200px;
+	}
+	
+	dd {
+		flex: 0 0 calc(100% - 200px - .4em);
+		margin: 0;
+	}
 }
 
 .form-block__field-output {

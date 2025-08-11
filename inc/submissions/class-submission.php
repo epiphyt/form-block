@@ -13,7 +13,6 @@ use epiphyt\Form_Block\form_data\Data;
  */
 final class Submission {
 	/**
-	 * @TODO	files type hint
 	 * @var		array{fields: mixed[], files: array, raw: array{mixed[]|array}} Submission data
 	 */
 	private array $data = [

@@ -2,6 +2,7 @@
 namespace epiphyt\Form_Block\submissions;
 
 use epiphyt\Form_Block\form_data\Data;
+use epiphyt\Form_Block\form_data\File;
 
 /**
  * Form submission handler.
@@ -25,6 +26,15 @@ final class Submission_Handler {
 			return;
 		}
 		
+		\add_filter( 'form_block_file_is_saved_locally', '__return_true' );
+		
+		$form_data = Data::get_instance()->get( $form_id );
+		
+		foreach ( $files as &$file ) {
+			$attachments = [];
+			$file = File::get_output( $file, $form_data, $attachments, 'html' );
+		}
+		
 		$data = [
 			'fields' => $fields,
 			'files' => $files,
@@ -34,6 +44,7 @@ final class Submission_Handler {
 		$form_submissions[] = $submission;
 		
 		\update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, $form_submissions );
+		\remove_filter( 'form_block_file_is_saved_locally', '__return_true' );
 	}
 	
 	/**

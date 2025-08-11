@@ -10,6 +10,7 @@ use epiphyt\Form_Block\blocks\Select;
 use epiphyt\Form_Block\blocks\Textarea;
 use epiphyt\Form_Block\form_data\Data as Form_Data_Data;
 use epiphyt\Form_Block\form_data\Field;
+use epiphyt\Form_Block\form_data\File;
 use epiphyt\Form_Block\modules\Custom_Date;
 
 /**
@@ -52,6 +53,7 @@ final class Form_Block {
 		// initialize before any block
 		Theme_Styles::get_instance()->init();
 		Fieldset::init();
+		File::init();
 		Form::get_instance()->init();
 		Form_Data_Data::get_instance()->init();
 		Input::get_instance()->init();

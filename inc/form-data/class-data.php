@@ -30,7 +30,7 @@ final class Data {
 		\add_action( 'wp_ajax_form-block-submit', [ $this, 'get_request' ] );
 		\add_action( 'wp_ajax_nopriv_form-block-create-nonce', [ $this, 'create_nonce' ] );
 		\add_action( 'wp_ajax_nopriv_form-block-submit', [ $this, 'get_request' ] );
-		\add_filter( 'form_block_output_field_output', [ Field::class, 'get_static_value_output' ], 10, 5 );
+		\add_filter( 'form_block_output_field_output', [ Field::class, 'get_static_value_output' ], 10, 6 );
 	}
 	
 	/**
@@ -426,63 +426,7 @@ final class Data {
 		
 		if ( ! empty( $files ) ) {
 			foreach ( $files as $file ) {
-				$file_data = Field::get_by_name( $file['field_name'], $form_data['fields'] );
-				$new_path = \sys_get_temp_dir() . $file['name'];
-				
-				/**
-				 * Filter the new path of an uploaded file.
-				 * 
-				 * @since	1.4.1
-				 * 
-				 * @param	string	$new_path New path of the file
-				 * @param	array	$file Uploaded file information array
-				 * @param	array	$file_data Form field data for this file
-				 */
-				$new_path = \apply_filters( 'form_block_attachment_file_path', $new_path, $file, $file_data );
-				
-				/**
-				 * Whether the file should be added as attachment.
-				 * 
-				 * @since	1.4.1
-				 * 
-				 * @param	bool	$add_to_attachments Whether the field should be added
-				 * @param	array	$file Uploaded file information array
-				 * @param	array	$file_data Form field data for this file
-				 */
-				$add_to_attachments = \apply_filters( 'form_block_attachment_add_to_mail', true, $file, $file_data );
-				
-				if ( $add_to_attachments ) {
-					$attachments[] = $new_path;
-				}
-				
-				\move_uploaded_file( $file['path'], $new_path );
-				
-				/**
-				 * Fires after the file has been moved.
-				 * 
-				 * @param	array	$file Uploaded file information array
-				 * @param	array	$file_data Form field data for this file
-				 */
-				\do_action( 'form_field_attachment_after_moved', $file, $file_data );
-				
-				/**
-				 * Filter the file output.
-				 * 
-				 * @since	1.4.1
-				 * 
-				 * @param	string	$output The field output
-				 * @param	string	$name The field name
-				 * @param	mixed	$new_path File path
-				 * @param	array	$file data File data array
-				 */
-				$output = \apply_filters( 'form_block_output_file_output', '', $file['field_name'], $new_path, $file_data );
-				
-				/**
-				 * This filter is documented in inc/form-data/class-data.php
-				 * 
-				 * @since	1.4.1 Added filter for file inputs
-				 */
-				$output = \apply_filters( 'form_block_output_field_output', $output, $file['field_name'], $new_path, $form_data, 0 );
+				$output = File::get_output( $file, $form_data, $attachments );
 				
 				if ( ! empty( $output ) ) {
 					$field_output[] = $output;
@@ -606,7 +550,7 @@ Your "%1$s" WordPress', 'form-block' ),
 			'1.5.0'
 		);
 		
-		return Field::get_static_value_output( $output, $name, $value, $form_data, 0 );
+		return Field::get_static_value_output( $output, $name, $value, $form_data, 0, 'plain' );
 	}
 	
 	/**
