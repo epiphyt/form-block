@@ -120,7 +120,13 @@ final class Field {
 		
 		if ( \is_array( $value ) ) {
 			$increment_keys = \array_key_first( $value ) === 0;
-			$output .= "{$prefix}{$label}:" . \PHP_EOL;
+			
+			if ( $format_type === 'html' ) {
+				$output .= "<dt>{$prefix}{$label}:</dt>" . \PHP_EOL;
+			}
+			else {
+				$output .= "{$prefix}{$label}:" . \PHP_EOL;
+			}
 			
 			foreach ( $value as $key => $sub_value ) {
 				if ( $level > 1 && \is_numeric( $key ) && ! \is_array( $sub_value ) ) {
@@ -130,7 +136,14 @@ final class Field {
 					$key += 1;
 				}
 				
-				$output .= self::format_output( $sub_value, $key, $field, $level + 1, $format_type );
+				$value_output = self::format_output( $sub_value, $key, $field, $level + 1, $format_type );
+				
+				if ( $format_type === 'html' ) {
+					$output .= '<dd>' . \trim( $value_output ) . '</dd>' . \PHP_EOL;
+				}
+				else {
+					$output .= $value_output;
+				}
 			}
 		}
 		else if ( ! empty( $label ) ) {
