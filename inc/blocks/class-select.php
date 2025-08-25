@@ -20,7 +20,7 @@ final class Select {
 	 * Initialize the class.
 	 */
 	public function init(): void {
-		\add_action( 'init', [ $this, 'register_block' ] );
+		\add_action( 'init', [ $this, 'register_block' ], 15 );
 		\add_filter( 'render_block_form-block/select', [ Form_Block::get_instance(), 'add_attributes' ], 10, 2 );
 	}
 	
