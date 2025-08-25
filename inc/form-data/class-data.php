@@ -30,7 +30,6 @@ final class Data {
 		\add_action( 'wp_ajax_form-block-submit', [ $this, 'get_request' ] );
 		\add_action( 'wp_ajax_nopriv_form-block-create-nonce', [ $this, 'create_nonce' ] );
 		\add_action( 'wp_ajax_nopriv_form-block-submit', [ $this, 'get_request' ] );
-		\add_filter( 'form_block_output_field_output', [ Field::class, 'get_static_value_output' ], 10, 6 );
 	}
 	
 	/**
@@ -335,29 +334,40 @@ final class Data {
 	}
 	
 	/**
-	 * Get the submit URL of submitted data.
+	 * Get the submit object data of submitted data.
 	 * Requires _object_type and _object_id to be set in the data.
 	 * 
 	 * @param	mixed[]	$fields List of fields
-	 * @return	string URL where the data has been submitted
+	 * @return	array{title: string, url: string} URL where the data has been submitted
 	 */
-	public static function get_submit_url( array $fields ): string {
+	public static function get_submit_object_data( array $fields ): array {
+		$default = [
+			'title' => '',
+			'url' => '',
+		];
+		
 		if ( ! isset( $fields['_object_id'] ) || ! isset( $fields['_object_type'] ) ) {
-			return '';
+			return $default;
 		}
 		
 		if ( ! \is_numeric( $fields['_object_id'] ) || ! \is_string( $fields['_object_type'] ) ) {
-			return '';
+			return $default;
 		}
 		
 		switch ( $fields['_object_type'] ) {
 			case 'WP_Post':
 			case 'WP_Post_Type':
-				return \get_permalink( $fields['_object_id'] );
+				return [
+					'title' => \get_post_field( 'post_title', $fields['_object_id'] ),
+					'url' => \get_permalink( $fields['_object_id'] ),
+				];
 			case 'WP_Term':
-				return \get_term_link( $fields['_object_id'] );
+				return [
+					'title' => \get_term_field( 'taxonomy', $fields['_object_id'] ),
+					'url' => \get_term_link( $fields['_object_id'] ),
+				];
 			default:
-				return '';
+				return $default;
 		}
 	}
 	
@@ -539,7 +549,7 @@ Your "%1$s" WordPress', 'form-block' ),
 	 * Set static output value for checkboxes and radio buttons.
 	 * 
 	 * @since		1.1.0
-	 * @deprecated	1.5.0 Use epiphyt\Form_Block\form_data\Field::get_static_value_output() instead
+	 * @deprecated	1.5.0
 	 * 
 	 * @param	string	$output The field output
 	 * @param	string	$name The field name
@@ -550,11 +560,7 @@ Your "%1$s" WordPress', 'form-block' ),
 	public function get_static_value_output( string $output, string $name, mixed $value, array $form_data ): string {
 		\_doing_it_wrong(
 			__METHOD__,
-			\sprintf(
-				/* translators: alternative method */
-				\esc_html__( 'Use %s instead', 'form-block' ),
-				'epiphyt\Form_Block\form_data\Field::get_static_value_output()'
-			),
+			\esc_html__( 'This method is outdated and will be removed in the future.', 'form-block' ),
 			'1.5.0'
 		);
 		

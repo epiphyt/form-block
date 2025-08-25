@@ -121,7 +121,7 @@ final class Field {
 		if ( \is_array( $value ) ) {
 			$increment_keys = \array_key_first( $value ) === 0;
 			
-			if ( $format_type === 'html' ) {
+			if ( $format_type === 'html' && $level === 0 ) {
 				$output .= "<dt>{$prefix}{$label}:</dt>" . \PHP_EOL;
 			}
 			else {
@@ -138,7 +138,7 @@ final class Field {
 				
 				$value_output = self::format_output( $sub_value, $key, $field, $level + 1, $format_type );
 				
-				if ( $format_type === 'html' ) {
+				if ( $format_type === 'html' && $level === 0 ) {
 					$output .= '<dd>' . \trim( $value_output ) . '</dd>' . \PHP_EOL;
 				}
 				else {
@@ -166,21 +166,32 @@ final class Field {
 				}
 			}
 			else if ( $format_type === 'html' && $level === 0 ) {
-				$output .= "<dt>{$prefix}{$label}:</dt>" . \PHP_EOL;
+				$field_output = "<dt>{$prefix}{$label}:</dt>" . \PHP_EOL;
 				
 				if ( $field['block_type'] !== 'repeater' ) {
-					$output .= '<dd>' . $value . '</dd>' . \PHP_EOL;
-				}
-			}
-			else {
-				$output .= "{$prefix}{$label}: ";
-				
-				if ( $field['block_type'] !== 'repeater' ) {
-					$output .= $value . \PHP_EOL;
+					$matched_value = self::match_value_with_field_type( $value, $field, $label );
+					
+					if ( $matched_value !== $value ) {
+						list( $output_label, $output_value ) = \array_map( 'trim', \explode( ':', $matched_value ) );
+						$field_output = "<dt>{$prefix}{$output_label}:</dt>" . \PHP_EOL;
+						$field_output .= '<dd>' . $output_value . '</dd>' . \PHP_EOL;
+					}
+					else {
+						$field_output .= '<dd>' . $value . '</dd>' . \PHP_EOL;
+					}
+					
+					$output .= $field_output;
 				}
 				else {
-					$output .= \PHP_EOL;
+					$output .= "<dt>{$prefix}{$label}:</dt>" . \PHP_EOL;
 				}
+			}
+			else if ( $field['block_type'] !== 'repeater' ) {
+				$output .= $prefix;
+				$output .= self::match_value_with_field_type( $value, $field, $label ) . \PHP_EOL;
+			}
+			else {
+				$output .= $value . \PHP_EOL;
 			}
 		}
 		else if ( empty( $value ) ) {
@@ -526,6 +537,8 @@ final class Field {
 	/**
 	 * Set static output value for checkboxes and radio buttons.
 	 * 
+	 * @deprecated	1.6.0
+	 * 
 	 * @param	string	$output The field output
 	 * @param	string	$name The field name
 	 * @param	mixed	$value The field value
@@ -535,6 +548,12 @@ final class Field {
 	 * @return	string The updated field output
 	 */
 	public static function get_static_value_output( string $output, string $name, mixed $value, array $fields, int $level, string $format_type ): string {
+		\_doing_it_wrong(
+			__METHOD__,
+			\esc_html__( 'This method is outdated and will be removed in the future.', 'form-block' ),
+			'1.6.0'
+		);
+		
 		$clear_output = false;
 		$fields_data = self::get_by_name( $name, $fields, 'all' );
 		
@@ -584,7 +603,7 @@ final class Field {
 				$clear_output = false;
 				
 				if ( ! \is_array( $value ) && $value !== null && $value !== 'on' ) {
-					if ( $format_type === 'html' ) {
+					if ( $format_type === 'html' && $level === 0 ) {
 						$return_value = '<dt>' . \__( 'Selected:', 'form-block' ) . '</dt>';
 						$return_value .= '<dd>' . $value . '</dd>';
 					}
@@ -593,7 +612,7 @@ final class Field {
 						$return_value = \sprintf( \__( 'Selected: %s', 'form-block' ), $value );
 					}
 				}
-				else if ( $format_type === 'html' ) {
+				else if ( $format_type === 'html' && $level === 0 ) {
 						$return_value = '<dt>' . \__( 'Selected:', 'form-block' ) . '</dt>';
 					$return_value .= '<dd>' . $label . '</dd>';
 				}
@@ -722,6 +741,33 @@ final class Field {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Match a field value with its type.
+	 * 
+	 * Basically, makes checkbox and radio button output human-friendly.
+	 * 
+	 * @param	string	$value Current field value
+	 * @param	array	$field_data Field data
+	 * @param	string	$label Field label
+	 * @return	string Human-friendly field value
+	 */
+	private static function match_value_with_field_type( string $value, array $field_data, string $label ): string {
+		$return_value = $value;
+		
+		if ( ! empty( $field_data['type'] ) ) {
+			if ( $field_data['type'] === 'checkbox' ) {
+				/* translators: form field title */
+				$return_value = \sprintf( \__( 'Checked: %s', 'form-block' ), $label );
+			}
+			else if ( $field_data['type'] === 'radio' ) {
+				/* translators: form field title or value */
+				$return_value = \sprintf( \__( 'Selected: %s', 'form-block' ), $label );
+			}
+		}
+		
+		return $return_value;
 	}
 	
 	/**
