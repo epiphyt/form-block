@@ -258,16 +258,23 @@ final class Data {
 		\do_action( 'form_block_pre_validated_data', $this->form_id );
 		
 		$fields = Validation::get_instance()->fields();
-		$files = Validation::get_instance()->files();
+		$validated_files = Validation::get_instance()->files();
+		$files = [
+			'local' => File::save_local( $this->form_id, $validated_files ),
+			'validated' => $validated_files,
+		];
 		
 		/**
 		 * Fires after data has been validated.
 		 * 
+		 * @since	1.6.0 Added parameter $local_files
+		 * 
 		 * @param	string	$form_id The form ID
 		 * @param	array	$fields Validated fields
-		 * @param	array	$files Validated files
+		 * @param	array	$validated_files Validated files
+		 * @param	array	$local_files Local files data
 		 */
-		\do_action( 'form_block_validated_data', $this->form_id, $fields, $files );
+		\do_action( 'form_block_validated_data', $this->form_id, $fields, $validated_files, $files['local'] );
 		
 		Submission_Handler::create_submission( $this->form_id, $fields, $files );
 		$this->send( $fields, $files );
@@ -400,7 +407,7 @@ final class Data {
 	 * Send form submission to the recipients.
 	 * 
 	 * @param	array	$fields The validated fields
-	 * @param	array	$files The validated files
+	 * @param	array	$files The local and validated files
 	 */
 	public function send( array $fields, array $files ): void {
 		$recipients = [
@@ -415,7 +422,7 @@ final class Data {
 		 * @param	array	$fields The validated fields
 		 * @param	array	$files The validated files
 		 */
-		$recipients = \apply_filters( 'form_block_recipients', $recipients, $this->form_id, $fields, $files );
+		$recipients = \apply_filters( 'form_block_recipients', $recipients, $this->form_id, $fields, $files['validated'] );
 		
 		$form_data = $this->get( $this->form_id );
 		$field_output = [
@@ -424,8 +431,9 @@ final class Data {
 		
 		$attachments = [];
 		
-		if ( ! empty( $files ) ) {
-			foreach ( $files as $file ) {
+		if ( ! empty( $files['validated'] ) ) {
+			foreach ( $files['validated'] as $file_key => $validated_file ) {
+				$file = File::get_data( $validated_file, $file_key, $files );
 				$output = File::get_output( $file, $form_data, $attachments );
 				
 				if ( ! empty( $output ) ) {

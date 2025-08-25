@@ -29,15 +29,17 @@ final class Submission_Handler {
 		\add_filter( 'form_block_file_is_saved_locally', '__return_true' );
 		
 		$form_data = Data::get_instance()->get( $form_id );
+		$formatted_files = [];
 		
-		foreach ( $files as &$file ) {
+		foreach ( $files['validated'] as $file_key => $validated_file ) {
 			$attachments = [];
-			$file = File::get_output( $file, $form_data, $attachments, 'html' );
+			$file = File::get_data( $validated_file, $file_key, $files );
+			$formatted_files[] = File::get_output( $file, $form_data, $attachments, 'html' );
 		}
 		
 		$data = [
 			'fields' => $fields,
-			'files' => $files,
+			'files' => $formatted_files,
 		];
 		$submission = new Submission( $form_id, $data );
 		$form_submissions = self::get_submissions( $form_id );

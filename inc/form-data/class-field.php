@@ -109,11 +109,12 @@ final class Field {
 	 * 
 	 * @param	mixed	$value Value to format
 	 * @param	string	$label Label for the field
+	 * @param	array	$field Field data
 	 * @param	int		$level Current indentation level
 	 * @param	string	$format_type 'plain' text or 'html'
 	 * @return	string Formatted output
 	 */
-	private static function format_output( mixed $value, string $label, int $level = 0, string $format_type = 'plain' ): string {
+	private static function format_output( mixed $value, string $label, array $field, int $level = 0, string $format_type = 'plain' ): string {
 		$output = '';
 		$prefix = \str_repeat( ' ', ( $level > 0 ? $level - 1 : $level ) * 2 ) . ( $level > 0 ? '- ' : '' );
 		
@@ -129,7 +130,7 @@ final class Field {
 					$key += 1;
 				}
 				
-				$output .= self::format_output( $sub_value, $key, $level + 1, $format_type );
+				$output .= self::format_output( $sub_value, $key, $field, $level + 1, $format_type );
 			}
 		}
 		else if ( ! empty( $label ) ) {
@@ -151,11 +152,22 @@ final class Field {
 					$output .= "{$prefix}{$label}:" . \PHP_EOL . $value . \PHP_EOL;
 				}
 			}
-			else if ( $format_type === 'html' ) {
-				$output .= "<dt>{$prefix}{$label}:</dt>" . \PHP_EOL . '<dd>' . $value . '</dd>' . \PHP_EOL;
+			else if ( $format_type === 'html' && $level === 0 ) {
+				$output .= "<dt>{$prefix}{$label}:</dt>" . \PHP_EOL;
+				
+				if ( $field['block_type'] !== 'repeater' ) {
+					$output .= '<dd>' . $value . '</dd>' . \PHP_EOL;
+				}
 			}
 			else {
-				$output .= "{$prefix}{$label}: {$value}" . \PHP_EOL;
+				$output .= "{$prefix}{$label}: ";
+				
+				if ( $field['block_type'] !== 'repeater' ) {
+					$output .= $value . \PHP_EOL;
+				}
+				else {
+					$output .= \PHP_EOL;
+				}
 			}
 		}
 		else if ( empty( $value ) ) {
@@ -372,7 +384,10 @@ final class Field {
 							$values = self::get_list_values( $values );
 						}
 						
-						$current_output .= self::format_output( $values, $field['label'], $level, $format_type );
+						$current_output .= self::format_output( $values, $field['label'], $field, $level, $format_type );
+					}
+					else if ( \is_string( $values ) ) {
+						$current_output .= self::format_output( $values, $field['label'], $field, $level, $format_type );
 					}
 					else if ( $values !== false ) {
 						\wp_send_json_error( [
@@ -408,14 +423,22 @@ final class Field {
 					 */
 					$value = \apply_filters( 'form_block_output_field_value', $value, $field['name'], $fields, $level );
 					
-					$current_output .= self::format_output( $value, $field['label'], $level, $format_type );
+					$current_output .= self::format_output( $value, $field['label'], $field, $level, $format_type );
 				}
 				
 				if ( ! empty( $field['fields'] ) ) {
-					$subfields_output = $this->get_output( $field['fields'], $post_fields, $level + 1 );
+					$subfields_output = $this->get_output( $field['fields'], $post_fields, $level + 1, $format_type );
 					
 					if ( \trim( $subfields_output ) ) {
+						if ( $format_type === 'html' ) {
+							$current_output .= '<dd>';
+						}
+						
 						$current_output .= $subfields_output;
+						
+						if ( $format_type === 'html' ) {
+							$current_output .= '</dd>' . \PHP_EOL;
+						}
 					}
 				}
 				
@@ -460,8 +483,19 @@ final class Field {
 				$subfields_output = $this->get_output( $field['fields'], $post_fields, $level + 1 );
 				
 				if ( \trim( $subfields_output ) ) {
-					$current_output .= $legend . ':' . \PHP_EOL;
+					if ( $format_type === 'html' ) {
+						$current_output .= '<dt>' . $legend . ':</dt>' . \PHP_EOL;
+						$current_output .= '<dd>';
+					}
+					else {
+						$current_output .= $legend . ':' . \PHP_EOL;
+					}
+					
 					$current_output .= $subfields_output;
+					
+					if ( $format_type === 'html' ) {
+						$current_output .= '</dd>' . \PHP_EOL;
+					}
 				}
 				
 				/**

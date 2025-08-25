@@ -14,19 +14,50 @@
 	dl {
 		display: flex;
 		flex-flow: row wrap;
-		gap: 1em .4em;
+		margin-block: .5em 1.5em;
+	}
+	
+	dt,
+	dd {
+		background-color: #f6f7f7;
+		border-block-end: 1px solid #ddd;
+		border-inline: 1px solid #ddd;
+		box-sizing: border-box;
+		padding: .75em .5em;
 	}
 	
 	dt {
 		flex: 0 0 200px;
+		
+		&:first-child {
+			border-block-start: 1px solid #ddd;
+		}
+		
+		&:nth-child(4n - 3) {
+			background-color: #fff;
+		}
 	}
 	
 	dd {
-		flex: 0 0 calc(100% - 200px - .4em);
+		border-inline-start: 0;
+		flex: 0 0 calc(100% - 200px);
 		margin: 0;
+		white-space: pre-wrap;
+		
+		&:first-of-type {
+			border-block-start: 1px solid #ddd;
+		}
+		
+		&:nth-child(4n - 2) {
+			background-color: #fff;
+		}
 	}
 }
 
 .form-block__field-output {
-	margin-top: .5em;
+	margin-block-start: .5em;
+	
+	> :first-child {
+		margin-block-start: 1em;
+	}
 }

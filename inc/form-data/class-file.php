@@ -1,6 +1,7 @@
 <?php
 namespace epiphyt\Form_Block\form_data;
 
+use DateTime;
 use epiphyt\Form_Block\Form_Block;
 
 /**
@@ -15,10 +16,25 @@ final class File {
 	 * Initialize the class.
 	 */
 	public static function init(): void {
-		\add_action( 'form_field_attachment_after_moved', [ self::class, 'reset_add_to_mail_filter' ] );
+		\add_action( 'form_field_attachment_after_add_to_mail', [ self::class, 'reset_add_to_mail_filter' ] );
 		\add_action( 'template_redirect', [ self::class, 'get_obfuscated' ] );
 		\add_filter( 'form_block_attachment_file_path', [ self::class, 'set_local_file_path' ], 10, 3 );
-		\add_filter( 'form_block_output_file_output', [ self::class, 'set_local_file_output' ], 10, 5 );
+		\add_filter( 'form_block_output_file_output', [ self::class, 'set_local_file_output' ], 10, 6 );
+	}
+	
+	/**
+	 * Get local and validated file data for a specific file.
+	 * 
+	 * @param	array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}	$validated_file Specified file
+	 * @param	int		$file_key Key of the file in the files array
+	 * @param	array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}}}	$files All files
+	 * @return	array{local: array{filename?: string, hash?: string, path?: string, url?: string}, validated: array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}} Local and validated file data
+	 */
+	public static function get_data( array $validated_file, int $file_key, array $files ): array {
+		return [
+			'local' => $files['local'][ $file_key ] ?? [],
+			'validated' => $validated_file,
+		];
 	}
 	
 	/**
@@ -36,7 +52,7 @@ final class File {
 	 * @param	string	$hash Given hash
 	 * @return	array Filename and path of the file associated with the hash
 	 */
-	private static function get_hash_data( string $hash ): array {
+	public static function get_hash_data( string $hash ): array {
 		$map = (array) \get_option( 'form_block_pro_local_file_map', [] );
 		
 		if ( empty( $map[ $hash ] ) || ! \file_exists( $map[ $hash ]['path'] ) ) {
@@ -74,15 +90,15 @@ final class File {
 	/**
 	 * Get output for a file.
 	 * 
-	 * @param	array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}	$file File array
+	 * @param	array{local: array{filename?: string, hash?: string, path?: string, url?: string}, validated: array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}}	$file File array
 	 * @param	mixed[]	$form_data Form data
 	 * @param	mixed[]	$attachments Attachments
 	 * @param	string	$format_type 'plain' text or 'html'
 	 * @return	string File output for display
 	 */
 	public static function get_output( array $file, array $form_data, array &$attachments, string $format_type = 'plain' ): string {
-		$file_data = Field::get_by_name( $file['field_name'], $form_data['fields'] );
-		$new_path = \sys_get_temp_dir() . $file['name'];
+		$file_data = Field::get_by_name( $file['validated']['field_name'], $form_data['fields'] );
+		$new_path = \sys_get_temp_dir() . $file['validated']['name'];
 		
 		/**
 		 * Filter the new path of an uploaded file.
@@ -110,36 +126,35 @@ final class File {
 			$attachments[] = $new_path;
 		}
 		
-		\move_uploaded_file( $file['path'], $new_path );
-		
 		/**
-		 * Fires after the file has been moved.
+		 * Fires after the file has been added to the mail.
 		 * 
 		 * @param	array	$file Uploaded file information array
 		 * @param	array	$file_data Form field data for this file
 		 */
-		\do_action( 'form_field_attachment_after_moved', $file, $file_data );
+		\do_action( 'form_field_attachment_after_add_to_mail', $file['validated'], $file_data );
 		
 		/**
 		 * Filter the file output.
 		 * 
 		 * @since	1.4.1
-		 * @since	1.6.0 Added $format_type parameter
+		 * @since	1.6.0 Added parameters $file and $format_type
 		 * 
 		 * @param	string	$output The field output
 		 * @param	string	$name The field name
 		 * @param	mixed	$new_path File path
 		 * @param	array	$file data File data array
+		 * @param	array	$file data File data array
 		 * @param	string	$format_type 'plain' text or 'html'
 		 */
-		$output = \apply_filters( 'form_block_output_file_output', '', $file['field_name'], $new_path, $file_data, $format_type );
+		$output = \apply_filters( 'form_block_output_file_output', '', $file['validated']['field_name'], $new_path, $file_data, $file, $format_type );
 		
 		/**
 		 * This filter is documented in inc/form-data/class-data.php
 		 * 
 		 * @since	1.4.1 Added filter for file inputs
 		 */
-		$output = \apply_filters( 'form_block_output_field_output', $output, $file['field_name'], $new_path, $form_data, 0, $format_type );
+		$output = \apply_filters( 'form_block_output_field_output', $output, $file['validated']['field_name'], $new_path, $form_data, 0, $format_type );
 		
 		return $output;
 	}
@@ -172,6 +187,58 @@ final class File {
 	}
 	
 	/**
+	 * Save files locally.
+	 * 
+	 * @param	string	$form_id Current form ID
+	 * @param	array{array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}}	$files List of files
+	 * @return	array{array{field_name: string, filename: string, hash: string, path: string, url: string}} Local files data
+	 */
+	public static function save_local( string $form_id, array $files ): array {
+		/** @var	\WP_Filesystem_Direct $wp_filesystem */
+		global $wp_filesystem;
+		
+		// initialize the WP filesystem if not exists
+		if ( empty( $wp_filesystem ) ) {
+			\WP_Filesystem();
+		}
+		
+		$form_data = \get_option( 'form_block_data_' . $form_id, [] );
+		$local_files = [];
+		
+		if ( \get_option( 'form_block_save_submissions' ) ) {
+			\add_filter( 'form_block_file_is_saved_locally', '__return_true' );
+		}
+		
+		foreach ( $files as $file_key => $file ) {
+			$field_data = Field::get_by_name( $file['field_name'], $form_data['fields'] );
+			
+			if ( ! self::is_saved_locally( $field_data ) ) {
+				continue;
+			}
+			
+			$filename = self::set_hashed_filename( $file['name'] );
+			$new_path = self::get_directory()['base_dir'] . '/' . $filename;
+			$hash = self::set_hash_map( $new_path, $file['name'] );
+			$url = \home_url( '?' . \http_build_query( [ 'form_block_file' => $hash ] ) );
+			$local_files[ $file_key ] = [
+				'field_name' => $file['field_name'],
+				'filename' => $file['name'],
+				'hash' => $hash,
+				'path' => $new_path,
+				'url' => $url,
+			];
+			
+			$wp_filesystem->move( $file['path'], $new_path );
+		}
+		
+		if ( \get_option( 'form_block_save_submissions' ) ) {
+			\remove_filter( 'form_block_file_is_saved_locally', '__return_true' );
+		}
+		
+		return $local_files;
+	}
+	
+	/**
 	 * Set a hashed filename of a file.
 	 * Basically create an SHA1 hash of the filename, a random hash and the current microtime.
 	 * Also add 'bin' file extension.
@@ -191,15 +258,17 @@ final class File {
 	 * @param	string	$output Current output
 	 * @param	string	$field_name Field name
 	 * @param	string	$path Path to file
-	 * @param	array	$field_data Field data array
+	 * @param	array	$field_data Field data
+	 * @param	array{local: array{filename?: string, hash?: string, path?: string, url?: string}, validated: array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}}	$file File data
 	 * @param	string	$format_type 'plain' text or 'html'
 	 * @return	string Updated output
 	 */
-	public static function set_local_file_output( string $output, string $field_name, string $path, array $field_data, string $format_type ): string {
-		/** @var	\WP_Filesystem_Direct $wp_filesystem */
-		global $wp_filesystem;
-		
+	public static function set_local_file_output( string $output, string $field_name, string $path, array $field_data, array $file, string $format_type ): string {
 		if ( ! self::is_saved_locally( $field_data ) ) {
+			return $output;
+		}
+		
+		if ( empty( $file['local'] ) ) {
 			return $output;
 		}
 		
@@ -210,25 +279,12 @@ final class File {
 			$output = Field::get_title_by_name( $field_name, [ $field_data ] ) . ': ';
 		}
 		
-		$filename = self::set_hashed_filename( \basename( $path ) );
-		$new_path = self::get_directory()['base_dir'] . '/' . $filename;
-		$hash = self::set_hash_map( $new_path, \basename( $path ) );
-		$url = \home_url( '?' . \http_build_query( [ 'form_block_file' => $hash ] ) );
-		
 		if ( $format_type === 'html' ) {
-			$output .= '<dd><a href="' . \esc_url( $url ) . '">' . \esc_html( $url ) . '</a></dd>';
+			/* translators: Filename */
+			$output .= '<dd><a href="' . \esc_url( $file['local']['url'] ?? '' ) . '">' . \sprintf( \esc_html__( 'Download %s', 'form-block' ), \esc_html( $file['validated']['name'] ) ) . '</a></dd>';
 		}
 		else {
-			$output .= $url;
-		}
-		
-		// initialize the WP filesystem if not exists
-		if ( empty( $wp_filesystem ) ) {
-			\WP_Filesystem();
-		}
-		
-		if ( ! \str_ends_with( $path, '.bin' ) ) {
-			$wp_filesystem->move( $path, $new_path );
+			$output .= $file['local']['url'] ?? '';
 		}
 		
 		return $output;
@@ -247,12 +303,13 @@ final class File {
 			return $path;
 		}
 		
-		$directory = self::get_directory()['base_dir'];
-		$filename = \wp_unique_filename( $directory, $file['name'] );
+		if ( empty( $file['local']['path'] ) ) {
+			return $path;
+		}
 		
 		\add_filter( 'form_block_attachment_add_to_mail', '__return_false' );
 		
-		return $directory . '/' . $filename;
+		return $file['local']['path'];
 	}
 	
 	/**
@@ -273,6 +330,7 @@ final class File {
 		$map[ $random ] = [
 			'filename' => $filename,
 			'path' => $path,
+			'uploaded' => new DateTime( 'now', \wp_timezone() ),
 		];
 		
 		\update_option( 'form_block_pro_local_file_map', $map );
