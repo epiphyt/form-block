@@ -23,6 +23,13 @@ final class Submission_List_Table extends WP_List_Table {
 	private array $table_data = [];
 	
 	/**
+	 * Initialize functionality.
+	 */
+	public function init(): void {
+		\add_action( 'form_block_submission_actions', [ self::class, 'set_delete_action' ], 50 );
+	}
+	
+	/**
 	 * Get default column values.
 	 * 
 	 * @param	array{data: mixed[], date: string, id: string}	$item Current item
@@ -31,6 +38,8 @@ final class Submission_List_Table extends WP_List_Table {
 	 */
 	public function column_default( $item, $column_name ): string { // phpcs:ignore SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
 		switch ( $column_name ) {
+			case 'actions':
+				return '<div class="form-block__submission--actions">' . \do_action( 'form_block_submission_actions', $item ) . '</div>';
 			case 'data':
 				$field_output = '';
 				$file_output = '';
@@ -58,12 +67,11 @@ final class Submission_List_Table extends WP_List_Table {
 					);
 				}
 				
-				$url = Data::get_submit_url( $item['data']['raw']['_POST'] );
+				$submit_data = Data::get_submit_object_data( $item['data']['raw']['_POST'] );
 				$title = \sprintf(
-					/* translators: 1: form label, 2: URL */
-					'<strong>' . \esc_html__( '%1$s submitted via %2$s', 'form-block' ) . '</strong>' . \PHP_EOL,
-					\esc_html( $item['label'] ?? \__( 'Contact form', 'form-block' ) ),
-					$url ? '<a href="' . \esc_url( $url ) . '">' . \esc_url( $url ) . '</a>' : \esc_html__( 'unknown page', 'form-block' )
+					/* translators: form label */
+					'<strong>' . \esc_html__( '%s submitted', 'form-block' ) . '</strong>' . \PHP_EOL,
+					\esc_html( $item['label'] ?? \__( 'Contact form', 'form-block' ) )
 				);
 				
 				return \sprintf(
@@ -80,6 +88,10 @@ final class Submission_List_Table extends WP_List_Table {
 					$field_output,
 					$file_output
 				);
+			case 'source':
+				$submit_data = Data::get_submit_object_data( $item['data']['raw']['_POST'] );
+				
+				return $submit_data['url'] ? '<a href="' . \esc_url( $submit_data['url'] ) . '">' . \esc_html( $submit_data['title'] ) . '</a>' : \esc_html__( 'unknown page', 'form-block' );
 			default:
 				return (string) $item[ $column_name ] ?? '';
 		}
@@ -91,9 +103,11 @@ final class Submission_List_Table extends WP_List_Table {
 	 * @return	string[] Table columns
 	 */
 	public function get_columns(): array {
-		$columns = [
+		$columns = [ // phpcs:ignore SlevomatCodingStandard.Arrays.AlphabeticallySortedByKeys.IncorrectKeyOrder
 			'data' => \__( 'Data', 'form-block' ),
+			'source' => \__( 'Source', 'form-block' ),
 			'date' => \__( 'Date', 'form-block' ),
+			'actions' => \__( 'Actions', 'form-block' ),
 		];
 		
 		/**
@@ -182,6 +196,25 @@ final class Submission_List_Table extends WP_List_Table {
 		] );
 		
 		$this->items = $this->table_data;
+	}
+	
+	/**
+	 * Set delete action.
+	 * 
+	 * @param	array{data: mixed[], date: string, id: string}	$item Current item
+	 */
+	public static function set_delete_action( array $item ): void {
+		?>
+		<button type="button" class="button form-block__delete" data-id="<?php echo \esc_attr( $item['id'] ); ?>">
+			<?php
+			\printf(
+				/* translators: "submission" as screen reader text */
+				\esc_html__( 'Delete %s', 'form-block' ),
+				'<span class="screen-reader-text">' . \esc_html__( 'submission', 'form-block' ) . '</span>'
+			)
+			?>
+		</button>
+		<?php
 	}
 	
 	/**

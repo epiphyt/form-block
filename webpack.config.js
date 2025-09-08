@@ -10,6 +10,7 @@ const jsFiles = {
 	admin: path.resolve( process.cwd(), 'assets/js', 'admin.js' ),
 	form: path.resolve( process.cwd(), 'assets/js', 'form.js' ),
 	'multi-field': path.resolve( process.cwd(), 'assets/js', 'multi-field.js' ),
+	snackbar: path.resolve( process.cwd(), 'assets/js', 'snackbar.js' ),
 	validation: path.resolve( process.cwd(), 'assets/js', 'validation.js' ),
 };
 const scssFiles = {

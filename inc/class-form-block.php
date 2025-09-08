@@ -2,6 +2,7 @@
 namespace epiphyt\Form_Block;
 
 use DOMDocument;
+use epiphyt\Form_Block\api\Submission;
 use epiphyt\Form_Block\block_data\Data as Block_Data_Data;
 use epiphyt\Form_Block\blocks\Fieldset;
 use epiphyt\Form_Block\blocks\Form;
@@ -22,6 +23,13 @@ use epiphyt\Form_Block\modules\Custom_Date;
  */
 final class Form_Block {
 	public const MAX_INT = 2147483647;
+	
+	/**
+	 * @var		array Registered APIs
+	 */
+	public array $apis = [
+		Submission::class,
+	];
 	
 	/**
 	 * @var		array Registered Modules
@@ -60,8 +68,13 @@ final class Form_Block {
 		Select::get_instance()->init();
 		Textarea::get_instance()->init();
 		
-		foreach ( $this->modules as $key => $asset ) {
-			$this->modules[ $key ] = new $asset(); // phpcs:ignore NeutronStandard.Functions.VariableFunctions.VariableFunction
+		foreach ( $this->apis as $key => $api ) {
+			$this->apis[ $key ] = new $api(); // phpcs:ignore NeutronStandard.Functions.VariableFunctions.VariableFunction
+			$this->apis[ $key ]->init();
+		}
+		
+		foreach ( $this->modules as $key => $module ) {
+			$this->modules[ $key ] = new $module(); // phpcs:ignore NeutronStandard.Functions.VariableFunctions.VariableFunction
 			$this->modules[ $key ]->init();
 		}
 	}

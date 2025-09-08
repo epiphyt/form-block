@@ -28,6 +28,7 @@ final class Admin {
 		\add_action( 'enqueue_block_editor_assets', [ $this, 'block_assets' ] );
 		\add_action( 'load-settings_page_' . self::PAGE_NAME, [ self::class, 'register_screen_options' ] );
 		\add_filter( 'set_screen_option_submissions_per_page', [ self::class, 'save_per_page_screen_option' ], 10, 3 );
+		\add_filter( 'wp_script_attributes', [ self::class, 'set_script_attributes' ] );
 	}
 	
 	/**
@@ -51,11 +52,27 @@ final class Admin {
 		$suffix = $is_debug ? '' : '.min';
 		
 		if ( $screen->id === 'settings_page_form-block' ) {
+			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'snackbar' . $suffix . '.js';
+			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'snackbar' . $suffix . '.js';
+			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
+			
+			\wp_enqueue_script( 'form-block-admin-snackbar', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
+			
 			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'admin' . $suffix . '.js';
 			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'admin' . $suffix . '.js';
 			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
 			
 			\wp_enqueue_script( 'form-block-admin', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
+			\wp_localize_script(
+				'form-block-admin',
+				'formBlockAdmin',
+				[
+					'nonce' => \wp_create_nonce( 'wp_rest' ),
+					'restRootUrl' => \esc_url( \rest_url() ),
+					'submissionRemovedError' => \__( 'Submission could not be removed.', 'form-block' ),
+					'submissionRemovedSuccess' => \__( 'Submission removed successfully.', 'form-block' ),
+				]
+			);
 			
 			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/style/build/admin' . $suffix . '.css';
 			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/style/build/admin' . $suffix . '.css';
@@ -100,6 +117,7 @@ final class Admin {
 	 */
 	public static function get_options_page_html(): void {
 		$table = new Submission_List_Table();
+		$table->init();
 		
 		echo '<div class="wrap">';
 		echo '<h1>' . \esc_html__( 'Form Block', 'form-block' ) . '</h1>';
@@ -243,6 +261,20 @@ final class Admin {
 	 */
 	public static function save_per_page_screen_option( mixed $screen_option, string $option, int $value ): int {
 		return $value;
+	}
+	
+	/**
+	 * Set script attribute 'module'.
+	 * 
+	 * @param	string[]	$attributes List of attributes to set
+	 * @return	string[] Updated attributes
+	 */
+	public static function set_script_attributes( array $attributes ): array {
+		if ( ! empty( $attributes['id'] ) && \str_starts_with( $attributes['id'], 'form-block-admin' ) ) {
+			$attributes['type'] = 'module';
+		}
+		
+		return $attributes;
 	}
 	
 	/**

@@ -1,0 +1,52 @@
+.form-block__snackbar {
+	bottom: 40px;
+	padding-left: 16px;
+	padding-right: 16px;
+	position: fixed;
+	inset-inline: auto;
+	z-index: 100001; // higher z-index than overlay
+	
+	@media (min-width: 783px) {
+		inset-inline-start: 36px;
+	}
+	
+	@media (min-width: 961px) {
+		inset-inline-start: 160px;
+	}
+}
+
+.form-block__snackbar--item {
+	-webkit-backdrop-filter: blur(16px) saturate(180%);
+	backdrop-filter: blur(16px) saturate(180%);
+	background: rgba(0,0,0,.85);
+	border-radius: 2px;
+	box-shadow: 0 .7px 1px rgba(0, 0, 0, .1), 0 1.2px 1.7px -.2px rgba(0, 0, 0, .1), 0 2.3px 3.3px -.5px rgba(0, 0, 0, .1);
+	box-sizing: border-box;
+	color: #fff;
+	font-size: 13px;
+	margin-block-start: 8px;
+	max-width: 600px;
+	padding: 12px 20px;
+	pointer-events: auto;
+	width: 100%;
+	
+	@media (min-width: 600px) {
+		width: fit-content;
+	}
+	
+	&.is-init {
+		height: 0;
+		opacity: 0;
+		transition: height .3s cubic-bezier(0, 0, .2, 1), opacity .25s cubic-bezier(0, 0, .2, 1) .05s;
+	}
+	
+	&.is-open {
+		height: auto;
+		opacity: 1;
+	}
+	
+	&.is-exit {
+		opacity: 0;
+		transition: opacity .1s cubic-bezier(0, 0, .2, 1);
+	}
+}
