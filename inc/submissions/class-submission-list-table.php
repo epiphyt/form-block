@@ -130,20 +130,22 @@ final class Submission_List_Table extends WP_List_Table {
 		$search_term = \sanitize_text_field( \wp_unslash( $_POST['s'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$submissions = Submission_Handler::get_submissions();
 		
-		foreach ( $submissions as $key => $submission ) {
-			if ( ! empty( $search_term ) ) {
-				if ( ! $submission->search( $search_term ) ) {
-					continue;
+		foreach ( $submissions as $form_id => $form_submissions ) {
+			foreach ( $form_submissions as $key => $submission ) {
+				if ( ! empty( $search_term ) ) {
+					if ( ! $submission->search( $search_term ) ) {
+						continue;
+					}
 				}
+				
+				$data[] = [
+					'data' => $submission->get_data(),
+					'date' => $submission->get_date(),
+					'id' => $form_id . '/' . $key,
+					/* translators: blog name */
+					'label' => $submission->get_form_data( 'label' ) ?: \sprintf( \__( 'Form submission', 'form-block' ), \get_bloginfo( 'name' ) ),
+				];
 			}
-			
-			$data[] = [
-				'data' => $submission->get_data(),
-				'date' => $submission->get_date(),
-				'id' => $submission->get_data( 'form_id' ) . '/' . $key,
-				/* translators: blog name */
-				'label' => $submission->get_form_data( 'label' ) ?: \sprintf( \__( 'Form submission', 'form-block' ), \get_bloginfo( 'name' ) ),
-			];
 		}
 		
 		return $data;

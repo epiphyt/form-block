@@ -44,6 +44,7 @@ final class Submission {
 		$this->data = [
 			'fields' => $data['fields'] ?? [],
 			'files' => $data['files'] ?? [],
+			'files_local' => $data['files_local'] ?? [],
 			'raw' => [
 				// phpcs:disable WordPress.Security.NonceVerification.Missing
 				'_FILES' => $_FILES,
@@ -81,6 +82,9 @@ final class Submission {
 		}
 		else if ( $name === 'date' ) {
 			return $this->get_date();
+		}
+		else if ( $name === 'files_local' ) {
+			return $this->data['files_local'] ?? null;
 		}
 		
 		if ( ! isset( $this->data[ $type ][ $name ] ) ) {

@@ -40,6 +40,7 @@ final class Submission_Handler {
 		$data = [
 			'fields' => $fields,
 			'files' => $formatted_files,
+			'files_local' => $files['local'],
 		];
 		$submission = new Submission( $form_id, $data );
 		$form_submissions = self::get_submissions( $form_id );
@@ -63,16 +64,36 @@ final class Submission_Handler {
 			return false;
 		}
 		
+		if ( ! empty( $form_submissions[ $submission_key ]->get_data( 'files_local' ) ) ) {
+			/** @var	\WP_Filesystem_Direct $wp_filesystem */
+			global $wp_filesystem;
+			
+			// initialize the WP filesystem if not exists
+			if ( empty( $wp_filesystem ) ) {
+			require_once \ABSPATH . 'wp-admin/includes/file.php';
+				\WP_Filesystem();
+			}
+			
+			foreach ( $form_submissions[ $submission_key ]->get_data( 'files_local' ) as $local_file ) {
+				$wp_filesystem->delete( $local_file['path'] );
+				File::delete_hash( $local_file['hash'] );
+			}
+		}
+		
 		unset( $form_submissions[ $submission_key ] );
 		
-		return \update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, $form_submissions );
+		if ( empty( $form_submissions ) ) {
+			return \delete_option( self::OPTION_KEY_PREFIX . '_' . $form_id );
+		}
+		
+		return \update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, \array_values( $form_submissions ) );
 	}
 	
 	/**
 	 * Get all submissions.
 	 * 
 	 * @param	string	$form_id Form ID
-	 * @return	\epiphyt\Form_Block\submissions\Submission[] List of submissions
+	 * @return	array<string, \epiphyt\Form_Block\submissions\Submission[]>|\epiphyt\Form_Block\submissions\Submission[] List of submissions
 	 */
 	public static function get_submissions( string $form_id = '' ): array {
 		$submissions = [];
@@ -84,13 +105,17 @@ final class Submission_Handler {
 			
 			$form_submissions = \get_option( self::OPTION_KEY_PREFIX . '_' . $data_form_id, [] );
 			
-			if ( ! \is_array( $form_submissions ) ) {
+			if ( ! \is_array( $form_submissions ) || empty( $form_submissions ) ) {
 				continue;
 			}
 			
-			$submissions = \array_merge( $submissions, $form_submissions );
+			$submissions[ $data_form_id ] = $form_submissions;
 		}
 		
-		return \array_values( $submissions );
+		if ( $form_id && ! empty( $submissions[ $form_id ] ) ) {
+			return $submissions[ $form_id ];
+		}
+		
+		return $submissions;
 	}
 }

@@ -23,6 +23,24 @@ final class File {
 	}
 	
 	/**
+	 * Delete a hash from the map.
+	 * 
+	 * @param	string	$hash Hash to delete
+	 * @return	bool Whether hash has been deleted
+	 */
+	public static function delete_hash( string $hash ): bool {
+		$map = (array) \get_option( 'form_block_local_file_map', [] );
+		
+		if ( ! isset( $map[ $hash ] ) ) {
+			return false;
+		}
+		
+		unset( $map[ $hash ] );
+		
+		return \update_option( 'form_block_local_file_map', $map );
+	}
+	
+	/**
 	 * Get local and validated file data for a specific file.
 	 * 
 	 * @param	array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}	$validated_file Specified file
@@ -53,7 +71,7 @@ final class File {
 	 * @return	array Filename and path of the file associated with the hash
 	 */
 	public static function get_hash_data( string $hash ): array {
-		$map = (array) \get_option( 'form_block_pro_local_file_map', [] );
+		$map = (array) \get_option( 'form_block_local_file_map', [] );
 		
 		if ( empty( $map[ $hash ] ) || ! \file_exists( $map[ $hash ]['path'] ) ) {
 			\wp_die( \esc_html__( 'The requested file does not exist.', 'form-block' ) );
@@ -199,6 +217,7 @@ final class File {
 		
 		// initialize the WP filesystem if not exists
 		if ( empty( $wp_filesystem ) ) {
+			require_once \ABSPATH . 'wp-admin/includes/file.php';
 			\WP_Filesystem();
 		}
 		
@@ -320,7 +339,7 @@ final class File {
 	 * @return	string Associated hash of the file path
 	 */
 	public static function set_hash_map( string $path, string $filename ): string {
-		$map = (array) \get_option( 'form_block_pro_local_file_map', [] );
+		$map = (array) \get_option( 'form_block_local_file_map', [] );
 		$random = \bin2hex( \random_bytes( 10 ) );
 		
 		while ( isset( $map[ $random ] ) ) {
@@ -333,7 +352,7 @@ final class File {
 			'uploaded' => new DateTime( 'now', \wp_timezone() ),
 		];
 		
-		\update_option( 'form_block_pro_local_file_map', $map );
+		\update_option( 'form_block_local_file_map', $map );
 		
 		return $random;
 	}
