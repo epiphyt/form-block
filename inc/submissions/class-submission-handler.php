@@ -88,7 +88,7 @@ final class Submission_Handler {
 				continue;
 			}
 			
-			$submissions += $form_submissions;
+			$submissions = \array_merge( $submissions, $form_submissions );
 		}
 		
 		return \array_values( $submissions );
