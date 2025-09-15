@@ -180,7 +180,7 @@ final class Submission_List_Table extends WP_List_Table {
 			$columns,
 			[],
 			$this->get_sortable_columns(),
-			'date',
+			'data',
 		];
 		$this->table_data = self::get_data();
 		
