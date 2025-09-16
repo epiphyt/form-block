@@ -20,6 +20,7 @@ final class Form {
 	 * Initialize the class.
 	 */
 	public function init(): void {
+		\add_action( 'enqueue_block_editor_assets', [ self::class, 'enqueue_block_assets' ] );
 		\add_action( 'init', [ $this, 'enqueue_block_styles' ] );
 		\add_action( 'init', [ $this, 'register_block' ] );
 		\add_action( 'init', [ $this, 'register_frontend_assets' ] );
@@ -247,6 +248,20 @@ final class Form {
 		$notice = \apply_filters( 'form_block_form_required_notice', $notice, $block_content, $block );
 		
 		return \str_replace( '<form', $notice . '<form', $block_content );
+	}
+	
+	/**
+	 * Enqueue block assets.
+	 */
+	public static function enqueue_block_assets(): void {
+		\wp_localize_script(
+			'form-block-form-editor-script',
+			'formBlockFormData',
+			[
+				'saveSubmissions' => \get_option( 'form_block_save_submissions' ) === 'yes',
+				'submissionListTableLink' => \admin_url( 'tools.php?page=form-block-submissions' ),
+			]
+		);
 	}
 	
 	/**

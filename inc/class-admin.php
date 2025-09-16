@@ -29,6 +29,10 @@ final class Admin {
 		\add_action( 'load-settings_page_' . self::PAGE_NAME, [ self::class, 'register_screen_options' ] );
 		\add_filter( 'set_screen_option_submissions_per_page', [ self::class, 'save_per_page_screen_option' ], 10, 3 );
 		\add_filter( 'wp_script_attributes', [ self::class, 'set_script_attributes' ] );
+		
+		if ( \get_option( 'form_block_save_submissions' ) ) {
+			Submission_Page::init();
+		}
 	}
 	
 	/**
@@ -51,21 +55,29 @@ final class Admin {
 		$is_debug = ( \defined( 'WP_DEBUG' ) && \WP_DEBUG ) || ( \defined( 'SCRIPT_DEBUG' ) && \SCRIPT_DEBUG );
 		$suffix = $is_debug ? '' : '.min';
 		
-		if ( $screen->id === 'settings_page_form-block' ) {
+		if ( $screen->id === 'settings_page_form-block' || $screen->id === 'tools_page_form-block-submissions' ) {
+			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/style/build/admin' . $suffix . '.css';
+			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/style/build/admin' . $suffix . '.css';
+			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
+			
+			\wp_enqueue_style( 'form-block-admin', $asset_url, [], $version );
+		}
+		
+		if ( $screen->id === 'tools_page_form-block-submissions' ) {
 			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'snackbar' . $suffix . '.js';
 			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'snackbar' . $suffix . '.js';
 			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
 			
 			\wp_enqueue_script( 'form-block-admin-snackbar', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
 			
-			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'admin' . $suffix . '.js';
-			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'admin' . $suffix . '.js';
+			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'submissions' . $suffix . '.js';
+			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'submissions' . $suffix . '.js';
 			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
 			
-			\wp_enqueue_script( 'form-block-admin', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
+			\wp_enqueue_script( 'form-block-admin-submissions', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
 			\wp_localize_script(
-				'form-block-admin',
-				'formBlockAdmin',
+				'form-block-admin-submissions',
+				'formBlockSubmissions',
 				[
 					'nonce' => \wp_create_nonce( 'wp_rest' ),
 					'restRootUrl' => \esc_url( \rest_url() ),
@@ -73,12 +85,6 @@ final class Admin {
 					'submissionRemovedSuccess' => \__( 'Submission removed successfully.', 'form-block' ),
 				]
 			);
-			
-			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/style/build/admin' . $suffix . '.css';
-			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/style/build/admin' . $suffix . '.css';
-			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
-			
-			\wp_enqueue_style( 'form-block-admin', $asset_url, [], $version );
 		}
 	}
 	
@@ -270,7 +276,13 @@ final class Admin {
 	 * @return	string[] Updated attributes
 	 */
 	public static function set_script_attributes( array $attributes ): array {
-		if ( ! empty( $attributes['id'] ) && \str_starts_with( $attributes['id'], 'form-block-admin' ) ) {
+		if (
+			! empty( $attributes['id'] )
+			&& (
+				\str_starts_with( $attributes['id'], 'form-block-admin-snackbar' )
+				|| \str_starts_with( $attributes['id'], 'form-block-admin-submissions' )
+			)
+		) {
 			$attributes['type'] = 'module';
 		}
 		

@@ -1,11 +1,12 @@
 import { InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, TextControl } from '@wordpress/components';
+import { ExternalLink, PanelBody, TextControl } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
+/* global formBlockFormData */
 export default function Controls( { props } ) {
 	const {
-		attributes: { label, subject },
+		attributes: { formId, label, subject },
 		setAttributes,
 	} = props;
 
@@ -15,9 +16,23 @@ export default function Controls( { props } ) {
 		props
 	);
 
+	const getSubmissionLink = () => {
+		return formBlockFormData.submissionListTableLink + '&form_id=' + formId;
+	};
+
 	return (
 		<InspectorControls>
 			<PanelBody>
+				{ formBlockFormData.saveSubmissions && formId ? (
+					<p>
+						<ExternalLink href={ getSubmissionLink() }>
+							{ __(
+								'View submissions (opens in new tab)',
+								'form-block'
+							) }
+						</ExternalLink>
+					</p>
+				) : null }
 				<TextControl
 					label={ __( 'Custom subject', 'form-block' ) }
 					onChange={ ( subject ) => setAttributes( { subject } ) }

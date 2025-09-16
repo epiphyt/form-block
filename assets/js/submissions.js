@@ -1,6 +1,6 @@
 import addSnackbarMessage from './snackbar.js';
 
-/* global formBlockAdmin */
+/* global formBlockSubmissions */
 document.addEventListener( 'DOMContentLoaded', () => {
 	const deleteButtons = document.querySelectorAll( '.form-block__delete' );
 	const summaries = document.querySelectorAll(
@@ -16,12 +16,12 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		button.setAttribute( 'aria-disabled', true );
 
 		await fetch(
-			formBlockAdmin.restRootUrl +
+			formBlockSubmissions.restRootUrl +
 				'form-block/v1/submission/delete/' +
 				id,
 			{
 				headers: {
-					'X-WP-Nonce': formBlockAdmin.nonce,
+					'X-WP-Nonce': formBlockSubmissions.nonce,
 				},
 				method: 'DELETE',
 			}
@@ -37,7 +37,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 						throw new Error( json.message );
 					} else {
 						throw new Error(
-							formBlockAdmin.submissionRemovedError
+							formBlockSubmissions.submissionRemovedError
 						);
 					}
 				}
@@ -46,7 +46,9 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			} )
 			.then( () => {
 				row.remove();
-				addSnackbarMessage( formBlockAdmin.submissionRemovedSuccess );
+				addSnackbarMessage(
+					formBlockSubmissions.submissionRemovedSuccess
+				);
 			} )
 			.catch( ( error ) => {
 				if ( error?.message ) {

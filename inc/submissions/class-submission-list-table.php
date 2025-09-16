@@ -98,6 +98,48 @@ final class Submission_List_Table extends WP_List_Table {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	public function extra_tablenav( $which ) {
+		if ( $which === 'top' ) {
+			$filter_form_id = \sanitize_text_field( \wp_unslash( $_REQUEST['form_id'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$forms = [];
+			$submissions = Submission_Handler::get_submissions();
+			
+			foreach ( $submissions as $form_id => $form_submissions ) {
+				foreach ( $form_submissions as $submission ) {
+					// form is already processed
+					if ( isset( $forms[ $form_id ] ) ) {
+						continue;
+					}
+					
+					$label = $submission->get_form_data( 'label' ) ?: \__( 'Form submission', 'form-block' );
+					
+					if ( $label !== \__( 'Form submission', 'form-block' ) ) {
+						$forms[ $form_id ] = $label;
+					}
+					else {
+						/* translators: form ID */
+						$forms[ $form_id ] = \sprintf( \__( 'Form (%s)', 'form-block' ), $form_id );
+					}
+				}
+			}
+			?>
+			<div class="alignleft actions">
+				<label for="filter-by-form" class="screen-reader-text"><?php \esc_html_e( 'Filter by form', 'form-block' ); ?></label>
+				<select name="form_id" id="filter-by-form">
+					<option<?php \selected( $filter_form_id, '' ); ?> value=""><?php \esc_html_e( 'All forms', 'form-block' ); ?></option>
+					<?php foreach ( $forms as $id => $label ) : ?>
+					<option<?php \selected( $filter_form_id, $id ); ?> value="<?php echo \esc_attr( $id ); ?>"><?php echo \esc_html( $label ); ?></option>
+					<?php endforeach; ?>
+				</select>
+				<input type="submit" name="filter_action" id="form-submission-query-submit" class="button" value="<?php \esc_attr_e( 'Filter', 'form-block' ); ?>">
+			</div>
+			<?php
+		}
+	}
+	
+	/**
 	 * Get table columns.
 	 * 
 	 * @return	string[] Table columns
@@ -127,10 +169,15 @@ final class Submission_List_Table extends WP_List_Table {
 	 */
 	private static function get_data(): array {
 		$data = [];
-		$search_term = \sanitize_text_field( \wp_unslash( $_POST['s'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$filter_form_id = \sanitize_text_field( \wp_unslash( $_REQUEST['form_id'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$search_term = \sanitize_text_field( \wp_unslash( $_REQUEST['s'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$submissions = Submission_Handler::get_submissions();
 		
 		foreach ( $submissions as $form_id => $form_submissions ) {
+			if ( ! empty( $filter_form_id ) && $form_id !== $filter_form_id ) {
+				continue;
+			}
+			
 			foreach ( $form_submissions as $key => $submission ) {
 				if ( ! empty( $search_term ) ) {
 					if ( ! $submission->search( $search_term ) ) {
@@ -142,8 +189,7 @@ final class Submission_List_Table extends WP_List_Table {
 					'data' => $submission->get_data(),
 					'date' => $submission->get_date(),
 					'id' => $form_id . '/' . $key,
-					/* translators: blog name */
-					'label' => $submission->get_form_data( 'label' ) ?: \sprintf( \__( 'Form submission', 'form-block' ), \get_bloginfo( 'name' ) ),
+					'label' => $submission->get_form_data( 'label' ) ?: \__( 'Form submission', 'form-block' ),
 				];
 			}
 		}
