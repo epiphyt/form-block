@@ -4,6 +4,7 @@ export default function TextareaSave( props ) {
 	const {
 		attributes: {
 			autoComplete,
+			cols,
 			disabled,
 			label,
 			maxLength,
@@ -16,6 +17,7 @@ export default function TextareaSave( props ) {
 			spellCheck,
 			size,
 			value,
+			wrap,
 		},
 	} = props;
 	const blockProps = useBlockProps.save( {
@@ -23,6 +25,7 @@ export default function TextareaSave( props ) {
 	} );
 	const elementProps = {
 		autoComplete,
+		cols,
 		disabled,
 		maxLength,
 		minLength,
@@ -34,11 +37,18 @@ export default function TextareaSave( props ) {
 		spellCheck,
 		size,
 		value,
+		wrap,
 	};
+	const filteredProps = Object.keys( elementProps ).reduce(
+		( r, key ) => (
+			elementProps[ key ] && ( r[ key ] = elementProps[ key ] ), r
+		),
+		{}
+	);
 
 	return (
 		<div { ...blockProps }>
-			<textarea { ...elementProps } />
+			<textarea { ...filteredProps } />
 			<label className="form-block__label is-textarea-label">
 				<RichText.Content
 					className="form-block__label-content"

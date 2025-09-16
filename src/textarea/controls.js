@@ -37,6 +37,13 @@ export default function Controls( props ) {
 				},
 			},
 			{
+				attributeName: 'cols',
+				attributes: {
+					inputType: 'number',
+					type: 'text',
+				},
+			},
+			{
 				attributeName: 'disabled',
 				attributes: {
 					type: 'toggle',
@@ -49,9 +56,22 @@ export default function Controls( props ) {
 				},
 			},
 			{
+				attributeName: 'rows',
+				attributes: {
+					inputType: 'number',
+					type: 'text',
+				},
+			},
+			{
 				attributeName: 'spellCheck',
 				attributes: {
 					type: 'toggle',
+				},
+			},
+			{
+				attributeName: 'wrap',
+				attributes: {
+					type: 'select',
 				},
 			},
 		],

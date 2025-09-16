@@ -493,6 +493,7 @@ final class Form_Block {
 			'spellcheck' => true,
 			'type' => true,
 			'value' => true,
+			'wrap' => true,
 		];
 		
 		return $tags;

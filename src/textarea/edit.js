@@ -15,6 +15,7 @@ export default function TextareaEdit( props ) {
 	const {
 		attributes: {
 			autoComplete,
+			cols,
 			disabled,
 			label,
 			maxLength,
@@ -27,12 +28,14 @@ export default function TextareaEdit( props ) {
 			spellCheck,
 			size,
 			value,
+			wrap,
 		},
 		setAttributes,
 	} = props;
 	const blockProps = useBlockProps();
 	const elementProps = {
 		autoComplete,
+		cols,
 		disabled,
 		maxLength,
 		minLength,
@@ -44,7 +47,14 @@ export default function TextareaEdit( props ) {
 		spellCheck,
 		size,
 		value,
+		wrap,
 	};
+	const filteredProps = Object.keys( elementProps ).reduce(
+		( r, key ) => (
+			elementProps[ key ] && ( r[ key ] = elementProps[ key ] ), r
+		),
+		{}
+	);
 
 	return (
 		<div { ...blockProps }>
@@ -75,7 +85,7 @@ export default function TextareaEdit( props ) {
 
 			<TextareaControl
 				onChange={ ( value ) => setAttributes( { value } ) }
-				{ ...elementProps }
+				{ ...filteredProps }
 			/>
 		</div>
 	);

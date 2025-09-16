@@ -18,6 +18,12 @@
 		"autoCompleteSection": {
 			"type": "string"
 		},
+		"cols": {
+			"attribute": "cols",
+			"selector": "textarea",
+			"source": "attribute",
+			"type": "string"
+		},
 		"disabled": {
 			"attribute": "disabled",
 			"selector": "textarea",
@@ -53,6 +59,13 @@
 			"source": "attribute",
 			"type": "boolean"
 		},
+		"rows": {
+			"attribute": "rows",
+			"default": 4,
+			"selector": "textarea",
+			"source": "attribute",
+			"type": "string"
+		},
 		"spellCheck": {
 			"attribute": "spellcheck",
 			"default": true,
@@ -61,6 +74,12 @@
 			"type": "boolean"
 		},
 		"value": {
+			"selector": "textarea",
+			"source": "text",
+			"type": "string"
+		},
+		"wrap": {
+			"attribute": "wrap",
 			"selector": "textarea",
 			"source": "text",
 			"type": "string"

@@ -22,6 +22,18 @@ export const attributes = applyFilters( 'formBlock.data.attributes', {
 		),
 		label: _x( 'Checked', 'HTML attribute name', 'form-block' ),
 	},
+	cols: {
+		controlType: 'number',
+		description: __(
+			'The number of columns of the form element.',
+			'form-block'
+		),
+		label: _x( 'Cols', 'HTML attribute name', 'form-block-pro' ),
+		linkOverride: __(
+			'https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#cols',
+			'form-block'
+		),
+	},
 	customDate: {
 		controlType: 'custom-date',
 	},
@@ -67,6 +79,18 @@ export const attributes = applyFilters( 'formBlock.data.attributes', {
 		),
 		label: _x( 'Readonly', 'HTML attribute name', 'form-block' ),
 	},
+	rows: {
+		controlType: 'number',
+		description: __(
+			'The number of rows of the form element.',
+			'form-block'
+		),
+		label: _x( 'Rows', 'HTML attribute name', 'form-block-pro' ),
+		linkOverride: __(
+			'https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#rows',
+			'form-block'
+		),
+	},
 	spellCheck: {
 		controlType: 'toggle',
 		description: __(
@@ -83,6 +107,23 @@ export const attributes = applyFilters( 'formBlock.data.attributes', {
 		controlType: 'text',
 		description: __( 'The value of the input.', 'form-block' ),
 		label: _x( 'Value', 'HTML attribute name', 'form-block' ),
+	},
+	wrap: {
+		controlType: 'select',
+		description: __(
+			'Indicates how the form element should wrap the value for form submission.',
+			'form-block'
+		),
+		label: _x( 'Wrap', 'HTML attribute name', 'form-block' ),
+		linkOverride: __(
+			'https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#wrap',
+			'form-block'
+		),
+		options: [
+			{ label: __( 'Soft', 'form-block' ), value: '' },
+			{ label: __( 'Hard', 'form-block' ), value: 'hard' },
+			{ label: __( 'Off', 'form-block' ), value: 'off' },
+		],
 	},
 } );
 
