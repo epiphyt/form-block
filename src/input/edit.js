@@ -1,16 +1,20 @@
 import { RichText, useBlockProps } from '@wordpress/block-editor';
 import {
+	Button,
 	Flex,
 	FlexBlock,
 	FlexItem,
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
+import { useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { error } from '@wordpress/icons';
 
 import Controls from './controls';
 import { isAllowedAttribute } from './html-data';
 import { CustomDate, isCustomDate } from './modules/custom-date';
+import { stripSpecialChars } from '../data/util';
 
 export default function InputEdit( props ) {
 	const {
@@ -74,6 +78,7 @@ export default function InputEdit( props ) {
 		width,
 	};
 	const isButton = type === 'reset' || type === 'submit';
+	const nameControlRef = useRef( null );
 
 	blockProps.className += ' is-type-' + type;
 
@@ -89,9 +94,13 @@ export default function InputEdit( props ) {
 		blockProps.className += ' wp-block-button';
 	}
 
+	const nameAttribute = name
+		? stripSpecialChars( name, false )
+		: stripSpecialChars( label );
+
 	return (
 		<div { ...blockProps }>
-			<Controls { ...props } />
+			<Controls nameControlRef={ nameControlRef } { ...props } />
 
 			{ type === 'checkbox' || type === 'radio' ? (
 				<Flex>
@@ -139,7 +148,7 @@ export default function InputEdit( props ) {
 				<>
 					{ isAllowedAttribute( type, 'label' ) ||
 					isAllowedAttribute( type, 'required' ) ? (
-						<Flex>
+						<Flex align="center">
 							{ isAllowedAttribute( type, 'label' ) ? (
 								<FlexBlock>
 									<RichText
@@ -155,6 +164,31 @@ export default function InputEdit( props ) {
 										value={ label || '' }
 									/>
 								</FlexBlock>
+							) : null }
+							{ nameAttribute &&
+							! nameAttribute.startsWith(
+								stripSpecialChars( label )
+							) ? (
+								<FlexItem className="form-block__no-line-height">
+									<Button
+										aria-label={ __(
+											'The label does not match the name of the field.',
+											'form-block'
+										) }
+										className="form-block__is-warning"
+										icon={ error }
+										label={ __(
+											'The label does not match the name of the field.',
+											'form-block'
+										) }
+										onClick={ () => {
+											if ( nameControlRef.current ) {
+												nameControlRef.current.focus();
+											}
+										} }
+										showTooltip={ true }
+									/>
+								</FlexItem>
 							) : null }
 							{ isAllowedAttribute( type, 'required' ) ? (
 								<FlexItem>

@@ -23,7 +23,7 @@
 	}
 	
 	.components-toggle-control {
-		margin-bottom: $grid-unit-10;
+		margin-bottom: 0;
 	}
 	
 	.form-block__label-content {
@@ -41,6 +41,18 @@
 .form-block__inline-block-container {
 	display: inline-flex;
 	gap: $grid-unit-10;
+}
+
+.form-block__is-warning {
+	color: $yellow-50;
+	height: 32px !important;
+	min-width: 32px !important;
+	padding: 0 !important;
+	width: 32px !important;
+}
+
+.form-block__no-line-height {
+	line-height: 0;
 }
 
 .form-block__wizard-modal {

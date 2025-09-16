@@ -9,11 +9,12 @@ import {
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
-import { useState } from '@wordpress/element';
+import { useRef, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import { reset } from '@wordpress/icons';
+import { error, reset } from '@wordpress/icons';
 
 import Controls from './controls';
+import { stripSpecialChars } from '../data/util';
 
 export default function SelectEdit( props ) {
 	const {
@@ -41,6 +42,10 @@ export default function SelectEdit( props ) {
 		value,
 	};
 	const [ isOptionModalOpen, setIsOptionModalOpen ] = useState( false );
+	const nameControlRef = useRef( null );
+	const nameAttribute = name
+		? stripSpecialChars( name, false )
+		: stripSpecialChars( label );
 	// make sure label is identical to value if no label is defined
 	const selectOptions = JSON.parse( JSON.stringify( options ) ).map(
 		( item ) => {
@@ -54,9 +59,9 @@ export default function SelectEdit( props ) {
 
 	return (
 		<div { ...blockProps }>
-			<Controls { ...props } />
+			<Controls nameControlRef={ nameControlRef } { ...props } />
 
-			<Flex>
+			<Flex align="center">
 				<FlexBlock>
 					<RichText
 						className="form-block__label"
@@ -66,7 +71,25 @@ export default function SelectEdit( props ) {
 						value={ label || '' }
 					/>
 				</FlexBlock>
-
+				{ nameAttribute &&
+				! nameAttribute.startsWith( stripSpecialChars( label ) ) ? (
+					<FlexItem className="form-block__no-line-height">
+						<Button
+							aria-label={ __(
+								'The label does not match the name of the field.',
+								'form-block'
+							) }
+							className="form-block__is-warning"
+							icon={ error }
+							onClick={ () => {
+								if ( nameControlRef.current ) {
+									nameControlRef.current.focus();
+								}
+							} }
+							showTooltip={ true }
+						/>
+					</FlexItem>
+				) : null }
 				<FlexItem>
 					<ToggleControl
 						checked={ !! required }

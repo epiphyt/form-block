@@ -20,6 +20,7 @@ import { autoAssign } from '../data/autocomplete/auto-assign';
 export default function Controls( props ) {
 	const {
 		attributes: { autoComplete, name, label, type },
+		nameControlRef,
 		setAttributes,
 	} = props;
 	const defaultControlTypes = [
@@ -270,6 +271,7 @@ export default function Controls( props ) {
 							name: stripSpecialChars( name, false ),
 						} )
 					}
+					ref={ nameControlRef }
 					value={ nameAttribute }
 				/>
 				{ controls.map( ( control, index ) =>

@@ -1,15 +1,18 @@
 import { RichText, useBlockProps } from '@wordpress/block-editor';
 import {
+	Button,
 	Flex,
 	FlexBlock,
 	FlexItem,
 	TextareaControl,
-	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
+import { useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { error } from '@wordpress/icons';
 
 import Controls from './controls';
+import { stripSpecialChars } from '../data/util';
 
 export default function TextareaEdit( props ) {
 	const {
@@ -55,12 +58,16 @@ export default function TextareaEdit( props ) {
 		),
 		{}
 	);
+	const nameControlRef = useRef( null );
+	const nameAttribute = name
+		? stripSpecialChars( name, false )
+		: stripSpecialChars( label );
 
 	return (
 		<div { ...blockProps }>
-			<Controls { ...props } />
+			<Controls nameControlRef={ nameControlRef } { ...props } />
 
-			<Flex>
+			<Flex align="center">
 				<FlexBlock>
 					<RichText
 						className="form-block__label"
@@ -70,7 +77,25 @@ export default function TextareaEdit( props ) {
 						value={ label || '' }
 					/>
 				</FlexBlock>
-
+				{ nameAttribute &&
+				! nameAttribute.startsWith( stripSpecialChars( label ) ) ? (
+					<FlexItem className="form-block__no-line-height">
+						<Button
+							aria-label={ __(
+								'The label does not match the name of the field.',
+								'form-block'
+							) }
+							className="form-block__is-warning"
+							icon={ error }
+							onClick={ () => {
+								if ( nameControlRef.current ) {
+									nameControlRef.current.focus();
+								}
+							} }
+							showTooltip={ true }
+						/>
+					</FlexItem>
+				) : null }
 				<FlexItem>
 					<ToggleControl
 						checked={ !! required }

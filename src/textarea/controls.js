@@ -24,6 +24,7 @@ import { autoAssign } from '../data/autocomplete/auto-assign';
 export default function Controls( props ) {
 	const {
 		attributes: { autoComplete, label, name },
+		nameControlRef,
 		setAttributes,
 	} = props;
 	const [ isHelpOpen, setIsHelpOpen ] = useState( [] );
@@ -264,6 +265,7 @@ export default function Controls( props ) {
 							name: stripSpecialChars( name, false ),
 						} )
 					}
+					ref={ nameControlRef }
 					value={ nameAttribute }
 				/>
 				{ controls.map( ( control, index ) =>
