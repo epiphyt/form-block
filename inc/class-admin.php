@@ -405,7 +405,18 @@ final class Admin {
 	 */
 	public static function get_settings_tab_html(): string {
 		\ob_start();
-		\do_settings_sections( 'form-block' );
+		
+		echo '<h2>' . \esc_html__( 'Form Block Settings', 'form-block' ) . '</h2>';
+		echo '<table class="form-table" role="presentation">';
+		
+		\do_settings_fields( 'form-block', 'form_block_general' );
+		
+		/**
+		 * Fires after the general Form Block settings in the settings tab.
+		 */
+		\do_action( 'form_block_settings_page' );
+		
+		echo '</table>';
 		
 		return (string) \ob_get_clean();
 	}
