@@ -133,6 +133,16 @@
 	}
 }
 
-.form-block__settings:has(#nav-tab__content--pro.nav-tab-content-active) .submit {
-	display: none;
+.form-block__settings {
+	.is-hidden {
+		display: none;
+	}
+	
+	.nav-tab {
+		cursor: pointer;
+	}
+	
+	&:has(#nav-tab__content--pro.nav-tab-content-active) .submit {
+		display: none;
+	}
 }

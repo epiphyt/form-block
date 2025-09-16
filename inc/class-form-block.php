@@ -13,6 +13,7 @@ use epiphyt\Form_Block\form_data\Data as Form_Data_Data;
 use epiphyt\Form_Block\form_data\Field;
 use epiphyt\Form_Block\form_data\File;
 use epiphyt\Form_Block\modules\Custom_Date;
+use epiphyt\Form_Block\submissions\Submission_Handler;
 
 /**
  * Form Block main class.
@@ -54,7 +55,10 @@ final class Form_Block {
 	 * Initialize the class.
 	 */
 	public function init(): void {
+		\add_action( 'admin_init', [ self::class, 'register_cron' ] );
 		\add_filter( 'wp_kses_allowed_html', [ $this, 'set_allow_tags' ], 10, 2 );
+		\register_activation_hook( \EPI_FORM_BLOCK_FILE, [ self::class, 'activate' ] );
+		\register_deactivation_hook( \EPI_FORM_BLOCK_FILE, [ self::class, 'deactivate' ] );
 		
 		Admin::get_instance()->init();
 		Block_Data_Data::get_instance()->init();
@@ -66,6 +70,7 @@ final class Form_Block {
 		Form_Data_Data::get_instance()->init();
 		Input::get_instance()->init();
 		Select::get_instance()->init();
+		Submission_Handler::init();
 		Textarea::get_instance()->init();
 		
 		foreach ( $this->apis as $key => $api ) {
@@ -77,6 +82,13 @@ final class Form_Block {
 			$this->modules[ $key ] = new $module(); // phpcs:ignore NeutronStandard.Functions.VariableFunctions.VariableFunction
 			$this->modules[ $key ]->init();
 		}
+	}
+	
+	/**
+	 * Tasks to do on plugin activation.
+	 */
+	public static function activate(): void {
+		self::register_cron();
 	}
 	
 	/**
@@ -220,6 +232,13 @@ final class Form_Block {
 	}
 	
 	/**
+	 * Tasks to do on plugin deactivation.
+	 */
+	public static function deactivate(): void {
+		self::unregister_cron();
+	}
+	
+	/**
 	 * Get a valid name attribute of a form element.
 	 * 
 	 * @param	array	$block Block attributes
@@ -360,6 +379,18 @@ final class Form_Block {
 	}
 	
 	/**
+	 * Register cron job.
+	 */
+	public static function register_cron(): void {
+		if ( ! \wp_next_scheduled( 'form_block_cleanup' ) ) {
+			$date = new \DateTime( 'tomorrow 00:00:00', \wp_timezone() );
+			$date->add( new \DateInterval( 'PT' . $date->format( 'Z' ) . 'S' ) );
+			
+			\wp_schedule_event( $date->getTimestamp(), 'daily', 'form_block_cleanup' );
+		}
+	}
+	
+	/**
 	 * Reset the block name attributes.
 	 */
 	public function reset_block_name_attributes(): void {
@@ -465,5 +496,14 @@ final class Form_Block {
 		];
 		
 		return $tags;
+	}
+	
+	/**
+	 * Unregister cron job.
+	 */
+	public static function unregister_cron(): void {
+		if ( \wp_next_scheduled( 'form_block_cleanup' ) ) {
+			\wp_clear_scheduled_hook( 'form_block_cleanup' );
+		}
 	}
 }

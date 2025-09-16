@@ -109,6 +109,15 @@ final class Submission {
 	}
 	
 	/**
+	 * Get submission date object.
+	 * 
+	 * @return	?\DateTimeImmutable Date Object
+	 */
+	public function get_date_object(): ?\DateTimeImmutable {
+		return $this->date;
+	}
+	
+	/**
 	 * Get a form data field.
 	 * 
 	 * @param	string	$field Field to get

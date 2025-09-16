@@ -15,6 +15,50 @@ final class Submission_Handler {
 	private const OPTION_KEY_PREFIX = 'form_block_submissions';
 	
 	/**
+	 * Initialize functionality.
+	 */
+	public static function init(): void {
+		\add_action( 'form_block_cleanup', [ self::class, 'cleanup' ] );
+	}
+	
+	/**
+	 * Cleanup submissions.
+	 */
+	public static function cleanup(): void {
+		$delete_after = \get_option( 'form_block_submissions_auto_delete', 30 );
+		
+		if ( ! \is_numeric( $delete_after ) ) {
+			$delete_after = 30;
+		}
+		else {
+			$delete_after = (int) $delete_after;
+		}
+		
+		if ( $delete_after === 0 ) {
+			return;
+		}
+		
+		$date = new \DateTime( 'now', \wp_timezone() );
+		$date->sub( new \DateInterval( 'P' . $delete_after . 'D' ) );
+		$submissions = self::get_submissions();
+		
+		foreach ( $submissions as $form_id => &$form_submissions ) {
+			foreach ( $form_submissions as $key => $submission ) {
+				if ( $submission->get_date_object() < $date ) {
+					unset( $form_submissions[ $key ] );
+				}
+			}
+			
+			if ( empty( $submissions[ $form_id ] ) ) {
+				\delete_option( self::OPTION_KEY_PREFIX . '_' . $form_id );
+			}
+			else {
+				\update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, $submissions[ $form_id ] );
+			}
+		}
+	}
+	
+	/**
 	 * Create a submission.
 	 * 
 	 * @param	string	$form_id Form ID

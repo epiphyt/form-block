@@ -64,6 +64,12 @@ final class Admin {
 		}
 		
 		if ( $screen->id === 'settings_page_form-block' ) {
+			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'settings' . $suffix . '.js';
+			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'settings' . $suffix . '.js';
+			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
+			
+			\wp_enqueue_script( 'form-block-admin-settings', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
+			
 			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'tabs' . $suffix . '.js';
 			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'tabs' . $suffix . '.js';
 			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
@@ -344,16 +350,31 @@ final class Admin {
 	}
 	
 	/**
-	 * Get the input for preserve data on uninstall option.
+	 * Get the input for save submissions option.
 	 */
 	public function get_save_submissions_input(): void {
 		$option_value = \get_option( 'form_block_save_submissions' );
 		?>
-		<label>
-			<input type="checkbox" id="form_block_save_submissions" name="form_block_save_submissions" value="yes"<?php \checked( $option_value, 'yes' ) ?>/>
+		<label for="form_block_save_submissions">
+			<input type="checkbox" id="form_block_save_submissions" name="form_block_save_submissions" value="yes"<?php \checked( $option_value, 'yes' ) ?>>
 			<?php \esc_html_e( 'Save submissions', 'form-block' ); ?>
 		</label>
 		<p><?php \esc_html_e( 'By enabling this option, all submissions will be saved in WordPress as well.', 'form-block' ); ?></p>
+		<?php
+	}
+	
+	/**
+	 * Get the input for submissions auto-delete option.
+	 */
+	public function get_submissions_auto_delete_input(): void {
+		$option_value = \get_option( 'form_block_submissions_auto_delete', 30 );
+		?>
+		<label for="form_block_submissions_auto_delete">
+			<?php \esc_html_e( 'Delete submissions after', 'form-block' ); ?>
+			<input type="number" id="form_block_submissions_auto_delete" name="form_block_submissions_auto_delete" class="small-text" value="<?php echo \esc_attr( $option_value ); ?>" min="0" aria-describedby="form_block_submissions_auto_delete_description">
+			<?php \esc_html_e( 'Days', 'form-block' ); ?>
+		</label>
+		<p id="form_block_submissions_auto_delete_description"><?php \esc_html_e( 'Set the days after which form submissions are deleted automatically. Set to 0 to disable automatic deletion.', 'form-block' ); ?></p>
 		<?php
 	}
 	
@@ -410,6 +431,21 @@ final class Admin {
 			[
 				'sanitize_callback' => [ $this, 'validate_save_submissions' ],
 				'type' => 'string',
+			]
+		);
+		\add_settings_field(
+			'form_block_submissions_auto_delete',
+			'',
+			[ $this, 'get_submissions_auto_delete_input' ],
+			'form-block',
+			'form_block_general'
+		);
+		\register_setting(
+			'form-block',
+			'form_block_submissions_auto_delete',
+			[
+				'sanitize_callback' => [ $this, 'validate_submissions_auto_delete' ],
+				'type' => 'number',
 			]
 		);
 		\add_settings_field(
@@ -583,5 +619,19 @@ final class Admin {
 	 */
 	public function validate_save_submissions( ?string $value ): string {
 		return self::validate_checkbox( $value, 'form_block_save_submissions', \__( 'Save submissions', 'form-block' ) );
+	}
+	
+	/**
+	 * Validate submissions auto-delete setting.
+	 * 
+	 * @param	string|null	$value The saved value
+	 * @return	int The validated value
+	 */
+	public function validate_submissions_auto_delete( ?string $value ): string {
+		if ( \is_numeric( $value ) && (int) $value >= 0 ) {
+			return (int) $value;
+		}
+		
+		return 0;
 	}
 }

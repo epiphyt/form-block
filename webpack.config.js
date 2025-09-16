@@ -9,6 +9,7 @@ const mode = isProduction ? 'production' : 'development';
 const jsFiles = {
 	form: path.resolve( process.cwd(), 'assets/js', 'form.js' ),
 	'multi-field': path.resolve( process.cwd(), 'assets/js', 'multi-field.js' ),
+	settings: path.resolve( process.cwd(), 'assets/js', 'settings.js' ),
 	snackbar: path.resolve( process.cwd(), 'assets/js', 'snackbar.js' ),
 	submissions: path.resolve( process.cwd(), 'assets/js', 'submissions.js' ),
 	tabs: path.resolve( process.cwd(), 'assets/js', 'tabs.js' ),
