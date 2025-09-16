@@ -262,6 +262,15 @@ final class Admin {
 		<h2><?php \esc_html_e( 'You want more? Check out Form Block Pro!', 'form-block' ); ?></h2>
 		<p><?php \esc_html_e( 'Form Block can handle basic (contact) forms. If you have special needs or need particular features, you can find more of them in Form Block Pro with many additional features and enhancements for Form Block.', 'form-block' ); ?></p>
 		
+		<h3><?php \esc_html_e( 'Go Pro to support development', 'form-block' ); ?></h3>
+		<p>
+			<?php
+			/* translators: commercial plugin name */
+			\printf( \esc_html__( 'Even as a private website owner you can upgrade to %s anytime. Every single Plus user means the world to us, since it\'s those users who support our ongoing work on both the free and paid version. In addition, we\'ll continue to add even more nifty features to Pro.', 'form-block' ), \esc_html__( 'Form Block Pro', 'form-block' ) );
+			?>
+		</p>
+		<p><a href="<?php echo \esc_url( \__( 'https://formblock.pro/en/', 'form-block' ) ); ?>" class="button button-primary button-hero"><?php \esc_html_e( 'Get Form Block Pro now', 'form-block' ); ?></a></p>
+		
 		<h3><?php \esc_html_e( 'Compare now', 'form-block' ); ?></h3>
 		<table class="wp-list-table widefat striped form-block__compare-table">
 			<tbody>
@@ -272,68 +281,79 @@ final class Admin {
 				</thead>
 				<tr>
 					<td><?php \esc_html_e( 'Accessible forms', 'form-block' ); ?></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
 				</tr>
 				<tr>
 					<td><?php \esc_html_e( 'Seamless block editor integration', 'form-block' ); ?></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
 				</tr>
 				<tr>
 					<td><?php \esc_html_e( 'Integrated honeypot', 'form-block' ); ?></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
 				</tr>
 				<tr>
 					<td><?php \esc_html_e( 'Manage submissions within WordPress', 'form-block' ); ?></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
 				</tr>
 				<tr>
 					<td><?php \esc_html_e( 'Knowledge base', 'form-block' ); ?></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
 				</tr>
 				<tr>
 					<td><?php \esc_html_e( 'Server-side validation checks', 'form-block' ); ?></td>
-					<td><span class="grey"><span class="dashicons dashicons-marker"></span> <?php \esc_html_e( 'Some', 'form-block' ); ?></span> <?php \esc_html_e( '(basic checks)', 'form-block' ); ?></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Many', 'form-block' ); ?></span> <?php \esc_html_e( '(enhanced checks for each field attribute)', 'form-block' ); ?></td>
+					<td>
+						<span class="grey"><span class="dashicons dashicons-marker" aria-hidden="true"></span> <?php \esc_html_e( 'Some', 'form-block' ); ?></span><br>
+						<?php \esc_html_e( '(basic checks)', 'form-block' ); ?>
+					</td>
+					<td>
+						<span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Many', 'form-block' ); ?></span><br>
+						<?php \esc_html_e( '(enhanced checks for each field attribute)', 'form-block' ); ?>
+					</td>
+				</tr>
+				<tr>
+					<td><?php \esc_html_e( 'Advanced accessibility functionality', 'form-block' ); ?></td>
+					<td><span class="red"><span class="dashicons dashicons-no" aria-hidden="true"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
 				</tr>
 				<tr>
 					<td><?php \esc_html_e( 'Multiple recipients', 'form-block' ); ?></td>
-					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="red"><span class="dashicons dashicons-no" aria-hidden="true"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
 				</tr>
 				<tr>
 					<td><?php \esc_html_e( 'Field dependencies', 'form-block' ); ?></td>
-					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="red"><span class="dashicons dashicons-no" aria-hidden="true"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
 				</tr>
 				<tr>
 					<td><?php \esc_html_e( 'Drag-and-drop upload zone', 'form-block' ); ?></td>
-					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="red"><span class="dashicons dashicons-no" aria-hidden="true"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
 				</tr>
 				<tr>
 					<td><?php \esc_html_e( 'Maximum upload size per file/form', 'form-block' ); ?></td>
-					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="red"><span class="dashicons dashicons-no" aria-hidden="true"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
 				</tr>
 				<tr>
 					<td><?php \esc_html_e( 'Local file uploads', 'form-block' ); ?></td>
-					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="red"><span class="dashicons dashicons-no" aria-hidden="true"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
 				</tr>
 				<tr>
 					<td><?php \esc_html_e( 'Custom submission messages', 'form-block' ); ?></td>
-					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="red"><span class="dashicons dashicons-no" aria-hidden="true"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
 				</tr>
 				<tr>
 					<td><?php \esc_html_e( 'Custom redirect after submission', 'form-block' ); ?></td>
-					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="red"><span class="dashicons dashicons-no" aria-hidden="true"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes" aria-hidden="true"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
 				</tr>
 				<tr>
 					<td><br></td>
