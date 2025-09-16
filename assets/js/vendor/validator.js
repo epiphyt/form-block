@@ -123,7 +123,7 @@
             },
 
             email : function(field, data){
-                var i, emails = data.value.trim().split(' ')
+                var i, emails = data.value.trim().split(/[\s,]+/)
 
                 if( !field.multiple && emails.length > 1 )
                 return this.texts.email
