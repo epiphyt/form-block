@@ -4,7 +4,8 @@ namespace epiphyt\Form_Block\blocks;
 /**
  * Fieldset block class.
  * 
- * @since	1.5.0
+ * @since		1.5.0
+ * @deprecated	1.6.0
  * 
  * @author	Epiphyt
  * @license	GPL2
@@ -18,13 +19,17 @@ final class Fieldset {
 	
 	/**
 	 * Initialize the class.
+	 * 
+	 * @deprecated	1.6.0
 	 */
 	public static function init(): void {
-		\add_action( 'init', [ self::class, 'register_block' ] );
+		// deprecated
 	}
 	
 	/**
 	 * Get a unique instance of the class.
+	 * 
+	 * @deprecated	1.6.0
 	 * 
 	 * @return	\epiphyt\Form_Block\blocks\Fieldset The single instance of this class
 	 */
@@ -38,8 +43,18 @@ final class Fieldset {
 	
 	/**
 	 * Register block.
+	 * 
+	 * @deprecated	1.6.0 Use epiphyt\Form_Block\blocks\Block_Registry::register() instead
 	 */
 	public static function register_block(): void {
-		\register_block_type( \EPI_FORM_BLOCK_BASE . '/build/fieldset' );
+		\_doing_it_wrong(
+			__METHOD__,
+			\sprintf(
+				/* translators: alternative method */
+				\esc_html__( 'Use %s instead', 'form-block' ),
+				'epiphyt\Form_Block\blocks\Block_Registry::register()'
+			),
+			'1.6.0'
+		);
 	}
 }

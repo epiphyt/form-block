@@ -1,25 +1,25 @@
 {
 	"name": "form-block",
 	"scripts": {
-		"start": "wp-scripts start",
-		"build": "wp-scripts build"
+		"start": "wp-scripts start --blocks-manifest",
+		"build": "wp-scripts build --blocks-manifest"
 	},
 	"devDependencies": {
-		"@wordpress/block-editor": "^11.1.0",
-		"@wordpress/blocks": "^12.1.0",
-		"@wordpress/components": "^23.1.0",
-		"@wordpress/compose": "^6.2.0",
-		"@wordpress/data": "^8.1.0",
-		"@wordpress/element": "^5.1.0",
-		"@wordpress/hooks": "^3.24.0",
-		"@wordpress/i18n": "^4.24.0",
-		"@wordpress/icons": "^9.15.0",
-		"@wordpress/prettier-config": "^4.12.0",
-		"@wordpress/scripts": "^25.1.0",
+		"@wordpress/block-editor": "^15.3.0",
+		"@wordpress/blocks": "^15.3.0",
+		"@wordpress/components": "^30.3.0",
+		"@wordpress/compose": "^7.30.0",
+		"@wordpress/data": "^10.30.0",
+		"@wordpress/element": "^6.30.0",
+		"@wordpress/hooks": "^4.30.0",
+		"@wordpress/i18n": "^6.3.0",
+		"@wordpress/icons": "^10.30.0",
+		"@wordpress/prettier-config": "^4.30.0",
+		"@wordpress/scripts": "^30.23.0",
 		"extract-loader": "^5.1.0",
 		"file-loader": "^6.2.0",
 		"ignore-emit-webpack-plugin": "^2.0.6",
-		"mini-css-extract-plugin": "^2.7.2",
+		"mini-css-extract-plugin": "^2.9.4",
 		"prettier": "npm:wp-prettier@^3.0.3"
 	}
 }

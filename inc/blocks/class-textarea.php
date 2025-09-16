@@ -20,7 +20,6 @@ final class Textarea {
 	 * Initialize the class.
 	 */
 	public function init(): void {
-		\add_action( 'init', [ $this, 'register_block' ], 15 );
 		\add_filter( 'render_block_form-block/textarea', [ Form_Block::get_instance(), 'add_attributes' ], 10, 2 );
 	}
 	
@@ -40,9 +39,18 @@ final class Textarea {
 	/**
 	 * Register block.
 	 * 
-	 * @since	1.3.0
+	 * @deprecated	1.6.0 Use epiphyt\Form_Block\blocks\Block_Registry::register() instead
+	 * @since		1.3.0
 	 */
 	public static function register_block(): void {
-		\register_block_type( \EPI_FORM_BLOCK_BASE . '/build/textarea' );
+		\_doing_it_wrong(
+			__METHOD__,
+			\sprintf(
+				/* translators: alternative method */
+				\esc_html__( 'Use %s instead', 'form-block' ),
+				'epiphyt\Form_Block\blocks\Block_Registry::register()'
+			),
+			'1.6.0'
+		);
 	}
 }

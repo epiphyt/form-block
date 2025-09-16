@@ -4,7 +4,7 @@ namespace epiphyt\Form_Block;
 use DOMDocument;
 use epiphyt\Form_Block\api\Submission;
 use epiphyt\Form_Block\block_data\Data as Block_Data_Data;
-use epiphyt\Form_Block\blocks\Fieldset;
+use epiphyt\Form_Block\blocks\Block_Registry;
 use epiphyt\Form_Block\blocks\Form;
 use epiphyt\Form_Block\blocks\Input;
 use epiphyt\Form_Block\blocks\Select;
@@ -33,17 +33,22 @@ final class Form_Block {
 	];
 	
 	/**
-	 * @var		array Registered Modules
-	 */
-	public array $modules = [
-		Custom_Date::class,
-	];
-	
-	/**
 	 * @var		array List of block name attributes
 	 */
 	private array $block_name_attributes = [
 		'_town',
+	];
+	
+	/**
+	 * @var		?\epiphyt\Form_Block\blocks\Block_Registry Block registry
+	 */
+	public ?Block_Registry $block_registry = null;
+	
+	/**
+	 * @var		array Registered Modules
+	 */
+	public array $modules = [
+		Custom_Date::class,
 	];
 	
 	/**
@@ -60,11 +65,13 @@ final class Form_Block {
 		\register_activation_hook( \EPI_FORM_BLOCK_FILE, [ self::class, 'activate' ] );
 		\register_deactivation_hook( \EPI_FORM_BLOCK_FILE, [ self::class, 'deactivate' ] );
 		
+		$this->block_registry = new Block_Registry();
+		$this->block_registry->init();
+		
 		Admin::get_instance()->init();
 		Block_Data_Data::get_instance()->init();
 		// initialize before any block
 		Theme_Styles::get_instance()->init();
-		Fieldset::init();
 		File::init();
 		Form::get_instance()->init();
 		Form_Data_Data::get_instance()->init();

@@ -22,7 +22,6 @@ final class Form {
 	public function init(): void {
 		\add_action( 'enqueue_block_editor_assets', [ self::class, 'enqueue_block_assets' ] );
 		\add_action( 'init', [ $this, 'enqueue_block_styles' ] );
-		\add_action( 'init', [ $this, 'register_block' ] );
 		\add_action( 'init', [ $this, 'register_frontend_assets' ] );
 		\add_filter( 'block_type_metadata', [ self::class, 'register_block_metadata' ] );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_action' ], 10, 2 );
@@ -327,10 +326,19 @@ final class Form {
 	/**
 	 * Register block.
 	 * 
-	 * @since	1.3.0
+	 * @deprecated	1.6.0 Use epiphyt\Form_Block\blocks\Block_Registry::register() instead
+	 * @since		1.3.0
 	 */
 	public static function register_block(): void {
-		\register_block_type( \EPI_FORM_BLOCK_BASE . '/build/form' );
+		\_doing_it_wrong(
+			__METHOD__,
+			\sprintf(
+				/* translators: alternative method */
+				\esc_html__( 'Use %s instead', 'form-block' ),
+				'epiphyt\Form_Block\blocks\Block_Registry::register()'
+			),
+			'1.6.0'
+		);
 	}
 	
 	/**
