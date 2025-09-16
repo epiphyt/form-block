@@ -29,7 +29,7 @@ final class File {
 	 * @return	bool Whether hash has been deleted
 	 */
 	public static function delete_hash( string $hash ): bool {
-		$map = (array) \get_option( 'form_block_local_file_map', [] );
+		$map = self::get_hash_map();
 		
 		if ( ! isset( $map[ $hash ] ) ) {
 			return false;
@@ -71,13 +71,33 @@ final class File {
 	 * @return	array Filename and path of the file associated with the hash
 	 */
 	public static function get_hash_data( string $hash ): array {
-		$map = (array) \get_option( 'form_block_local_file_map', [] );
+		$map = self::get_hash_map();
 		
 		if ( empty( $map[ $hash ] ) || ! \file_exists( $map[ $hash ]['path'] ) ) {
 			\wp_die( \esc_html__( 'The requested file does not exist.', 'form-block' ) );
 		}
 		
 		return $map[ $hash ];
+	}
+	
+	/**
+	 * Get hash mapping data.
+	 * 
+	 * @return	array Hash mapping data
+	 */
+	public static function get_hash_map(): array {
+		$map = (array) \get_option( 'form_block_local_file_map', [] );
+		
+		/**
+		 * Filter the local file hash map.
+		 * 
+		 * @since	1.6.0
+		 * 
+		 * @param	array	$map Current mapping
+		 */
+		$map = (array) \apply_filters( 'form_block_local_file_map', $map );
+		
+		return $map;
 	}
 	
 	/**
@@ -339,7 +359,7 @@ final class File {
 	 * @return	string Associated hash of the file path
 	 */
 	public static function set_hash_map( string $path, string $filename ): string {
-		$map = (array) \get_option( 'form_block_local_file_map', [] );
+		$map = self::get_hash_map();
 		$random = \bin2hex( \random_bytes( 10 ) );
 		
 		while ( isset( $map[ $random ] ) ) {
