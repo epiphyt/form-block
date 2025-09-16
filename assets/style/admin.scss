@@ -18,6 +18,24 @@
 	}
 }
 
+.form-block__compare-table {
+	.green,
+	.red {
+		border-radius: 15px;
+		padding: 3px 8px;
+	}
+	
+	.green {
+		background-color: #48a03e;
+		color: #111;
+	}
+	
+	.red {
+		background-color: #c5443f;
+		color: #fff;
+	}
+}
+
 .form-block__data-details {
 	margin-top: .5em;
 	

@@ -1,7 +1,7 @@
 <?php
 namespace epiphyt\Form_Block;
 
-use epiphyt\Form_Block\submissions\Submission_List_Table;
+use epiphyt\Form_Block\submissions\Submission_Page;
 
 /**
  * Form Block admin class.
@@ -63,6 +63,14 @@ final class Admin {
 			\wp_enqueue_style( 'form-block-admin', $asset_url, [], $version );
 		}
 		
+		if ( $screen->id === 'settings_page_form-block' ) {
+			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'tabs' . $suffix . '.js';
+			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'tabs' . $suffix . '.js';
+			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
+			
+			\wp_enqueue_script( 'form-block-admin-tabs', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
+		}
+		
 		if ( $screen->id === 'tools_page_form-block-submissions' ) {
 			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'snackbar' . $suffix . '.js';
 			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'snackbar' . $suffix . '.js';
@@ -122,17 +130,105 @@ final class Admin {
 	 * Get options page HTML.
 	 */
 	public static function get_options_page_html(): void {
-		$table = new Submission_List_Table();
-		$table->init();
+		// check user capabilities
+		if ( ! \current_user_can( 'manage_options' ) ) {
+			return;
+		}
 		
-		echo '<div class="wrap">';
+		// show error/update messages
+		\settings_errors( 'form_block_messages' );
+		
+		$tabs = self::get_options_tabs();
+		
+		/**
+		 * Filter the default tab.
+		 * 
+		 * @param	string	$default_tab The default tab
+		 */
+		$default_tab = \apply_filters( 'form_block_admin_options_default_tab', 'general' );
+		
+		// get current tab
+		$current_tab = isset( $_GET['tab'] ) ? \sanitize_text_field( \wp_unslash( $_GET['tab'] ) ) : $default_tab; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		
+		if ( empty( $tabs[ $current_tab ] ) ) {
+			$current_tab = $default_tab;
+		}
+		
+		echo '<div class="wrap form-block__settings">';
 		echo '<h1>' . \esc_html__( 'Form Block', 'form-block' ) . '</h1>';
-		echo '<form method="post">';
-		$table->prepare_items();
-		$table->search_box( \__( 'Search Submissions', 'form-block' ), 'search_id' );
-		$table->display();
-		echo '</form';
+		echo '<form action="' . \esc_url( \admin_url( 'options.php' ) ) . '" method="post">';
+		echo '<input type="hidden" name="option_page" value="form-block" />';
+		echo '<input type="hidden" name="action" value="update" />';
+		
+		\wp_nonce_field( 'form-block-options', '_wpnonce', false );
+		
+		$referer = \remove_query_arg( '_wp_http_referer' );
+		
+		if ( ! \str_contains( $referer, '&tab=' ) && $current_tab !== $default_tab ) {
+			$referer .= '&tab=' . $current_tab;
+		}
+		
+		echo '<input type="hidden" name="_wp_http_referer" value="' . \esc_url( $referer ) . '" />';
+		echo '<div class="nav-tab-wrapper" role="tablist">';
+		
+		foreach ( $tabs as $tab ) {
+			if ( empty( $tab['name'] ) || empty( $tab['title'] ) ) {
+				continue;
+			}
+			
+			$is_active_tab = $current_tab === $tab['name'];
+			
+			echo '<button type="button" id="tab-' . \esc_attr( $tab['name'] ) . '" data-tab="' . \esc_attr( $tab['name'] ) . '" class="nav-tab' . ( $is_active_tab ? ' nav-tab-active' : '' ) . '" role="tab" aria-selected="' . ( $is_active_tab ? 'true' : 'false' ) . '" data-slug="' . \esc_attr( $tab['name'] ) . '" tabindex="' . ( $is_active_tab ? '0' : '-1' ) . '">' . \esc_html( $tab['title'] ) . '</button>'; // @phpstan-ignore Generic.Strings.UnnecessaryStringConcat.Found
+		}
+		
+		echo '</div>'; // .nav-tab-wrapper
+		echo '<div class="form-block__content-wrapper">';
+		
+		foreach ( $tabs as $tab ) {
+			$is_active_tab = $current_tab === $tab['name'];
+			
+			if ( \is_callable( $tab['callback'] ) ) {
+				echo '<div id="nav-tab__content--' . \esc_attr( $tab['name'] ) . '" class="nav-tab__content" role="tabpanel" data-tab="' . \esc_attr( $tab['name'] ) . '" aria-labelledby="tab-' . \esc_attr( $tab['name'] ) . '"' . ( ! $is_active_tab ? ' hidden' : '' ) . ' tabindex="' . ( $is_active_tab ? '0' : '-1' ) . '">';
+				echo \call_user_func( $tab['callback'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, NeutronStandard.Functions.DisallowCallUserFunc.CallUserFunc
+				echo '</div>';
+			}
+		}
+		
+		echo '</div>'; // .form-block__content-wrapper
+		
+		\submit_button( \esc_html__( 'Save Settings', 'form-block' ) );
+		
+		echo '</form>';
 		echo '</div>'; // .wrap
+	}
+	
+	/**
+	 * Get all options tabs.
+	 * 
+	 * @return	array<string, array{callback: callable, name: string, title: string}> Admin options tabs
+	 */
+	public static function get_options_tabs(): array {
+		$tabs = [
+			'general' => [
+				'callback' => [ self::class, 'get_settings_tab_html' ],
+				'name' => 'general',
+				'title' => \__( 'Settings', 'form-block' ),
+			],
+			'pro' => [
+				'callback' => [ self::class, 'get_pro_tab_html' ],
+				'name' => 'pro',
+				'title' => \__( 'Get Pro', 'form-block' ),
+			],
+		];
+		
+		/**
+		 * Filter admin options tabs.
+		 * 
+		 * @param	array<string, array{callback: callable, name: string, title: string}>	$tabs Admin options tabs
+		 */
+		$tabs = (array) \apply_filters( 'form_block_admin_options_tabs', $tabs );
+		
+		return $tabs;
 	}
 	
 	/**
@@ -150,6 +246,103 @@ final class Admin {
 	}
 	
 	/**
+	 * Get Pro tab HTML.
+	 * 
+	 * @return	string Pro tab HTML markup
+	 */
+	public static function get_pro_tab_html(): string {
+		\ob_start();
+		?>
+		<h2><?php \esc_html_e( 'You want more? Check out Form Block Pro!', 'form-block' ); ?></h2>
+		
+		<h3><?php \esc_html_e( 'Compare now', 'form-block' ); ?></h3>
+		<table class="wp-list-table widefat striped form-block__compare-table">
+			<tbody>
+				<thead>
+					<th><strong><?php \esc_html_e( 'Feature', 'form-block' ); ?></strong></th>
+					<th><strong><?php \esc_html_e( 'Form Block', 'form-block' ); ?></strong></th>
+					<th><strong><?php \esc_html_e( 'Form Block Pro', 'form-block' ); ?></strong></th>
+				</thead>
+				<tr>
+					<td><?php \esc_html_e( 'Accessible forms', 'form-block' ); ?></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+				</tr>
+				<tr>
+					<td><?php \esc_html_e( 'Seamless block editor integration', 'form-block' ); ?></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+				</tr>
+				<tr>
+					<td><?php \esc_html_e( 'Integrated honeypot', 'form-block' ); ?></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+				</tr>
+				<tr>
+					<td><?php \esc_html_e( 'Manage submissions within WordPress', 'form-block' ); ?></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+				</tr>
+				<tr>
+					<td><?php \esc_html_e( 'Knowledge base', 'form-block' ); ?></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+				</tr>
+				<tr>
+					<td><?php \esc_html_e( 'Server-side validation checks', 'form-block' ); ?></td>
+					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'Basic checks', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Enhanced checks for each attribute', 'form-block' ); ?></span></td>
+				</tr>
+				<tr>
+					<td><?php \esc_html_e( 'Multiple recipients', 'form-block' ); ?></td>
+					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+				</tr>
+				<tr>
+					<td><?php \esc_html_e( 'Field dependencies', 'form-block' ); ?></td>
+					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+				</tr>
+				<tr>
+					<td><?php \esc_html_e( 'Drag-and-drop upload zone', 'form-block' ); ?></td>
+					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+				</tr>
+				<tr>
+					<td><?php \esc_html_e( 'Maximum upload size per file/form', 'form-block' ); ?></td>
+					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+				</tr>
+				<tr>
+					<td><?php \esc_html_e( 'Local file uploads', 'form-block' ); ?></td>
+					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+				</tr>
+				<tr>
+					<td><?php \esc_html_e( 'Custom submission messages', 'form-block' ); ?></td>
+					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+				</tr>
+				<tr>
+					<td><?php \esc_html_e( 'Custom redirect after submission', 'form-block' ); ?></td>
+					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'No', 'form-block' ); ?></span></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Yes', 'form-block' ); ?></span></td>
+				</tr>
+				<tr>
+					<td><br></td>
+					<td></td>
+					<td>
+						<a href="<?php echo \esc_url( \__( 'https://epiph.yt/en/?add-to-cart=26', 'form-block' ) ); ?>" class="button button-primary"><?php \esc_html_e( 'Purchase', 'form-block' ); ?> <span class="screen-reader-text"><?php \esc_html_e( 'Impressum Plus', 'form-block' ); ?></span></a>
+						<a href="<?php echo \esc_url( \__( 'https://form-block.plus/en/', 'form-block' ) ); ?>" class="button button-secondary"><?php \esc_html_e( 'More information', 'form-block' ); ?> <span class="screen-reader-text"><?php echo \esc_html_x( 'about Impressum Plus', 'more information about the plugin', 'form-block' ); ?></a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<?php
+		return (string) \ob_get_clean();
+	}
+	
+	/**
 	 * Get the input for preserve data on uninstall option.
 	 */
 	public function get_save_submissions_input(): void {
@@ -164,27 +357,39 @@ final class Admin {
 	}
 	
 	/**
+	 * Get settings tab HTML.
+	 * 
+	 * @return	string Settings tab HTML markup
+	 */
+	public static function get_settings_tab_html(): string {
+		\ob_start();
+		\do_settings_sections( 'form-block' );
+		
+		return (string) \ob_get_clean();
+	}
+	
+	/**
 	 * Register options.
 	 */
 	public function register_options(): void {
 		\add_settings_section(
-			'form_block',
+			'form_block_general',
 			\esc_html__( 'Form Block', 'form-block' ),
-			null,
-			'writing'
+			'__return_empty_string',
+			'form-block'
 		);
 		\add_settings_field(
 			'form_block_maximum_upload_size',
 			\__( 'Maximum form upload size', 'form-block' ),
 			[ $this, 'get_maximum_upload_size_input' ],
-			'writing',
-			'form_block',
+			'form-block',
+			'form_block_general',
 			[
 				'label_for' => 'form_block_maximum_upload_size',
 			]
 		);
 		\register_setting(
-			'writing',
+			'form-block',
 			'form_block_maximum_upload_size',
 			[
 				'sanitize_callback' => [ $this, 'validate_maximum_upload_size' ],
@@ -195,11 +400,11 @@ final class Admin {
 			'form_block_save_submissions',
 			\__( 'Data handling', 'form-block' ),
 			[ $this, 'get_save_submissions_input' ],
-			'writing',
-			'form_block'
+			'form-block',
+			'form_block_general'
 		);
 		\register_setting(
-			'writing',
+			'form-block',
 			'form_block_save_submissions',
 			[
 				'sanitize_callback' => [ $this, 'validate_save_submissions' ],
@@ -210,11 +415,11 @@ final class Admin {
 			'form_block_preserve_data_on_uninstall',
 			'',
 			[ $this, 'get_preserve_data_on_uninstall_input' ],
-			'writing',
-			'form_block'
+			'form-block',
+			'form_block_general'
 		);
 		\register_setting(
-			'writing',
+			'form-block',
 			'form_block_preserve_data_on_uninstall',
 			[
 				'sanitize_callback' => [ $this, 'validate_preserve_data_on_uninstall' ],
@@ -281,6 +486,7 @@ final class Admin {
 			&& (
 				\str_starts_with( $attributes['id'], 'form-block-admin-snackbar' )
 				|| \str_starts_with( $attributes['id'], 'form-block-admin-submissions' )
+				|| \str_starts_with( $attributes['id'], 'form-block-admin-tabs' )
 			)
 		) {
 			$attributes['type'] = 'module';
