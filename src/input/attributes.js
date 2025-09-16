@@ -1,92 +1,11 @@
 import { applyFilters } from '@wordpress/hooks';
 import { getTypes } from './html-data';
 
-const attributes = applyFilters( 'formBlock.input.attributes', {
-	autoComplete: {
-		attribute: 'autocomplete',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	checked: {
-		attribute: 'checked',
-		selector: 'input',
-		source: 'attribute',
-		type: 'boolean',
-	},
-	customDate: {
-		default: {
-			showLabel: false,
-			showPlaceholder: true,
-			value: {},
-		},
-		type: 'object',
-	},
-	disabled: {
-		attribute: 'disabled',
-		selector: 'input',
-		source: 'attribute',
-		type: 'boolean',
-	},
-	isReplyTo: {
-		type: 'boolean',
-	},
-	label: {
-		selector: '.form-block__label-content',
-		source: 'html',
-		type: 'string',
-	},
-	name: {
-		attribute: 'name',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	pattern: {
-		attribute: 'pattern',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	placeholder: {
-		attribute: 'placeholder',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	readOnly: {
-		attribute: 'readonly',
-		selector: 'input',
-		source: 'attribute',
-		type: 'boolean',
-	},
-	required: {
-		attribute: 'required',
-		selector: 'input',
-		source: 'attribute',
-		type: 'boolean',
-	},
-	spellCheck: {
-		attribute: 'spellcheck',
-		default: true,
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	type: {
-		attribute: 'type',
-		default: 'text',
-		enum: getTypes(),
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-	value: {
-		attribute: 'value',
-		selector: 'input',
-		source: 'attribute',
-		type: 'string',
-	},
-} );
+import meta from './block.json';
+
+const attributes = applyFilters(
+	'formBlock.input.attributes',
+	meta.attributes
+);
 
 export default attributes;
