@@ -254,6 +254,7 @@ final class Admin {
 		\ob_start();
 		?>
 		<h2><?php \esc_html_e( 'You want more? Check out Form Block Pro!', 'form-block' ); ?></h2>
+		<p><?php \esc_html_e( 'Form Block can handle basic (contact) forms. If you have special needs or need particular features, you can find more of them in Form Block Pro with many additional features and enhancements for Form Block.', 'form-block' ); ?></p>
 		
 		<h3><?php \esc_html_e( 'Compare now', 'form-block' ); ?></h3>
 		<table class="wp-list-table widefat striped form-block__compare-table">
@@ -290,8 +291,8 @@ final class Admin {
 				</tr>
 				<tr>
 					<td><?php \esc_html_e( 'Server-side validation checks', 'form-block' ); ?></td>
-					<td><span class="red"><span class="dashicons dashicons-no"></span> <?php \esc_html_e( 'Basic checks', 'form-block' ); ?></span></td>
-					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Enhanced checks for each attribute', 'form-block' ); ?></span></td>
+					<td><span class="grey"><span class="dashicons dashicons-marker"></span> <?php \esc_html_e( 'Some', 'form-block' ); ?></span> <?php \esc_html_e( '(basic checks)', 'form-block' ); ?></td>
+					<td><span class="green"><span class="dashicons dashicons-yes"></span> <?php \esc_html_e( 'Many', 'form-block' ); ?></span> <?php \esc_html_e( '(enhanced checks for each field attribute)', 'form-block' ); ?></td>
 				</tr>
 				<tr>
 					<td><?php \esc_html_e( 'Multiple recipients', 'form-block' ); ?></td>
@@ -332,8 +333,8 @@ final class Admin {
 					<td><br></td>
 					<td></td>
 					<td>
-						<a href="<?php echo \esc_url( \__( 'https://epiph.yt/en/?add-to-cart=26', 'form-block' ) ); ?>" class="button button-primary"><?php \esc_html_e( 'Purchase', 'form-block' ); ?> <span class="screen-reader-text"><?php \esc_html_e( 'Impressum Plus', 'form-block' ); ?></span></a>
-						<a href="<?php echo \esc_url( \__( 'https://form-block.plus/en/', 'form-block' ) ); ?>" class="button button-secondary"><?php \esc_html_e( 'More information', 'form-block' ); ?> <span class="screen-reader-text"><?php echo \esc_html_x( 'about Impressum Plus', 'more information about the plugin', 'form-block' ); ?></a>
+						<a href="<?php echo \esc_url( \__( 'https://epiph.yt/en/?add-to-cart=372', 'form-block' ) ); ?>" class="button button-primary"><?php \esc_html_e( 'Purchase', 'form-block' ); ?> <span class="screen-reader-text"><?php \esc_html_e( 'Form Block Pro', 'form-block' ); ?></span></a>
+						<a href="<?php echo \esc_url( \__( 'https://formblock.pro/en/', 'form-block' ) ); ?>" class="button button-secondary"><?php \esc_html_e( 'More information', 'form-block' ); ?> <span class="screen-reader-text"><?php echo \esc_html_x( 'about Form Block Pro', 'more information about the plugin', 'form-block' ); ?></a>
 					</td>
 				</tr>
 			</tbody>

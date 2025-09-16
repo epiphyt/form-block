@@ -20,9 +20,11 @@
 
 .form-block__compare-table {
 	.green,
+	.grey,
 	.red {
 		border-radius: 15px;
 		padding: 3px 8px;
+		white-space: nowrap;
 	}
 	
 	.green {
@@ -30,10 +32,19 @@
 		color: #111;
 	}
 	
+	.grey {
+		background-color: #8c8f94;
+		color: #111;
+	}
+	
 	.red {
 		background-color: #c5443f;
 		color: #fff;
 	}
+}
+
+.form-block__content-wrapper {
+	max-width: 692px;
 }
 
 .form-block__data-details {
@@ -120,4 +131,8 @@
 	> :first-child {
 		margin-block-start: 1em;
 	}
+}
+
+.form-block__settings:has(#nav-tab__content--pro.nav-tab-content-active) .submit {
+	display: none;
 }
