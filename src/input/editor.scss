@@ -15,6 +15,17 @@
 		}
 	}
 	
+	&.is-type-file .components-base-control {
+		position: relative;
+		
+		&::after {
+			content: "";
+			inset: 0;
+			position: absolute;
+			z-index: 10;
+		}
+	}
+	
 	.editor-styles-wrapper & {
 		margin-block: $grid-unit-20 !important;
 	}
