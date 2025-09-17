@@ -345,6 +345,28 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				} else if ( invalidFields.length === 1 ) {
 					invalidFields[ 0 ].field.focus();
 				}
+
+				for ( const invalidField of invalidFields ) {
+					if (
+						! invalidField.field.hasAttribute(
+							'data-validate-text-invalid'
+						)
+					) {
+						continue;
+					}
+
+					const block = invalidField.field.closest(
+						'.form-block__element'
+					);
+					const label = block.querySelector(
+						'.form-block__label-content'
+					);
+					const inlineError = block.querySelector( '.inline-error' );
+
+					inlineError.textContent = invalidField.field
+						.getAttribute( 'data-validate-text-invalid' )
+						.replace( '{field}', label.textContent );
+				}
 			} else if (
 				! form.hasAttribute( 'data-no-ajax' ) ||
 				! form.getAttribute( 'data-no-ajax' )
