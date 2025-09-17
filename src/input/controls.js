@@ -79,12 +79,18 @@ export default function Controls( props ) {
 		props
 	);
 
-	const getControl = ( attribute, type, key, settings = {} ) => {
-		if ( ! inputAttributes[ attribute ] ) {
+	const getControl = ( control, type, key ) => {
+		const {
+			attributeName,
+			attributes: { help },
+		} = control;
+		const attributes = control.attributes;
+
+		if ( ! inputAttributes[ attributeName ] ) {
 			return null;
 		}
 
-		if ( ! isAllowedAttribute( type, attribute ) ) {
+		if ( ! isAllowedAttribute( type, attributeName ) ) {
 			return null;
 		}
 
@@ -93,13 +99,13 @@ export default function Controls( props ) {
 			'formBlock/input-controls/element-props',
 			( elementProps, blockProps ) => {
 				let newProps = { ...elementProps };
-				newProps[ attribute ] = blockProps[ attribute ];
+				newProps[ attributeName ] = blockProps[ attributeName ];
 
 				return newProps;
 			}
 		);
 
-		switch ( inputAttributes[ attribute ].controlType ) {
+		switch ( inputAttributes[ attributeName ].controlType ) {
 			case 'autocomplete':
 				const autoAssignedValue = autoAssign(
 					autoComplete,
@@ -119,7 +125,7 @@ export default function Controls( props ) {
 			case 'custom-date':
 				return (
 					<CustomDateControls
-						attribute={ attribute }
+						attribute={ attributeName }
 						key={ key }
 						props={ props }
 						updateValue={ updateValue }
@@ -129,9 +135,10 @@ export default function Controls( props ) {
 				return (
 					<TextControl
 						className="form-block__block-control"
+						help={ help || null }
 						key={ key }
 						label={ getLabel(
-							attribute,
+							attributeName,
 							isHelpOpen,
 							setIsHelpOpen
 						) }
@@ -139,16 +146,16 @@ export default function Controls( props ) {
 							updateValue(
 								getSanitizedAttributeValue(
 									newValue,
-									settings
+									attributes
 								),
-								attribute
+								attributeName
 							)
 						}
 						type="number"
 						value={
 							getSanitizedAttributeValue(
-								props.attributes[ attribute ],
-								settings
+								props.attributes[ attributeName ],
+								attributes
 							) || ''
 						}
 					/>
@@ -157,9 +164,10 @@ export default function Controls( props ) {
 				return (
 					<SelectControl
 						className="form-block__block-control"
+						help={ help || null }
 						key={ key }
 						label={ getLabel(
-							attribute,
+							attributeName,
 							isHelpOpen,
 							setIsHelpOpen
 						) }
@@ -167,31 +175,32 @@ export default function Controls( props ) {
 							updateValue(
 								getSanitizedAttributeValue(
 									newValue,
-									settings
+									attributes
 								),
-								attribute
+								attributeName
 							)
 						}
-						options={ getOptions( attribute ) }
+						options={ getOptions( attributeName ) }
 						value={ getSanitizedAttributeValue(
-							props.attributes[ attribute ],
-							settings
+							props.attributes[ attributeName ],
+							attributes
 						) }
 					/>
 				);
 			case 'toggle':
 				return (
 					<ToggleControl
-						checked={ !! props.attributes[ attribute ] }
+						checked={ !! props.attributes[ attributeName ] }
 						className="form-block__block-control"
+						help={ help || null }
 						key={ key }
 						label={ getLabel(
-							attribute,
+							attributeName,
 							isHelpOpen,
 							setIsHelpOpen
 						) }
 						onChange={ ( newValue ) =>
-							updateValue( newValue, attribute )
+							updateValue( newValue, attributeName )
 						}
 					/>
 				);
@@ -200,9 +209,10 @@ export default function Controls( props ) {
 				return (
 					<TextControl
 						className="form-block__block-control"
+						help={ help || null }
 						key={ key }
 						label={ getLabel(
-							attribute,
+							attributeName,
 							isHelpOpen,
 							setIsHelpOpen
 						) }
@@ -210,14 +220,14 @@ export default function Controls( props ) {
 							updateValue(
 								getSanitizedAttributeValue(
 									newValue,
-									settings
+									attributes
 								),
-								attribute
+								attributeName
 							)
 						}
 						value={ getSanitizedAttributeValue(
-							props.attributes[ attribute ],
-							settings
+							props.attributes[ attributeName ],
+							attributes
 						) }
 					/>
 				);
@@ -275,12 +285,7 @@ export default function Controls( props ) {
 					value={ nameAttribute }
 				/>
 				{ controls.map( ( control, index ) =>
-					getControl(
-						control.attributeName,
-						type,
-						index,
-						control.attributes
-					)
+					getControl( control, type, index )
 				) }
 				{ React.isValidElement( formBlockControls )
 					? formBlockControls

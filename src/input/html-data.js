@@ -28,7 +28,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	color: {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'disabled',
@@ -38,7 +37,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	date: {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'disabled',
@@ -54,7 +52,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	'date-custom': {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'customDate',
@@ -68,7 +65,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	'datetime-local': {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'disabled',
@@ -84,7 +80,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	'datetime-local-custom': {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'customDate',
@@ -137,7 +132,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	image: {
 		allowedAttributes: [
-			'ariaDescription',
 			'alt',
 			'autoComplete',
 			'autoCompleteSection',
@@ -153,7 +147,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	month: {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'disabled',
@@ -169,7 +162,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	'month-custom': {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'customDate',
@@ -199,7 +191,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	password: {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'disabled',
@@ -226,7 +217,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	range: {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'disabled',
@@ -243,7 +233,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	search: {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'dirname',
@@ -301,7 +290,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	time: {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'disabled',
@@ -317,7 +305,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	'time-custom': {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'customDate',
@@ -331,7 +318,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	url: {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'disabled',
@@ -349,7 +335,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	week: {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'disabled',
@@ -365,7 +350,6 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 	},
 	'week-custom': {
 		allowedAttributes: [
-			'ariaDescription',
 			'autoComplete',
 			'autoCompleteSection',
 			'customDate',

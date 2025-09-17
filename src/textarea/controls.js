@@ -106,6 +106,7 @@ export default function Controls( props ) {
 				return (
 					<SelectControl
 						className="form-block__block-control"
+						help={ help || null }
 						key={ key }
 						label={ getLabel( attributeName ) }
 						onChange={ ( newValue ) =>
