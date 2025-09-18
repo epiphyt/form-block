@@ -257,7 +257,6 @@ final class Form {
 			'form-block-form-editor-script',
 			'formBlockFormData',
 			[
-				'saveSubmissions' => \get_option( 'form_block_save_submissions' ) === 'yes',
 				'submissionListTableLink' => \admin_url( 'tools.php?page=form-block-submissions' ),
 			]
 		);

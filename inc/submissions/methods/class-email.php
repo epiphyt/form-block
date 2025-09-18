@@ -73,10 +73,6 @@ final class Email {
 	 * @return	bool[] Whether the submission has been saved successfully
 	 */
 	public static function send( array $success, string $form_id, array $fields, array $files ): array {
-		if ( ! \get_option( 'form_block_save_submissions' ) ) {
-			return $success;
-		}
-		
 		$recipients = [
 			\get_option( 'admin_email' ),
 		];

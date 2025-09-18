@@ -30,9 +30,7 @@ final class Admin {
 		\add_filter( 'set_screen_option_submissions_per_page', [ self::class, 'save_per_page_screen_option' ], 10, 3 );
 		\add_filter( 'wp_script_attributes', [ self::class, 'set_script_attributes' ] );
 		
-		if ( \get_option( 'form_block_save_submissions' ) ) {
-			Submission_Page::init();
-		}
+		Submission_Page::init();
 	}
 	
 	/**
@@ -64,12 +62,6 @@ final class Admin {
 		}
 		
 		if ( $screen->id === 'settings_page_form-block' ) {
-			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'settings' . $suffix . '.js';
-			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'settings' . $suffix . '.js';
-			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
-			
-			\wp_enqueue_script( 'form-block-admin-settings', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
-			
 			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'tabs' . $suffix . '.js';
 			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'tabs' . $suffix . '.js';
 			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
@@ -370,27 +362,13 @@ final class Admin {
 	}
 	
 	/**
-	 * Get the input for save submissions option.
-	 */
-	public function get_save_submissions_input(): void {
-		$option_value = \get_option( 'form_block_save_submissions' );
-		?>
-		<label for="form_block_save_submissions">
-			<input type="checkbox" id="form_block_save_submissions" name="form_block_save_submissions" value="yes"<?php \checked( $option_value, 'yes' ) ?>>
-			<?php \esc_html_e( 'Save submissions', 'form-block' ); ?>
-		</label>
-		<p><?php \esc_html_e( 'By enabling this option, all submissions will be saved in WordPress as well.', 'form-block' ); ?></p>
-		<?php
-	}
-	
-	/**
 	 * Get the input for submissions auto-delete option.
 	 */
 	public function get_submissions_auto_delete_input(): void {
 		$option_value = \get_option( 'form_block_submissions_auto_delete', 30 );
 		?>
 		<label for="form_block_submissions_auto_delete">
-			<?php \esc_html_e( 'Delete submissions after', 'form-block' ); ?>
+			<?php \esc_html_e( 'Delete locally stored submissions after', 'form-block' ); ?>
 			<input type="number" id="form_block_submissions_auto_delete" name="form_block_submissions_auto_delete" class="small-text" value="<?php echo \esc_attr( $option_value ); ?>" min="0" aria-describedby="form_block_submissions_auto_delete_description">
 			<?php \esc_html_e( 'Days', 'form-block' ); ?>
 		</label>
@@ -447,21 +425,6 @@ final class Admin {
 			[
 				'sanitize_callback' => [ $this, 'validate_maximum_upload_size' ],
 				'type' => 'number',
-			]
-		);
-		\add_settings_field(
-			'form_block_save_submissions',
-			\__( 'Data handling', 'form-block' ),
-			[ $this, 'get_save_submissions_input' ],
-			'form-block',
-			'form_block_general'
-		);
-		\register_setting(
-			'form-block',
-			'form_block_save_submissions',
-			[
-				'sanitize_callback' => [ $this, 'validate_save_submissions' ],
-				'type' => 'string',
 			]
 		);
 		\add_settings_field(
@@ -640,16 +603,6 @@ final class Admin {
 	 */
 	public function validate_preserve_data_on_uninstall( ?string $value ): string {
 		return self::validate_checkbox( $value, 'form_block_preserve_data_on_uninstall', \__( 'Preserve data on uninstall', 'form-block' ) );
-	}
-	
-	/**
-	 * Validate save submissions setting.
-	 * 
-	 * @param	string|null	$value The saved value
-	 * @return	string The validated value
-	 */
-	public function validate_save_submissions( ?string $value ): string {
-		return self::validate_checkbox( $value, 'form_block_save_submissions', \__( 'Save submissions', 'form-block' ) );
 	}
 	
 	/**

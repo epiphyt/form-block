@@ -8,6 +8,9 @@
 	"keywords": [ "contact", "mail" ],
 	"textdomain": "form-block",
 	"attributes": {
+		"methods": {
+			"type": "object"
+		},
 		"formId": {
 			"type": "string"
 		},

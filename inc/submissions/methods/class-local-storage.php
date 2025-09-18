@@ -1,6 +1,7 @@
 <?php
 namespace epiphyt\Form_Block\submissions\methods;
 
+use epiphyt\Form_Block\form_data\Data;
 use epiphyt\Form_Block\submissions\Submission_Handler;
 
 /**
@@ -17,7 +18,24 @@ final class Local_Storage {
 	 * Initialize functionality.
 	 */
 	public static function init(): void {
+		\add_filter( 'form_block_data_form', [ self::class, 'update_form_data' ], 10, 2 );
 		\add_filter( 'form_block_submit_data', [ self::class, 'save' ], 10, 4 );
+	}
+	
+	/**
+	 * Check, whether the current form should be stored locally.
+	 * 
+	 * @param	string	$form_id The form ID
+	 * @return	bool Wether the current form should be stored locally
+	 */
+	public static function is_savable( string $form_id ): bool {
+		$form_data = Data::get_instance()->get( $form_id );
+		
+		if ( isset( $form_data['localStorage'] ) ) {
+			return (bool) $form_data['localStorage'];
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -30,12 +48,30 @@ final class Local_Storage {
 	 * @return	bool[] Whether the submission has been saved successfully
 	 */
 	public static function save( array $success, string $form_id, array $fields, array $files ): array {
-		if ( ! \get_option( 'form_block_save_submissions' ) ) {
+		if ( ! self::is_savable( $form_id ) ) {
 			return $success;
 		}
 		
 		$success[ self::IDENTIFIER ] = Submission_Handler::create_submission( $form_id, $fields, $files );
 		
 		return $success;
+	}
+	
+	/**
+	 * Update form data before stored in the database.
+	 * 
+	 * @param	array	$data The current block data that is being stored
+	 * @param	array	$block The original block data
+	 * @return	array Updated block data
+	 */
+	public static function update_form_data( array $data, array $block ): array {
+		if ( isset( $block['attrs']['methods']['localStorage'] ) ) {
+			$data['localStorage'] = (bool) $block['attrs']['methods']['localStorage'];
+		}
+		else {
+			$data['localStorage'] = true;
+		}
+		
+		return $data;
 	}
 }

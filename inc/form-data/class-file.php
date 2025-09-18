@@ -3,6 +3,7 @@ namespace epiphyt\Form_Block\form_data;
 
 use DateTime;
 use epiphyt\Form_Block\Form_Block;
+use epiphyt\Form_Block\submissions\methods\Local_Storage;
 
 /**
  * File data class.
@@ -244,7 +245,7 @@ final class File {
 		$form_data = \get_option( 'form_block_data_' . $form_id, [] );
 		$local_files = [];
 		
-		if ( \get_option( 'form_block_save_submissions' ) ) {
+		if ( Local_Storage::is_savable( $form_id ) ) {
 			\add_filter( 'form_block_file_is_saved_locally', '__return_true' );
 		}
 		
@@ -270,7 +271,7 @@ final class File {
 			$wp_filesystem->move( $file['path'], $new_path );
 		}
 		
-		if ( \get_option( 'form_block_save_submissions' ) ) {
+		if ( Local_Storage::is_savable( $form_id ) ) {
 			\remove_filter( 'form_block_file_is_saved_locally', '__return_true' );
 		}
 		
