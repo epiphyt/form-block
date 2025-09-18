@@ -2,6 +2,7 @@
 namespace epiphyt\Form_Block\form_data;
 
 use epiphyt\Form_Block\Form_Block;
+use epiphyt\Form_Block\submissions\methods\Email;
 use epiphyt\Form_Block\submissions\Submission_Handler;
 
 /**
@@ -163,47 +164,6 @@ final class Data {
 	}
 	
 	/**
-	 * Get Reply-to email address.
-	 * 
-	 * @param	array	$data Form data
-	 * @param	array	$fields Form fields
-	 * @return	string Reply-to email address
-	 */
-	private static function get_reply_to( array $data, array $fields ): string {
-		// reverse since the latest reply to field is the most important one
-		$reverse_fields = \array_reverse( $fields );
-		
-		foreach ( \array_reverse( $data ) as $name => $value ) {
-			$label = Field::get_title_by_name( $name, $fields );
-			$key = \array_search( $label, \array_column( \array_reverse( $fields ), 'label' ), true );
-			
-			if ( $key === false ) {
-				continue;
-			}
-			
-			if ( ! empty( $reverse_fields[ $key ]['is_reply_to'] ) ) {
-				/**
-				 * Filter the reply to address.
-				 * 
-				 * @since	1.1.0
-				 * 
-				 * @param	mixed	$value The field value
-				 * @param	array	$data The POST data
-				 * @param	array	$fields The form fields
-				 */
-				$value = \apply_filters( 'form_block_reply_to', $value, $data, $fields );
-				
-				return $value;
-			}
-		}
-		
-		/**
-		 * This filter is described in epiphyt\Form_Block\form_data\Data::get_reply_to().
-		 */
-		return \apply_filters( 'form_block_reply_to', '', $data, $fields );
-	}
-	
-	/**
 	 * Get the request data.
 	 */
 	public function get_request(): void {
@@ -275,8 +235,35 @@ final class Data {
 		 */
 		\do_action( 'form_block_validated_data', $this->form_id, $fields, $validated_files, $files['local'] );
 		
-		Submission_Handler::create_submission( $this->form_id, $fields, $files );
-		$this->send( $fields, $files );
+		/**
+		 * Fires when form data is ready to be submitted.
+		 * 
+		 * @since	1.6.0
+		 * 
+		 * @param	bool[]	$success A list of successful or failed submission methods
+		 * @param	string		$form_id The form ID
+		 * @param	array		$fields Validated fields
+		 * @param	array		$files Files data
+		 */
+		$success = (array) \apply_filters( 'form_block_submit_data', [], $this->form_id, $fields, $files );
+		
+		if ( \in_array( false, \array_values( $success ), true ) ) {
+			\wp_send_json_error( [
+				'message' => \esc_html__( 'Form submission failed for at least one recipient.', 'form-block' ),
+			] );
+		}
+		
+		/**
+		 * Filter the submit success data.
+		 * 
+		 * @since	1.0.3
+		 * 
+		 * @param	array|null	$data Current data
+		 * @param	string		$form_id Current form ID
+		 */
+		$data = \apply_filters( 'form_block_submit_success_data', null, $this->form_id );
+		
+		\wp_send_json_success( $data );
 	}
 	
 	/**
@@ -416,133 +403,23 @@ final class Data {
 	/**
 	 * Send form submission to the recipients.
 	 * 
+	 * @deprecated	1.6.0 Use epiphyt\Form_Block\submissions\methods\Email::send() instead
+	 * 
 	 * @param	array	$fields The validated fields
 	 * @param	array	$files The local and validated files
 	 */
 	public function send( array $fields, array $files ): void {
-		$recipients = [
-			\get_option( 'admin_email' ),
-		];
-		
-		/**
-		 * Filter the form recipients.
-		 * 
-		 * @param	array	$recipients The recipients
-		 * @param	int		$form_id The form ID
-		 * @param	array	$fields The validated fields
-		 * @param	array	$files The validated files
-		 */
-		$recipients = \apply_filters( 'form_block_recipients', $recipients, $this->form_id, $fields, $files['validated'] );
-		
-		$form_data = $this->get( $this->form_id );
-		$field_output = [
-			\trim( Field::get_instance()->get_output( $form_data['fields'], $fields ) ),
-		];
-		
-		$attachments = [];
-		
-		if ( ! empty( $files['validated'] ) ) {
-			foreach ( $files['validated'] as $file_key => $validated_file ) {
-				$file = File::get_data( $validated_file, $file_key, $files );
-				$output = File::get_output( $file, $form_data, $attachments );
-				
-				if ( ! empty( $output ) ) {
-					$field_output[] = $output;
-				}
-			}
-		}
-		
-		$headers = [];
-		$reply_to = self::get_reply_to( $fields, $form_data['fields'] );
-		
-		if ( ! empty( $reply_to ) ) {
-			if ( \str_contains( $reply_to, ' ' ) ) {
-				$reply_to = \explode( ' ', $reply_to );
-			}
-			else {
-				$reply_to = (array) $reply_to;
-			}
-			
-			$headers[] = 'Reply-To: ' . \trim( \implode( ',', $reply_to ), ' ' );
-		}
-		
-		$email_text = \sprintf(
-			/* translators: 1: blog title, 2: form fields */
-			\__( 'Hello,
-
-you have just received a new form submission with the following data from "%1$s":
-
-%2$s
-
-Your "%1$s" WordPress', 'form-block' ),
-			\get_bloginfo( 'name' ),
-			\implode( \PHP_EOL, $field_output )
+		\_doing_it_wrong(
+			__METHOD__,
+			\sprintf(
+				/* translators: alternative method */
+				\esc_html__( 'Use %s instead', 'form-block' ),
+				'epiphyt\Form_Block\submissions\methods\Email::send()'
+			),
+			'1.6.0'
 		);
 		
-		/**
-		 * Filter the email text.
-		 * 
-		 * @param	string	$email_text The email text
-		 * @param	string	$field_output The field text output
-		 * @param	string	$form_id The form ID
-		 * @param	array	$fields The validated fields
-		 */
-		$email_text = \apply_filters( 'form_block_email_text', $email_text, $field_output, $this->form_id, $fields );
-		
-		$success = [];
-		
-		if ( ! empty( $form_data['subject'] ) ) {
-			$subject = $form_data['subject'];
-		}
-		else {
-			/* translators: blog name */
-			$subject = \sprintf( \__( 'New form submission via "%s"', 'form-block' ), \get_bloginfo( 'name' ) );
-		}
-		
-		/**
-		 * Filter the email subject.
-		 * 
-		 * @param	string	$subject The email subject
-		 */
-		$subject = \apply_filters( 'form_block_mail_subject', $subject );
-		
-		foreach ( $recipients as $recipient ) {
-			if ( ! \filter_var( $recipient, \FILTER_VALIDATE_EMAIL ) ) {
-				continue;
-			}
-			
-			$sent = \wp_mail( $recipient, $subject, $email_text, $headers, $attachments );
-			
-			$success[ $recipient ] = $sent;
-		}
-		
-		/**
-		 * Runs after sending emails with a status per recipient.
-		 * If status is true, the email was sent.
-		 * 
-		 * @param	array	$success List of emails and whether they were sent
-		 * @param	string	$email_text The sent email text
-		 * @param	array	$attachments The sent attachments
-		 */
-		\do_action( 'form_block_sent_emails', $success, $email_text, $attachments );
-		
-		if ( \in_array( false, \array_values( $success ), true ) ) {
-			\wp_send_json_error( [
-				'message' => \esc_html__( 'Form submission failed for at least one recipient.', 'form-block' ),
-			] );
-		}
-		
-		/**
-		 * Filter the submit success data.
-		 * 
-		 * @since	1.0.3
-		 * 
-		 * @param	array|null	$data Current data
-		 * @param	string		$form_id Current form ID
-		 */
-		$data = \apply_filters( 'form_block_submit_success_data', null, $this->form_id );
-		
-		\wp_send_json_success( $data );
+		Email::send( [], $this->form_id, $fields, $files );
 	}
 	
 	/**

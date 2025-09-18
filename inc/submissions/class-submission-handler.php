@@ -3,6 +3,8 @@ namespace epiphyt\Form_Block\submissions;
 
 use epiphyt\Form_Block\form_data\Data;
 use epiphyt\Form_Block\form_data\File;
+use epiphyt\Form_Block\submissions\methods\Email;
+use epiphyt\Form_Block\submissions\methods\Local_Storage;
 
 /**
  * Form submission handler.
@@ -19,6 +21,9 @@ final class Submission_Handler {
 	 */
 	public static function init(): void {
 		\add_action( 'form_block_cleanup', [ self::class, 'cleanup' ] );
+		
+		Email::init();
+		Local_Storage::init();
 	}
 	
 	/**
@@ -64,12 +69,9 @@ final class Submission_Handler {
 	 * @param	string	$form_id Form ID
 	 * @param	mixed[]	$fields Submitted fields
 	 * @param	array{array{field_name: string, name: string, path: string, size: int}}	$files Uploaded files data
+	 * @return	bool Whether the submission has been created successfully
 	 */
-	public static function create_submission( string $form_id, array $fields, array $files ): void {
-		if ( ! \get_option( 'form_block_save_submissions' ) ) {
-			return;
-		}
-		
+	public static function create_submission( string $form_id, array $fields, array $files ): bool {
 		\add_filter( 'form_block_file_is_saved_locally', '__return_true' );
 		
 		$form_data = Data::get_instance()->get( $form_id );
@@ -90,8 +92,10 @@ final class Submission_Handler {
 		$form_submissions = self::get_submissions( $form_id );
 		$form_submissions[] = $submission;
 		
-		\update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, $form_submissions );
+		$success = \update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, $form_submissions );
 		\remove_filter( 'form_block_file_is_saved_locally', '__return_true' );
+		
+		return $success;
 	}
 	
 	/**
