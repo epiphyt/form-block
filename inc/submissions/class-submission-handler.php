@@ -14,7 +14,7 @@ use epiphyt\Form_Block\submissions\methods\Local_Storage;
  * @package	epiphyt\Form_Block
  */
 final class Submission_Handler {
-	private const OPTION_KEY_PREFIX = 'form_block_submissions';
+	public const OPTION_KEY_PREFIX = 'form_block_submissions';
 	
 	/**
 	 * Initialize functionality.

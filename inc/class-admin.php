@@ -1,8 +1,6 @@
 <?php
 namespace epiphyt\Form_Block;
 
-use epiphyt\Form_Block\submissions\Submission_Page;
-
 /**
  * Form Block admin class.
  * 
@@ -29,8 +27,6 @@ final class Admin {
 		\add_action( 'load-settings_page_' . self::PAGE_NAME, [ self::class, 'register_screen_options' ] );
 		\add_filter( 'set_screen_option_submissions_per_page', [ self::class, 'save_per_page_screen_option' ], 10, 3 );
 		\add_filter( 'wp_script_attributes', [ self::class, 'set_script_attributes' ] );
-		
-		Submission_Page::init();
 	}
 	
 	/**

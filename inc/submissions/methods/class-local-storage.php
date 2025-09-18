@@ -3,6 +3,7 @@ namespace epiphyt\Form_Block\submissions\methods;
 
 use epiphyt\Form_Block\form_data\Data;
 use epiphyt\Form_Block\submissions\Submission_Handler;
+use epiphyt\Form_Block\submissions\Submission_Page;
 
 /**
  * Action to store form submissions locally.
@@ -20,6 +21,32 @@ final class Local_Storage {
 	public static function init(): void {
 		\add_filter( 'form_block_data_form', [ self::class, 'update_form_data' ], 10, 2 );
 		\add_filter( 'form_block_submit_data', [ self::class, 'save' ], 10, 4 );
+		
+		if ( ! empty( Local_Storage::has_submissions() ) ) {
+			Submission_Page::init();
+		}
+	}
+	
+	/**
+	 * Check, whether at least one local submission is available.
+	 * 
+	 * @param	string	$form_id Form ID
+	 * @return	bool Whether at least one local submission is available
+	 */
+	public static function has_submissions( string $form_id = '' ): bool {
+		foreach ( Data::get_form_ids() as $data_form_id ) {
+			if ( ! empty( $form_id ) && $form_id !== $data_form_id ) {
+				continue;
+			}
+			
+			$form_submissions = \get_option( Submission_Handler::OPTION_KEY_PREFIX . '_' . $data_form_id, [] );
+			
+			if ( ! empty( $form_submissions ) ) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	/**
