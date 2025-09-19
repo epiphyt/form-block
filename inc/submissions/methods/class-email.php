@@ -111,6 +111,13 @@ final class Email {
 		if ( ! empty( $reply_to ) ) {
 			if ( \str_contains( $reply_to, ' ' ) ) {
 				$reply_to = \explode( ' ', $reply_to );
+				$reply_to = \array_map( static function( $email ) {
+					if ( \str_ends_with( $email, ',' ) ) {
+						$email = \rtrim( $email, ',' );
+					}
+					
+					return $email;
+				}, $reply_to );
 			}
 			else {
 				$reply_to = (array) $reply_to;
