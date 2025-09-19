@@ -138,6 +138,19 @@ final class Submission_Handler {
 	}
 	
 	/**
+	 * Get a specific submission.
+	 * 
+	 * @param	string	$form_id Form ID
+	 * @param	int		$submission_key Key of the specific submission
+	 * @return	?\epiphyt\Form_Block\submissions\Submission Submission
+	 */
+	public static function get_submission( string $form_id, int $submission_key ): ?Submission {
+		$submissions = self::get_submissions( $form_id );
+		
+		return $submissions[ $submission_key ] ?? null;
+	}
+	
+	/**
 	 * Get all submissions.
 	 * 
 	 * @param	string	$form_id Form ID
