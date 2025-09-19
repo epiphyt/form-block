@@ -1,0 +1,22 @@
+{
+	"name": "epiphyt/form-block",
+	"description": "An extensive yet user-friendly form block.",
+	"type": "wordpress-plugin",
+	"homepage": "https://epiph.yt/en/",
+	"license": "GPL-2.0-only",
+	"require": {
+		"php": "^7.4|^8.0"
+	},
+	"support": {
+		"email": "hey.composer@epiph.yt",
+		"docs": "hhttps://formblock.pro/en/documentation/"
+	},
+	"authors": [
+		{
+			"name": "Matthias Kittsteiner",
+			"email": "matze.composer@epiph.yt",
+			"homepage": "https://kittsteiner.blog",
+			"role": "Developer"
+		}
+	]
+}
