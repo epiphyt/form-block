@@ -39,7 +39,7 @@ final class Submission extends WP_REST_Controller {
 		
 		$data = [
 			'data' => [
-				'id' => $item['id'],
+				'id' => $item->id,
 			],
 			'message' => \__( 'Submission deleted successfully.', 'form-block' ),
 			'success' => true,
@@ -80,11 +80,11 @@ final class Submission extends WP_REST_Controller {
 	 * {@inheritDoc}
 	 */
 	protected function prepare_item_for_database( $request ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint, SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
-		$data = [];
+		$data = new \stdClass();
 		$params = $request->get_params();
 		
 		if ( isset( $params['id'] ) ) {
-			$data['id'] = (string) $params['id'];
+			$data->id = (string) $params['id'];
 		}
 		
 		return $data;
