@@ -425,7 +425,7 @@ final class Admin {
 		);
 		\add_settings_field(
 			'form_block_submissions_auto_delete',
-			'',
+			\__( 'Data handling', 'form-block' ),
 			[ $this, 'get_submissions_auto_delete_input' ],
 			'form-block',
 			'form_block_general'
