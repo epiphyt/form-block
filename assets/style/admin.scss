@@ -18,6 +18,19 @@
 	}
 }
 
+.form-block__button {
+	--background: #007cba;
+	--background-dark: #005a87;
+	
+	&.is-busy[aria-disabled="true"] {
+		@media not (prefers-reduced-motion) {
+			animation: form-block-button__busy-animation 2500ms infinite linear;
+		}
+		
+		background-image: linear-gradient(-45deg, var(--background) 33%, var(--background-dark) 33%, var(--background-dark) 70%, var(--background) 70%);
+	}
+}
+
 .form-block__compare-table {
 	.green,
 	.grey,
@@ -108,14 +121,6 @@
 			border-color: #710d0d;
 			color: #710d0d;
 		}
-	}
-	
-	&.is-busy[aria-disabled="true"] {
-		@media not (prefers-reduced-motion) {
-			animation: form-block-button__busy-animation 2500ms infinite linear;
-		}
-		
-		background-image: linear-gradient(-45deg, var(--background) 33%, var(--background-dark) 33%, var(--background-dark) 70%, var(--background) 70%);
 	}
 }
 

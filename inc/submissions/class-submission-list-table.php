@@ -253,7 +253,7 @@ final class Submission_List_Table extends WP_List_Table {
 	 */
 	public static function set_delete_action( array $item ): void {
 		?>
-		<button type="button" class="button form-block__delete" data-id="<?php echo \esc_attr( $item['id'] ); ?>">
+		<button type="button" class="button form-block__button form-block__delete" data-id="<?php echo \esc_attr( $item['id'] ); ?>">
 			<?php
 			\printf(
 				/* translators: "submission" as screen reader text */
