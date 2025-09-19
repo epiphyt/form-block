@@ -49,6 +49,16 @@ final class Submission extends WP_REST_Controller {
 	}
 	
 	/**
+	 * Check if a given request has access to test items.
+	 * 
+	 * @param	\WP_REST_Request	$request Request object
+	 * @return	bool Whether the request has access to test items
+	 */
+	public function delete_item_permissions_check( $request ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint, SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+		return \current_user_can( 'manage_options' );
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	public function get_item_schema() {
@@ -110,15 +120,5 @@ final class Submission extends WP_REST_Controller {
 				'schema' => $this->get_item_schema(),
 			]
 		);
-	}
-	
-	/**
-	 * Check if a given request has access to test items.
-	 * 
-	 * @param	\WP_REST_Request	$request Request object
-	 * @return	bool Whether the request has access to test items
-	 */
-	public function delete_item_permissions_check( $request ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint, SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
-		return \current_user_can( 'manage_options' );
 	}
 }
