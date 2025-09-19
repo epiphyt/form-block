@@ -40,3 +40,8 @@ export function getSnackbar() {
 
 	return snackbar;
 }
+
+window.formBlockSnackbar = {
+	addSnackbarMessage,
+	getSnackbar,
+};
