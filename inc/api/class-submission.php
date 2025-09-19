@@ -113,9 +113,7 @@ final class Submission extends WP_REST_Controller {
 					],
 				],
 				'callback' => [ $this, 'delete_item' ],
-				'methods' => [
-					\WP_REST_Server::DELETABLE,
-				],
+				'methods' => \WP_REST_Server::DELETABLE,
 				'permission_callback' => [ $this, 'delete_item_permissions_check' ],
 				'schema' => $this->get_item_schema(),
 			]
