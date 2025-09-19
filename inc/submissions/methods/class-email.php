@@ -29,7 +29,7 @@ final class Email {
 	 * @param	array	$fields Form fields
 	 * @return	string Reply-to email address
 	 */
-	private static function get_reply_to( array $data, array $fields ): string {
+	public static function get_reply_to( array $data, array $fields ): string {
 		// reverse since the latest reply to field is the most important one
 		$reverse_fields = \array_reverse( $fields );
 		
