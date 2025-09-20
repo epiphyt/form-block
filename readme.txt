@@ -2,7 +2,7 @@
 Contributors: epiphyt, kittmedia
 Tags: form, contact form, gutenberg, block editor, accessibility
 Requires at least: 6.7
-Stable tag: 1.5.6
+Stable tag: 1.6.0
 Tested up to: 6.8
 Requires PHP: 7.4
 License: GPL2
@@ -23,6 +23,7 @@ WordPress offers several (contact) form plugins, but most of them are not up-to-
 * Create forms with an unlimited number of fields
 * Select from a wide variety of field types
 * Use a predefined form or start from scratch
+* Store form submissions in the WordPress backend
 * Integrated honeypot for spam protection
 * Integrated knowledge base for field types
 * Client-side and server-side validation
@@ -55,6 +56,7 @@ There is also a Pro version of Form Block available. It offers additional featur
 * Storing files in WordPress instead of attaching them to an email
 * Global defined consent checkbox
 * Field dependencies
+* Advanced functionality for accessibility
 
 You can find more information at [https://formblock.pro/en/](https://formblock.pro/en/).
 
@@ -95,6 +97,16 @@ We are [Epiphyt](https://epiph.yt/en/), your friendly neighborhood WordPress plu
 You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/form-block)
 
 == Changelog ==
+
+= 1.6.0 =
+* Added: Form submissions can now be stored in the WordPress backend in **Tools > Form Submissions**
+* Added: Support for columns, rows and the `wrap` attribute in textareas
+* Added: Indicator if label has a different value than the name of the field
+* Improved: Registering blocks is now faster
+* Improved: Settings are now in a dedicated page in **Settings > Form Block**
+* Fixed: Clicking on a file input in the backend does no more open the system's file selection dialog
+* Fixed: Re-added missing `autocomplete` attribute setting
+* Fixed: Error if no label is defined
 
 = 1.5.6 =
 * Fixed: Validating uploaded files against the file type they claim to be ([CVE-2025-54693](https://patchstack.com/database/wordpress/plugin/form-block/vulnerability/wordpress-form-block-plugin-1-5-5-arbitrary-file-upload-vulnerability))
