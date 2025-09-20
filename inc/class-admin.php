@@ -83,8 +83,8 @@ final class Admin {
 				[
 					'nonce' => \wp_create_nonce( 'wp_rest' ),
 					'restRootUrl' => \esc_url( \rest_url() ),
-					'submissionRemovedError' => \__( 'Submission could not be removed.', 'form-block' ),
-					'submissionRemovedSuccess' => \__( 'Submission removed successfully.', 'form-block' ),
+					'submissionDeletedError' => \__( 'Submission could not be deleted.', 'form-block' ),
+					'submissionDeletedSuccess' => \__( 'Submission deleted successfully.', 'form-block' ),
 				]
 			);
 		}

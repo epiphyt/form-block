@@ -37,7 +37,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 						throw new Error( json.message );
 					} else {
 						throw new Error(
-							formBlockSubmissions.submissionRemovedError
+							formBlockSubmissions.submissionDeletedError
 						);
 					}
 				}
@@ -47,7 +47,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			.then( () => {
 				row.remove();
 				addSnackbarMessage(
-					formBlockSubmissions.submissionRemovedSuccess
+					formBlockSubmissions.submissionDeletedSuccess
 				);
 			} )
 			.catch( ( error ) => {
