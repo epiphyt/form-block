@@ -254,7 +254,7 @@ final class Admin {
 		<p>
 			<?php
 			/* translators: commercial plugin name */
-			\printf( \esc_html__( 'Even as a private website owner you can upgrade to %s anytime. Every single Plus user means the world to us, since it\'s those users who support our ongoing work on both the free and paid version. In addition, we\'ll continue to add even more nifty features to Pro.', 'form-block' ), \esc_html__( 'Form Block Pro', 'form-block' ) );
+			\printf( \esc_html__( 'Even as a private website owner you can upgrade to %s anytime. Every single Pro user means the world to us, since it\'s those users who support our ongoing work on both the free and paid version. In addition, we\'ll continue to add even more nifty features to Pro.', 'form-block' ), \esc_html__( 'Form Block Pro', 'form-block' ) );
 			?>
 		</p>
 		<p><a href="<?php echo \esc_url( \__( 'https://formblock.pro/en/', 'form-block' ) ); ?>" class="button button-primary button-hero"><?php \esc_html_e( 'Get Form Block Pro now', 'form-block' ); ?></a></p>
