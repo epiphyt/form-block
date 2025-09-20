@@ -17,13 +17,24 @@ jobs:
     - name: npm build
       run: npm run build
     - name: WordPress Plugin Deploy
-      id: deploy
       uses: 10up/action-wordpress-plugin-deploy@stable
       with:
         generate-zip: true
       env:
         SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
         SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+    # Install SSH key
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        known_hosts: ${{ secrets.KNOWN_HOSTS }}
+    - run: scp ${{ github.event.repository.name }}.zip ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_PATH_BASE }}/form-block-${{ github.ref_name }}.zip
+    # Create artifacts
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}.zip
+        path: ${{ github.event.repository.name }}.zip
     # Create release
     - name: Create Release
       id: create_release
