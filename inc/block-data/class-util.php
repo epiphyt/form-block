@@ -36,7 +36,7 @@ final class Util {
 			$content = \is_numeric( $id ) ? \get_post_field( 'post_content', $id ) : $id;
 			$blocks = \parse_blocks( $content );
 			
-			if ( ! \is_array( $blocks ) || empty( $blocks ) ) {
+			if ( empty( $blocks ) ) {
 				return false;
 			}
 			
@@ -68,7 +68,7 @@ final class Util {
 		
 		$blocks = \parse_blocks( $content );
 		
-		if ( ! \is_array( $blocks ) || empty( $blocks ) ) {
+		if ( empty( $blocks ) ) {
 			return false;
 		}
 		
@@ -123,7 +123,7 @@ final class Util {
 				// search in reusable blocks
 				$parsed_blocks = \parse_blocks( $block['content'] );
 				
-				if ( ! \is_array( $parsed_blocks ) || empty( $parsed_blocks ) ) {
+				if ( empty( $parsed_blocks ) ) {
 					continue;
 				}
 				

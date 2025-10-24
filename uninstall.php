@@ -17,7 +17,7 @@ if ( \is_multisite() ) {
 	$sites = \get_sites( [ 'number' => 99999 ] );
 	
 	foreach ( $sites as $site ) {
-		\switch_to_blog( $site->blog_id );
+		\switch_to_blog( (int) $site->blog_id );
 		
 		// do nothing if option says so
 		if ( \get_option( 'form_block_preserve_data_on_uninstall' ) ) {

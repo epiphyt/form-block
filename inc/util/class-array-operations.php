@@ -37,7 +37,7 @@ final class Array_Operations {
 	/**
 	 * Get most nested value inside an array recursively.
 	 * 
-	 * @param	array	$array Array to get value from
+	 * @param	mixed[]	$array Array to get value from
 	 * @return	mixed Most nested value
 	 */
 	public static function get_most_nested_value( array $array ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint

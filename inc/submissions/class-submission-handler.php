@@ -48,6 +48,10 @@ final class Submission_Handler {
 		$submissions = self::get_submissions();
 		
 		foreach ( $submissions as $form_id => &$form_submissions ) {
+			if ( ! \is_iterable( $form_submissions ) ) {
+				continue;
+			}
+			
 			foreach ( $form_submissions as $key => $submission ) {
 				if ( $submission->get_date_object() < $date ) {
 					unset( $form_submissions[ $key ] );
@@ -68,7 +72,7 @@ final class Submission_Handler {
 	 * 
 	 * @param	string	$form_id Form ID
 	 * @param	mixed[]	$fields Submitted fields
-	 * @param	array{array{field_name: string, name: string, path: string, size: int}}	$files Uploaded files data
+	 * @param	array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}}|array{}}	$files Uploaded files data
 	 * @return	bool Whether the submission has been created successfully
 	 */
 	public static function create_submission( string $form_id, array $fields, array $files ): bool {
@@ -104,6 +108,7 @@ final class Submission_Handler {
 	 * @param	string	$form_id Form ID
 	 * @param	int		$submission_key Key of the submission
 	 * @return	bool Whether submission has been deleted
+	 * @throws	\Exception
 	 */
 	public static function delete_submission( string $form_id, int $submission_key ): bool {
 		$form_submissions = self::get_submissions( $form_id );
@@ -112,13 +117,17 @@ final class Submission_Handler {
 			return false;
 		}
 		
+		if ( \is_array( $form_submissions[ $submission_key ] ) ) {
+			throw new \Exception( \esc_html__( 'Only a single submission is allowed to be returned.', 'form-block' ) );
+		}
+		
 		if ( ! empty( $form_submissions[ $submission_key ]->get_data( 'files_local' ) ) ) {
-			/** @var	\WP_Filesystem_Direct $wp_filesystem */
+			/** @var ?\WP_Filesystem_Direct $wp_filesystem */
 			global $wp_filesystem;
 			
 			// initialize the WP filesystem if not exists
 			if ( empty( $wp_filesystem ) ) {
-			require_once \ABSPATH . 'wp-admin/includes/file.php';
+				require_once \ABSPATH . 'wp-admin/includes/file.php';
 				\WP_Filesystem();
 			}
 			
@@ -143,11 +152,16 @@ final class Submission_Handler {
 	 * @param	string	$form_id Form ID
 	 * @param	int		$submission_key Key of the specific submission
 	 * @return	?\epiphyt\Form_Block\submissions\Submission Submission
+	 * @throws	\Exception
 	 */
 	public static function get_submission( string $form_id, int $submission_key ): ?Submission {
 		$submissions = self::get_submissions( $form_id );
 		
-		return $submissions[ $submission_key ] ?? null;
+		if ( \is_array( $submissions[ $submission_key ] ) ) {
+			throw new \Exception( \esc_html__( 'Only a single submission is allowed to be returned.', 'form-block' ) );
+		}
+		
+		return $submissions[ $submission_key ] ?? null; // @phpstan-ignore nullCoalesce.offset
 	}
 	
 	/**

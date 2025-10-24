@@ -101,7 +101,7 @@ final class Form {
 	 */
 	public function add_object_inputs( string $block_content, array $block ): string {
 		$queried_object = \get_queried_object();
-		$object_inputs = '<input type="hidden" name="_object_id" value="' . \esc_attr( \get_queried_object_id() ) . '" />' . \PHP_EOL;
+		$object_inputs = '<input type="hidden" name="_object_id" value="' . \esc_attr( (string) \get_queried_object_id() ) . '" />' . \PHP_EOL;
 		$object_inputs .= '<input type="hidden" name="_object_type" value="' . \esc_attr( $queried_object ? $queried_object::class : '' ) . '" />';
 		
 		/**
@@ -192,7 +192,7 @@ final class Form {
 		 * @param	string	$block_content The block content
 		 * @param	array	$block Block attributes
 		 */
-		$maximum_upload_size = \apply_filters( 'form_block_form_maximum_upload_size', $maximum, $block_content, $block );
+		$maximum_upload_size = (string) \apply_filters( 'form_block_form_maximum_upload_size', $maximum, $block_content, $block );
 		
 		/**
 		 * Filter the form maximum upload size per file.
@@ -201,7 +201,7 @@ final class Form {
 		 * @param	string	$block_content The block content
 		 * @param	array	$block Block attributes
 		 */
-		$maximum_upload_size_per_file = \apply_filters( 'form_block_form_maximum_upload_size_per_file', $maximum, $block_content, $block );
+		$maximum_upload_size_per_file = (string) \apply_filters( 'form_block_form_maximum_upload_size_per_file', $maximum, $block_content, $block );
 		
 		return \str_replace( '<form', '<form data-max-upload="' . \esc_attr( $maximum_upload_size ) . '" data-max-upload-file="' . \esc_attr( $maximum_upload_size_per_file ) . '"', $block_content );
 	}
@@ -371,8 +371,8 @@ final class Form {
 			'validatorFileTooBig' => \esc_js( \__( 'The file is to big to be uploaded.', 'form-block' ) ),
 			'validatorInvalid' => \esc_js( \__( 'This field is invalid.', 'form-block' ) ),
 			'validatorLong' => \esc_js( \__( 'This field is too long.', 'form-block' ) ),
-			'validatorMaxFilesize' => \esc_js( Form_Block::get_instance()->get_maximum_upload_size() ),
-			'validatorMaxFilesizePerFile' => \esc_js( Form_Block::get_instance()->get_maximum_upload_size() ),
+			'validatorMaxFilesize' => \esc_js( (string) Form_Block::get_instance()->get_maximum_upload_size() ),
+			'validatorMaxFilesizePerFile' => \esc_js( (string) Form_Block::get_instance()->get_maximum_upload_size() ),
 			'validatorNumber' => \esc_js( \__( 'This field does not contain a number.', 'form-block' ) ),
 			'validatorNumberMax' => \esc_js( \__( 'This value is too low.', 'form-block' ) ),
 			'validatorNumberMin' => \esc_js( \__( 'This value is too high.', 'form-block' ) ),

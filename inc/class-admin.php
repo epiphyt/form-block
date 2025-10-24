@@ -51,7 +51,7 @@ final class Admin {
 		
 		if ( $screen->id === 'settings_page_form-block' || $screen->id === 'tools_page_form-block-submissions' ) {
 			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/style/build/admin' . $suffix . '.css';
-			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/style/build/admin' . $suffix . '.css';
+			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/style/build/admin' . $suffix . '.css'; // @phpstan-ignore constant.notFound
 			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
 			
 			\wp_enqueue_style( 'form-block-admin', $asset_url, [], $version );
@@ -59,7 +59,7 @@ final class Admin {
 		
 		if ( $screen->id === 'settings_page_form-block' ) {
 			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'tabs' . $suffix . '.js';
-			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'tabs' . $suffix . '.js';
+			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'tabs' . $suffix . '.js'; // @phpstan-ignore constant.notFound
 			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
 			
 			\wp_enqueue_script( 'form-block-admin-tabs', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
@@ -67,13 +67,13 @@ final class Admin {
 		
 		if ( $screen->id === 'tools_page_form-block-submissions' ) {
 			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'snackbar' . $suffix . '.js';
-			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'snackbar' . $suffix . '.js';
+			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'snackbar' . $suffix . '.js'; // @phpstan-ignore constant.notFound
 			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
 			
 			\wp_enqueue_script( 'form-block-admin-snackbar', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
 			
 			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'submissions' . $suffix . '.js';
-			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'submissions' . $suffix . '.js';
+			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'submissions' . $suffix . '.js'; // @phpstan-ignore constant.notFound
 			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
 			
 			\wp_enqueue_script( 'form-block-admin-submissions', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
@@ -110,7 +110,7 @@ final class Admin {
 		$maximum_upload_size = \floor( \wp_max_upload_size() / 1024 / 1024 * 100 ) / 100;
 		$option_value = \get_option( 'form_block_maximum_upload_size' );
 		?>
-		<input type="number" id="form_block_maximum_upload_size" name="form_block_maximum_upload_size" value="<?php echo \esc_attr( $option_value ); ?>" step=".01" min="0" max="<?php echo \esc_attr( $maximum_upload_size ); ?>" class="small-text" /> <?php \esc_html_e( 'MiB', 'form-block' ); ?>
+		<input type="number" id="form_block_maximum_upload_size" name="form_block_maximum_upload_size" value="<?php echo \esc_attr( $option_value ); ?>" step=".01" min="0" max="<?php echo \esc_attr( (string) $maximum_upload_size ); ?>" class="small-text" /> <?php \esc_html_e( 'MiB', 'form-block' ); ?>
 		<p>
 			<?php
 			/* translators: upload size limit */
@@ -172,7 +172,7 @@ final class Admin {
 			
 			$is_active_tab = $current_tab === $tab['name'];
 			
-			echo '<button type="button" id="tab-' . \esc_attr( $tab['name'] ) . '" data-tab="' . \esc_attr( $tab['name'] ) . '" class="nav-tab' . ( $is_active_tab ? ' nav-tab-active' : '' ) . '" role="tab" aria-selected="' . ( $is_active_tab ? 'true' : 'false' ) . '" data-slug="' . \esc_attr( $tab['name'] ) . '" tabindex="' . ( $is_active_tab ? '0' : '-1' ) . '">' . \esc_html( $tab['title'] ) . '</button>'; // @phpstan-ignore Generic.Strings.UnnecessaryStringConcat.Found
+			echo '<button type="button" id="tab-' . \esc_attr( $tab['name'] ) . '" data-tab="' . \esc_attr( $tab['name'] ) . '" class="nav-tab' . ( $is_active_tab ? ' nav-tab-active' : '' ) . '" role="tab" aria-selected="' . ( $is_active_tab ? 'true' : 'false' ) . '" data-slug="' . \esc_attr( $tab['name'] ) . '" tabindex="' . ( $is_active_tab ? '0' : '-1' ) . '">' . \esc_html( $tab['title'] ) . '</button>';
 		}
 		
 		echo '</div>'; // .nav-tab-wrapper
@@ -181,11 +181,9 @@ final class Admin {
 		foreach ( $tabs as $tab ) {
 			$is_active_tab = $current_tab === $tab['name'];
 			
-			if ( \is_callable( $tab['callback'] ) ) {
-				echo '<div id="nav-tab__content--' . \esc_attr( $tab['name'] ) . '" class="nav-tab__content" role="tabpanel" data-tab="' . \esc_attr( $tab['name'] ) . '" aria-labelledby="tab-' . \esc_attr( $tab['name'] ) . '"' . ( ! $is_active_tab ? ' hidden' : '' ) . ' tabindex="' . ( $is_active_tab ? '0' : '-1' ) . '">';
-				echo \call_user_func( $tab['callback'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, NeutronStandard.Functions.DisallowCallUserFunc.CallUserFunc
-				echo '</div>';
-			}
+			echo '<div id="nav-tab__content--' . \esc_attr( $tab['name'] ) . '" class="nav-tab__content" role="tabpanel" data-tab="' . \esc_attr( $tab['name'] ) . '" aria-labelledby="tab-' . \esc_attr( $tab['name'] ) . '"' . ( ! $is_active_tab ? ' hidden' : '' ) . ' tabindex="' . ( $is_active_tab ? '0' : '-1' ) . '">';
+			echo \call_user_func( $tab['callback'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped, NeutronStandard.Functions.DisallowCallUserFunc.CallUserFunc
+			echo '</div>';
 		}
 		
 		echo '</div>'; // .form-block__content-wrapper
@@ -607,7 +605,7 @@ final class Admin {
 	 * @param	string|null	$value The saved value
 	 * @return	int The validated value
 	 */
-	public function validate_submissions_auto_delete( ?string $value ): string {
+	public function validate_submissions_auto_delete( ?string $value ): int {
 		if ( \is_numeric( $value ) && (int) $value >= 0 ) {
 			return (int) $value;
 		}

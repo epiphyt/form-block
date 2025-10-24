@@ -18,7 +18,7 @@ if ( ! \class_exists( 'WP_List_Table' ) ) {
  */
 final class Submission_List_Table extends WP_List_Table {
 	/**
-	 * @var		array Table data
+	 * @var		array{array{data: mixed[], date: string, id: string, label?: string}}|array{} Table data
 	 */
 	private array $table_data = [];
 	
@@ -32,18 +32,22 @@ final class Submission_List_Table extends WP_List_Table {
 	/**
 	 * Get default column values.
 	 * 
-	 * @param	array{data: mixed[], date: string, id: string}	$item Current item
+	 * @param	array{data: mixed[], date: string, id: string, label?: string}	$item Current item
 	 * @param	string	$column_name Column name
 	 * @return	string Column value
 	 */
 	public function column_default( $item, $column_name ): string { // phpcs:ignore SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
 		switch ( $column_name ) {
 			case 'actions':
-				return '<div class="form-block__submission--actions">' . \do_action( 'form_block_submission_actions', $item ) . '</div>';
+				\ob_start();
+				\do_action( 'form_block_submission_actions', $item );
+				$actions = (string) \ob_get_clean();
+				
+				return '<div class="form-block__submission--actions">' . $actions . '</div>';
 			case 'data':
 				$field_output = '';
 				$file_output = '';
-				$form_id = \substr( $item['id'], 0, \strpos( $item['id'], '/' ) );
+				$form_id = \substr( $item['id'], 0, (int) \strpos( $item['id'], '/' ) );
 				$form_data = Data::get_instance()->get( $form_id );
 				
 				if ( ! empty( $item['data']['fields'] ) ) {
@@ -93,20 +97,28 @@ final class Submission_List_Table extends WP_List_Table {
 				
 				return $submit_data['url'] ? '<a href="' . \esc_url( $submit_data['url'] ) . '">' . \esc_html( $submit_data['title'] ) . '</a>' : \esc_html__( 'unknown page', 'form-block' );
 			default:
-				return (string) $item[ $column_name ] ?? '';
+				if ( ! isset( $item[ $column_name ] ) || ! \is_string( $item[ $column_name ] ) ) {
+					return '';
+				}
+				
+				return $item[ $column_name ];
 		}
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
-	public function extra_tablenav( $which ) {
+	public function extra_tablenav( $which ): void {
 		if ( $which === 'top' ) {
 			$filter_form_id = \sanitize_text_field( \wp_unslash( $_REQUEST['form_id'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$forms = [];
 			$submissions = Submission_Handler::get_submissions();
 			
 			foreach ( $submissions as $form_id => $form_submissions ) {
+				if ( ! \is_iterable( $form_submissions ) ) {
+					continue;
+				}
+				
 				foreach ( $form_submissions as $submission ) {
 					// form is already processed
 					if ( isset( $forms[ $form_id ] ) ) {
@@ -155,7 +167,7 @@ final class Submission_List_Table extends WP_List_Table {
 		/**
 		 * Filter submissions columns.
 		 * 
-		 * @param	string[] List of columns
+		 * @param	string[]	$columns List of columns
 		 */
 		$columns = (array) \apply_filters( 'form_block_submissions_columns', $columns );
 		
@@ -165,7 +177,7 @@ final class Submission_List_Table extends WP_List_Table {
 	/**
 	 * Get table data.
 	 * 
-	 * @return	array{array{data: mixed[], date: string, id: string}} Table data
+	 * @return	array{array{data: mixed[], date: string, id: string, label?: string}} Table data
 	 */
 	private static function get_data(): array {
 		$data = [];
@@ -178,6 +190,10 @@ final class Submission_List_Table extends WP_List_Table {
 				continue;
 			}
 			
+			if ( ! \is_iterable( $form_submissions ) ) {
+				continue;
+			}
+			
 			foreach ( $form_submissions as $key => $submission ) {
 				if ( ! empty( $search_term ) ) {
 					if ( ! $submission->search( $search_term ) ) {
@@ -185,11 +201,17 @@ final class Submission_List_Table extends WP_List_Table {
 					}
 				}
 				
+				$label = $submission->get_form_data( 'label' );
+				
+				if ( ! \is_string( $label ) || empty( $label ) ) {
+					$label = \__( 'Form submission', 'form-block' );
+				}
+				
 				$data[] = [
 					'data' => $submission->get_data(),
 					'date' => $submission->get_date(),
 					'id' => $form_id . '/' . $key,
-					'label' => $submission->get_form_data( 'label' ) ?: \__( 'Form submission', 'form-block' ),
+					'label' => $label,
 				];
 			}
 		}

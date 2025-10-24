@@ -66,10 +66,10 @@ final class Email {
 	/**
 	 * Send email(s).
 	 * 
-	 * @param	bool[]	$success A list of successful or failed submission methods
-	 * @param	string	$form_id The form ID
-	 * @param	array	$fields Validated fields
-	 * @param	array	$files Files data
+	 * @param	bool[]					$success A list of successful or failed submission methods
+	 * @param	string					$form_id The form ID
+	 * @param	array<string, mixed>	$fields Validated fields
+	 * @param	array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}}|array{}}	$files Files data
 	 * @return	bool[] Whether the submission has been saved successfully
 	 */
 	public static function send( array $success, string $form_id, array $fields, array $files ): array {
@@ -85,7 +85,7 @@ final class Email {
 		 * @param	array	$fields The validated fields
 		 * @param	array	$files The validated files
 		 */
-		$recipients = \apply_filters( 'form_block_recipients', $recipients, $form_id, $fields, $files['validated'] );
+		$recipients = (array) \apply_filters( 'form_block_recipients', $recipients, $form_id, $fields, $files['validated'] );
 		
 		$form_data = Data::get_instance()->get( $form_id );
 		$field_output = [

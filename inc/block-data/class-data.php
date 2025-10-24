@@ -233,7 +233,7 @@ final class Data {
 	 * 
 	 * @param	\DOMDocument	$dom The DOMDocument instance
 	 * @param	string			$tag_name The tag name
-	 * @param	array{class_name: string, get_text_content: bool}	$arguments Additional arguments
+	 * @param	array{class_name?: string, context?: string, get_text_content?: bool}|array{}	$arguments Additional arguments
 	 * @return	array List of element's attributes
 	 */
 	private function get_element_attributes( DOMDocument $dom, string $tag_name, array $arguments = [] ): array {
@@ -427,19 +427,18 @@ final class Data {
 	 * 
 	 * @param	int			$post_id Current post ID
 	 * @param	\WP_Post	$post Current post object
-	 * @return	\WP_Post Current post object
 	 */
-	public function set( int $post_id, WP_Post $post ): WP_Post {
+	public function set( int $post_id, WP_Post $post ): void {
 		if ( \defined( 'DOING_AUTOSAVE' ) && \DOING_AUTOSAVE ) {
-			return $post;
+			return;
 		}
 		
 		if ( $post->post_type === 'revision' ) {
-			return $post;
+			return;
 		}
 		
 		if ( ! Util::has_block( 'form-block/form', $post->ID ) ) {
-			return $post;
+			return;
 		}
 		
 		$data = $this->get( \parse_blocks( $post->post_content ) );
@@ -449,18 +448,16 @@ final class Data {
 		if ( $post->post_type !== 'wp_block' ) {
 			$this->maybe_delete( $post_id, $data );
 		}
-		
-		return $post;
 	}
 	
 	/**
 	 * Set block data depending on context.
 	 * 
-	 * @param	mixed[]	$data Current form data
-	 * @param	mixed[]	$block Current parsed block
-	 * @param	string	$form_id The form ID
-	 * @param	mixed[]	$field_data Field data
-	 * @param	string	$context Block context
+	 * @param	mixed[]		$data Current form data
+	 * @param	mixed[]		$block Current parsed block
+	 * @param	string		$form_id The form ID
+	 * @param	mixed[]|array{}	$field_data Field data
+	 * @param	string		$context Block context
 	 * @return	mixed[] Updated blocks form data
 	 */
 	public function set_contextual_block_data( array $data, array $block, string $form_id, array $field_data, string $context ): array {
@@ -484,7 +481,7 @@ final class Data {
 			return $data;
 		}
 		
-		if ( ! empty( $field_data ) ) {
+		if ( ! empty( $field_data ) ) { // @phpstan-ignore empty.variable
 			if ( \in_array( $context, $ignored_contexts, true ) && ! self::is_current_context( $block, $context ) ) {
 				unset( $data[ $form_id ] );
 				
@@ -507,11 +504,10 @@ final class Data {
 	 * 
 	 * @param	mixed	$old_value The old option value
 	 * @param	mixed	$new_value The new option value
-	 * @return	mixed The new option value
 	 */
-	public function set_for_widget( mixed $old_value, mixed $new_value ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
+	public function set_for_widget( mixed $old_value, mixed $new_value ): void { // phpcs:ignore SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint
 		if ( ! \is_array( $new_value ) ) {
-			return $new_value;
+			return;
 		}
 		
 		foreach ( $new_value as $widget_id => $widget_data ) {
@@ -524,8 +520,6 @@ final class Data {
 			$this->set_form_block_data( $data, $widget_id, 'widget' );
 			$this->maybe_delete( $widget_id, $data, 'widget' );
 		}
-		
-		return $new_value;
 	}
 	
 	/**

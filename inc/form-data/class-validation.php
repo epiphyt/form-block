@@ -195,6 +195,8 @@ final class Validation {
 	 * @return	string Regular expression for current field
 	 */
 	private static function get_allowed_subfield_name_regex( array $field ): string {
+		$name = '';
+		
 		foreach ( $field as $key => $field_value ) {
 			$name = '\[(' . \preg_quote( (string) $key, '/' ) . '*)\]';
 			
@@ -241,7 +243,7 @@ final class Validation {
 	/**
 	 * Validate all POST fields.
 	 * 
-	 * @return	array The validated fields
+	 * @return	array<string, mixed> The validated fields
 	 */
 	public function fields(): array {
 		$form_data = \get_option( 'form_block_data_' . Data::get_instance()->get_form_id(), [] );
@@ -370,7 +372,7 @@ final class Validation {
 	/**
 	 * Validate all files.
 	 * 
-	 * @return	array The validated files
+	 * @return	array{array{field_name: string, name: string, path: string, size: int, type: string}}|array{} The validated files
 	 */
 	public function files(): array {
 		$form_data = \get_option( 'form_block_data_' . Data::get_instance()->get_form_id(), [] );
@@ -395,6 +397,7 @@ final class Validation {
 			}
 		}
 		
+		/** @var string $field_name */
 		foreach ( $_FILES as $field_name => $files ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$this->by_allowed_names( $field_name, $form_data );
 			
@@ -402,6 +405,7 @@ final class Validation {
 				// if multiple files, resort
 				$files = Data::get_instance()->unify_files_array( $files );
 				
+				/** @var array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string} $file */
 				foreach ( $files as $file ) {
 					if ( empty( $file['tmp_name'] ) ) {
 						continue;
@@ -420,6 +424,7 @@ final class Validation {
 				}
 			}
 			else if ( ! empty( $files['tmp_name'] ) ) {
+				/** @var array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string} $files */
 				self::validate_file_type( $files );
 				
 				$filesize += $files['size'];

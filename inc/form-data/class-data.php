@@ -3,7 +3,6 @@ namespace epiphyt\Form_Block\form_data;
 
 use epiphyt\Form_Block\Form_Block;
 use epiphyt\Form_Block\submissions\methods\Email;
-use epiphyt\Form_Block\submissions\Submission_Handler;
 
 /**
  * Form data class.
@@ -65,7 +64,7 @@ final class Data {
 	 * Get form data.
 	 * 
 	 * @param	string	$form_id Current form ID
-	 * @return	array Form data
+	 * @return	array<string, mixed> Form data
 	 */
 	public function get( string $form_id = '' ): array {
 		if ( ! $form_id ) {

@@ -312,7 +312,7 @@ final class Form_Block {
 	public function get_maximum_upload_size(): int {
 		$maximum_upload_size = (float) \get_option( 'form_block_maximum_upload_size', self::MAX_INT );
 		
-		if ( $maximum_upload_size && $maximum_upload_size !== self::MAX_INT ) {
+		if ( $maximum_upload_size && $maximum_upload_size !== (float) self::MAX_INT ) {
 			$maximum_upload_size = \floor( (float) $maximum_upload_size * 1024 * 1024 );
 		}
 		else {

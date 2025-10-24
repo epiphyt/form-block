@@ -1,8 +1,13 @@
+.distignore
+.git*
+.phpcs.xml
+.prettier*
+.wordpress-org
 node_modules/
 src/
-package.json
 package-lock.json
+package.json
+phpstan.neon.dist
 ruleset.xml
 webpack.config.js
 *scss/
-.git*

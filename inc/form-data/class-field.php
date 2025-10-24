@@ -352,10 +352,10 @@ final class Field {
 	/**
 	 * Check each POST field and output its label and value.
 	 * 
-	 * @param	array<int, array{name: string, label: string}>	$fields Fields data
-	 * @param	array<string, mixed>							$post_fields POST fields
-	 * @param	int 											$level Current indentation level
-	 * @param	string											$format_type 'plain' text or 'html'
+	 * @param	array<int, mixed[]>		$fields Fields data
+	 * @param	array<string, mixed>	$post_fields POST fields
+	 * @param	int 					$level Current indentation level
+	 * @param	string					$format_type 'plain' text or 'html'
 	 * @return	string Aggregated output for all matched fields
 	 */
 	public function get_output( array $fields, array $post_fields, int $level = 0, string $format_type = 'plain' ): string {
@@ -586,7 +586,7 @@ final class Field {
 					$return_value = \sprintf( \__( 'Checked: %s', 'form-block' ), $label );
 				}
 			}
-			else if ( $field_data['type'] === 'radio' ) {
+			else {
 				if ( $format_type === 'html' ) {
 					$output = \wp_strip_all_tags( $output );
 				}
@@ -602,7 +602,11 @@ final class Field {
 				
 				$clear_output = false;
 				
-				if ( ! \is_array( $value ) && $value !== null && $value !== 'on' ) {
+				if (
+					! \is_array( $value ) // @phpstan-ignore function.impossibleType
+					&& $value !== null
+					&& $value !== 'on'
+				) {
 					if ( $format_type === 'html' && $level === 0 ) {
 						$return_value = '<dt>' . \__( 'Selected:', 'form-block' ) . '</dt>';
 						$return_value .= '<dd>' . $value . '</dd>';
@@ -779,6 +783,6 @@ final class Field {
 	private static function parse_field_name( string $field_name ): array {
 		\preg_match_all( '/([^\[\]]+)|\[\]/', $field_name, $matches );
 		
-		return $matches[0] ?? [];
+		return $matches[0] ?? []; // @phpstan-ignore nullCoalesce.offset
 	}
 }

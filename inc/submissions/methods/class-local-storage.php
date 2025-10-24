@@ -22,7 +22,7 @@ final class Local_Storage {
 		\add_filter( 'form_block_data_form', [ self::class, 'update_form_data' ], 10, 2 );
 		\add_filter( 'form_block_submit_data', [ self::class, 'save' ], 10, 4 );
 		
-		if ( ! empty( Local_Storage::has_submissions() ) ) {
+		if ( ! empty( self::has_submissions() ) ) {
 			Submission_Page::init();
 		}
 	}
@@ -69,9 +69,9 @@ final class Local_Storage {
 	 * Save submission locally.
 	 * 
 	 * @param	bool[]	$success A list of successful or failed submission methods
-	 * @param	string		$form_id The form ID
-	 * @param	array		$fields Validated fields
-	 * @param	array		$files Files data
+	 * @param	string	$form_id The form ID
+	 * @param	mixed[]	$fields Validated fields
+	 * @param	array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}}|array{}}	$files Files data
 	 * @return	bool[] Whether the submission has been saved successfully
 	 */
 	public static function save( array $success, string $form_id, array $fields, array $files ): array {
@@ -87,9 +87,9 @@ final class Local_Storage {
 	/**
 	 * Update form data before stored in the database.
 	 * 
-	 * @param	array	$data The current block data that is being stored
-	 * @param	array	$block The original block data
-	 * @return	array Updated block data
+	 * @param	mixed[]	$data The current block data that is being stored
+	 * @param	array{attrs: array{methods?: array{localStorage?: bool}}}	$block The original block data
+	 * @return	mixed[] Updated block data
 	 */
 	public static function update_form_data( array $data, array $block ): array {
 		if ( isset( $block['attrs']['methods']['localStorage'] ) ) {

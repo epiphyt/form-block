@@ -13,7 +13,7 @@ use epiphyt\Form_Block\form_data\Data;
  */
 final class Submission {
 	/**
-	 * @var		array{fields: mixed[], files: array, raw: array{mixed[]|array}} Submission data
+	 * @var		array{fields: mixed[], files: string[], files_local?: array{array{filename?: string, hash?: string, path?: string, url?: string}}, raw: array<string, mixed[]|array>} Submission data
 	 */
 	private array $data = [
 		'fields' => [],
@@ -38,13 +38,13 @@ final class Submission {
 	 * Submission constructor.
 	 * 
 	 * @param	string	$form_id Form ID
-	 * @param	mixed[]	$data Submission data
+	 * @param	array{fields: mixed[], files: string[], files_local: array{array{filename?: string, hash?: string, path?: string, url?: string}}}	$data Submission data
 	 */
 	public function __construct( string $form_id, array $data ) {
 		$this->data = [
-			'fields' => $data['fields'] ?? [],
-			'files' => $data['files'] ?? [],
-			'files_local' => $data['files_local'] ?? [],
+			'fields' => $data['fields'],
+			'files' => $data['files'],
+			'files_local' => $data['files_local'],
 			'raw' => [
 				// phpcs:disable WordPress.Security.NonceVerification.Missing
 				'_FILES' => $_FILES,
@@ -101,6 +101,10 @@ final class Submission {
 	 * @return	string Date formatted string
 	 */
 	public function get_date( string $format = '' ): string {
+		if ( $this->date === null ) {
+			return '';
+		}
+		
 		if ( empty( $format ) ) {
 			$format = \get_option( 'date_format' ) . ' ' . \get_option( 'time_format' );
 		}

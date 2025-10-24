@@ -93,7 +93,7 @@ final class Submission extends WP_REST_Controller {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function prepare_item_for_response( $item, $request ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint, SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+	public function prepare_item_for_response( $item, $request ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint, SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint // @phpstan-ignore return.unusedType
 		return \rest_ensure_response( $this->add_additional_fields_to_object( $item, $request ) );
 	}
 	
