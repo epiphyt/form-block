@@ -26,7 +26,7 @@ final class Submission extends WP_REST_Controller {
 	 */
 	public function delete_item( $request ) {
 		$item = $this->prepare_item_for_database( $request );
-		list( $form_id, $submission_key ) = \explode( '/', $item['id'] );
+		list( $form_id, $submission_key ) = \explode( '/', $item->id );
 		$deleted = Submission_Handler::delete_submission( $form_id, (int) $submission_key );
 		
 		if ( ! $deleted ) {
