@@ -16,7 +16,7 @@ export default function CustomDateControls( {
 	return (
 		<>
 			<ToggleControl
-				checked={ !! props.attributes[ attribute ].showPlaceholder }
+				checked={ !! props?.attributes[ attribute ]?.showPlaceholder }
 				className="form-block__block-control"
 				label={ __( 'Show placeholders', 'form-block' ) }
 				onChange={ ( newValue ) =>
@@ -24,7 +24,7 @@ export default function CustomDateControls( {
 				}
 			/>
 			<ToggleControl
-				checked={ !! props.attributes[ attribute ].showLabel }
+				checked={ !! props?.attributes[ attribute ]?.showLabel }
 				className="form-block__block-control"
 				label={ __( 'Show labels', 'form-block' ) }
 				onChange={ ( newValue ) =>

@@ -52,7 +52,9 @@ export function CustomDate( { props, elementProps } ) {
 		attributes: { customDate, label, type },
 		setAttributes,
 	} = props;
-	const { showLabel, showPlaceholder, value } = customDate;
+	const showLabel = customDate?.showLabel || false;
+	const showPlaceholder = customDate?.showPlaceholder || true;
+	const value = customDate?.value || {};
 	let fields;
 
 	const onFieldUpdate = ( field, fieldValue ) => {
