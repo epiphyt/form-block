@@ -1,5 +1,5 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"$schema": "https://schemas.wp.org/wp/6.9/block.json",
 	"apiVersion": 3,
 	"name": "form-block/input",
 	"title": "Input",
@@ -90,15 +90,40 @@
 			"type": "string"
 		}
 	},
+	"selectors": {
+		"border": ".wp-block-form-block-input input",
+		"color": ".wp-block-form-block-input input",
+		"shadow": ".wp-block-form-block-input input"
+	},
 	"supports": {
+		"__experimentalBorder": {
+			"radius": true,
+			"color": true,
+			"width": true,
+			"style": true,
+			"__experimentalDefaultControls": {
+				"radius": true,
+				"color": true,
+				"width": true,
+				"style": true
+			},
+			"__experimentalSkipSerialization": true
+		},
 		"anchor": true,
 		"color": {
-			"gradients": true
+			"background": true,
+			"gradients": true,
+			"text": true,
+			"__experimentalSkipSerialization": true
 		},
 		"html": false,
+		"reusable": false,
 		"spacing": {
 			"margin": true,
 			"padding": true
+		},
+		"shadow": {
+			"__experimentalSkipSerialization": true
 		},
 		"typography": {
 			"fontSize": true,

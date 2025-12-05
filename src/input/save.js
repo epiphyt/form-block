@@ -1,4 +1,11 @@
-import { RichText, useBlockProps } from '@wordpress/block-editor';
+import {
+	RichText,
+	useBlockProps,
+	__experimentalGetBorderClassesAndStyles as getBorderClassesAndStyles,
+	__experimentalGetColorClassesAndStyles as getColorClassesAndStyles,
+	__experimentalGetShadowClassesAndStyles as getShadowClassesAndStyles,
+} from '@wordpress/block-editor';
+import clsx from 'clsx';
 
 import { getAllowedAttributes } from './html-data';
 
@@ -10,6 +17,9 @@ export default function InputSave( props ) {
 	const blockProps = useBlockProps.save( {
 		className: 'form-block__element',
 	} );
+	const borderProps = getBorderClassesAndStyles( props.attributes );
+	const colorProps = getColorClassesAndStyles( props.attributes );
+	const shadowProps = getShadowClassesAndStyles( props.attributes );
 	let elementProps = {
 		name,
 		type,
@@ -39,7 +49,19 @@ export default function InputSave( props ) {
 
 	return (
 		<div { ...blockProps }>
-			<input { ...elementProps } />
+			<input
+				className={ clsx(
+					borderProps.className,
+					shadowProps.className,
+					colorProps.className
+				) }
+				style={ {
+					...borderProps.style,
+					...shadowProps.style,
+					...colorProps.style,
+				} }
+				{ ...elementProps }
+			/>
 			{ type !== 'hidden' && type !== 'reset' && type !== 'submit' ? (
 				<label className="form-block__label is-input-label">
 					<RichText.Content
