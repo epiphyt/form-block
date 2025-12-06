@@ -1,4 +1,11 @@
-import { RichText, useBlockProps } from '@wordpress/block-editor';
+import {
+	RichText,
+	useBlockProps,
+	__experimentalGetBorderClassesAndStyles as getBorderClassesAndStyles,
+	__experimentalGetColorClassesAndStyles as getColorClassesAndStyles,
+	__experimentalGetShadowClassesAndStyles as getShadowClassesAndStyles,
+} from '@wordpress/block-editor';
+import clsx from 'clsx';
 
 export default function SelectSave( props ) {
 	const {
@@ -16,6 +23,9 @@ export default function SelectSave( props ) {
 	const blockProps = useBlockProps.save( {
 		className: 'form-block__element',
 	} );
+	const borderProps = getBorderClassesAndStyles( props.attributes );
+	const colorProps = getColorClassesAndStyles( props.attributes );
+	const shadowProps = getShadowClassesAndStyles( props.attributes );
 	const elementProps = {
 		autoComplete,
 		disabled,
@@ -27,7 +37,19 @@ export default function SelectSave( props ) {
 
 	return (
 		<div { ...blockProps }>
-			<select { ...elementProps }>
+			<select
+				className={ clsx(
+					borderProps.className,
+					shadowProps.className,
+					colorProps.className
+				) }
+				style={ {
+					...borderProps.style,
+					...shadowProps.style,
+					...colorProps.style,
+				} }
+				{ ...elementProps }
+			>
 				{ options.map( ( option, index ) => (
 					<option key={ index } label={ option.label || false }>
 						{ option.value }

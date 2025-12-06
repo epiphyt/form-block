@@ -1,4 +1,10 @@
-import { RichText, useBlockProps } from '@wordpress/block-editor';
+import {
+	RichText,
+	useBlockProps,
+	__experimentalUseBorderProps as useBorderProps,
+	__experimentalGetShadowClassesAndStyles as useShadowProps,
+	__experimentalUseColorProps as useColorProps,
+} from '@wordpress/block-editor';
 import {
 	Button,
 	Flex,
@@ -12,26 +18,28 @@ import {
 import { useRef, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { error, reset } from '@wordpress/icons';
+import clsx from 'clsx';
 
 import Controls from './controls';
 import { stripSpecialChars } from '../data/util';
 
 export default function SelectEdit( props ) {
+	const { attributes, setAttributes } = props;
 	const {
-		attributes: {
-			autoComplete,
-			disabled,
-			label,
-			multiple,
-			name,
-			options,
-			required,
-			size,
-			value,
-		},
-		setAttributes,
-	} = props;
+		autoComplete,
+		disabled,
+		label,
+		multiple,
+		name,
+		options,
+		required,
+		size,
+		value,
+	} = attributes;
 	const blockProps = useBlockProps();
+	const borderProps = useBorderProps( attributes );
+	const colorProps = useColorProps( attributes );
+	const shadowProps = useShadowProps( attributes );
 	const elementProps = {
 		autoComplete,
 		disabled,
@@ -56,6 +64,10 @@ export default function SelectEdit( props ) {
 			return item;
 		}
 	);
+
+	if ( Object.keys( borderProps.style ).length ) {
+		borderProps.style.borderStyle = 'solid';
+	}
 
 	return (
 		<div { ...blockProps }>
@@ -108,6 +120,25 @@ export default function SelectEdit( props ) {
 						onChange={ ( value ) => setAttributes( { value } ) }
 						options={ selectOptions }
 						{ ...elementProps }
+						style={ {
+							...borderProps.style,
+							...colorProps.style,
+							...shadowProps.style,
+						} }
+						ref={ ( node ) => {
+							// overwrite default select styles by making
+							// box-shadow important
+							if (
+								node &&
+								Object.keys( shadowProps.style ).length
+							) {
+								node.style.setProperty(
+									'box-shadow',
+									shadowProps.style.boxShadow,
+									'important'
+								);
+							}
+						} }
 					/>
 				</FlexBlock>
 

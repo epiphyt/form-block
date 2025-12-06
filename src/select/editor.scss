@@ -16,6 +16,11 @@
 		height: 30px; // identical height to select
 	}
 	
+	// hide default border if custom one is set
+	select[style*="border-"] ~ .components-input-control__backdrop {
+		border: none;
+	}
+	
 	.editor-styles-wrapper & {
 		margin-bottom: $grid-unit-20 !important;
 		margin-top: $grid-unit-20 !important;
