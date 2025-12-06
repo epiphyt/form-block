@@ -113,8 +113,8 @@ export default function SelectEdit( props ) {
 
 				<FlexItem className="form-block__flexible-flex-item">
 					<Button
-						isSmall
 						onClick={ () => setIsOptionModalOpen( true ) }
+						size="small"
 						text={ __( 'Manage options', 'form-block' ) }
 						variant="secondary"
 					/>
@@ -189,7 +189,6 @@ function OptionEdit( { index, option, options, setAttributes } ) {
 					<Button
 						className="form-block__select-option--remove"
 						icon={ reset }
-						isSmall
 						label={
 							/* translators: option index */
 							sprintf(
@@ -206,6 +205,7 @@ function OptionEdit( { index, option, options, setAttributes } ) {
 							setAttributes( { options: newOptions } );
 						} }
 						showTooltip={ true }
+						size="small"
 						variant="secondary"
 					/>
 				</FlexItem>
