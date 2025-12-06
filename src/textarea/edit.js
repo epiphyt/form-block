@@ -1,4 +1,11 @@
-import { RichText, useBlockProps } from '@wordpress/block-editor';
+import {
+	RichText,
+	useBlockProps,
+	__experimentalUseBorderProps as useBorderProps,
+	__experimentalGetShadowClassesAndStyles as useShadowProps,
+	__experimentalUseColorProps as useColorProps,
+} from '@wordpress/block-editor';
+import clsx from 'clsx';
 import {
 	Button,
 	Flex,
@@ -15,27 +22,28 @@ import Controls from './controls';
 import { stripSpecialChars } from '../data/util';
 
 export default function TextareaEdit( props ) {
+	const { attributes, setAttributes } = props;
 	const {
-		attributes: {
-			autoComplete,
-			cols,
-			disabled,
-			label,
-			maxLength,
-			minLength,
-			name,
-			placeholder,
-			readOnly,
-			required,
-			rows,
-			spellCheck,
-			size,
-			value,
-			wrap,
-		},
-		setAttributes,
-	} = props;
+		autoComplete,
+		cols,
+		disabled,
+		label,
+		maxLength,
+		minLength,
+		name,
+		placeholder,
+		readOnly,
+		required,
+		rows,
+		spellCheck,
+		size,
+		value,
+		wrap,
+	} = attributes;
 	const blockProps = useBlockProps();
+	const borderProps = useBorderProps( attributes );
+	const colorProps = useColorProps( attributes );
+	const shadowProps = useShadowProps( attributes );
 	const elementProps = {
 		autoComplete,
 		cols,
@@ -110,6 +118,11 @@ export default function TextareaEdit( props ) {
 
 			<TextareaControl
 				onChange={ ( value ) => setAttributes( { value } ) }
+				style={ {
+					...borderProps.style,
+					...colorProps.style,
+					...shadowProps.style,
+				} }
 				{ ...filteredProps }
 			/>
 		</div>

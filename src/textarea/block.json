@@ -1,5 +1,5 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"$schema": "https://schemas.wp.org/wp/6.9/block.json",
 	"apiVersion": 3,
 	"name": "form-block/textarea",
 	"title": "Textarea",
@@ -85,12 +85,37 @@
 			"type": "string"
 		}
 	},
+	"selectors": {
+		"border": ".wp-block-form-block-textarea textarea",
+		"color": ".wp-block-form-block-textarea textarea",
+		"shadow": ".wp-block-form-block-textarea textarea"
+	},
 	"supports": {
+		"__experimentalBorder": {
+			"radius": true,
+			"color": true,
+			"width": true,
+			"style": true,
+			"__experimentalDefaultControls": {
+				"radius": true,
+				"color": true,
+				"width": true,
+				"style": true
+			},
+			"__experimentalSkipSerialization": true
+		},
 		"anchor": true,
 		"color": {
-			"gradients": true
+			"background": true,
+			"gradients": true,
+			"text": true,
+			"__experimentalSkipSerialization": true
 		},
 		"html": false,
+		"reusable": false,
+		"shadow": {
+			"__experimentalSkipSerialization": true
+		},
 		"spacing": {
 			"margin": true,
 			"padding": true
