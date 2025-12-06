@@ -1,25 +1,25 @@
-.form-block__element {
-	input:not([type="reset"]):not([type="submit"]),
-	textarea {
+:where(.form-block__element) {
+	:where(input:not([type="reset"]):not([type="submit"])),
+	:where(textarea) {
 		border: 1px solid #949494;
 		font-family: inherit;
 		font-size: 1em;
 	}
 	
-	input:not([type="checkbox"]):not([type="radio"]):not([type="reset"]):not([type="submit"]),
-	textarea {
+	:where(input:not([type="checkbox"]):not([type="radio"]):not([type="reset"]):not([type="submit"])),
+	:where(textarea) {
 		box-sizing: border-box;
 		display: block;
 		padding: calc(.667em + 2px);
 		width: 100%;
 	}
 	
-	input[type="reset"],
-	input[type="submit"] {
+	:where(input[type="reset"]),
+	:where(input[type="submit"]) {
 		align-self: flex-start;
 	}
 	
-	select {
+	:where(select) {
 		-moz-appearance: none;
 		-webkit-appearance: none;
 		appearance: none;
