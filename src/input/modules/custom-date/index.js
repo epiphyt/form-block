@@ -3,6 +3,8 @@ import { Fragment } from '@wordpress/element';
 import { addFilter, applyFilters } from '@wordpress/hooks';
 import { __, _x } from '@wordpress/i18n';
 
+import FormBlockTextControl from '../../../components/text-control';
+
 import './editor.scss';
 
 const getAllowedInputTypes = () => {
@@ -52,8 +54,14 @@ export function CustomDate( { elementProps, ...props } ) {
 		attributes: { customDate, label, type },
 		setAttributes,
 	} = props;
-	const showLabel = customDate?.showLabel || false;
-	const showPlaceholder = customDate?.showPlaceholder || true;
+	const showLabel =
+		typeof customDate?.showLabel !== undefined
+			? customDate?.showLabel
+			: false;
+	const showPlaceholder =
+		typeof customDate?.showPlaceholder !== undefined
+			? customDate?.showPlaceholder
+			: true;
 	const value = customDate?.value || {};
 	let fields;
 
