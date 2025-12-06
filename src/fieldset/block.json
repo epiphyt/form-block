@@ -1,5 +1,5 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"$schema": "https://schemas.wp.org/wp/6.9/block.json",
 	"apiVersion": 3,
 	"name": "form-block/fieldset",
 	"title": "Fieldset",
@@ -16,11 +16,25 @@
 		}
 	},
 	"supports": {
+		"__experimentalBorder": {
+			"radius": true,
+			"color": true,
+			"width": true,
+			"style": true,
+			"__experimentalDefaultControls": {
+				"radius": true,
+				"color": true,
+				"width": true,
+				"style": true
+			}
+		},
 		"anchor": true,
 		"color": {
-			"gradients": true
+			"gradients": true,
+			"text": true
 		},
 		"html": false,
+		"reusable": false,
 		"spacing": {
 			"margin": true,
 			"padding": true

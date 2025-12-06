@@ -8,6 +8,11 @@ export default function CustomDateControls( {
 } ) {
 	const updateSettings = ( field, newValue ) => {
 		let updatedValue = structuredClone( props.attributes[ attribute ] );
+
+		if ( typeof updatedValue === 'undefined' ) {
+			updatedValue = {};
+		}
+
 		updatedValue[ field ] = newValue;
 
 		updateValue( updatedValue, attribute );

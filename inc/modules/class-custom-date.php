@@ -2,7 +2,6 @@
 namespace epiphyt\Form_Block\modules;
 
 use DOMDocument;
-use DOMElement;
 use DOMXPath;
 use epiphyt\Form_Block\form_data\Field;
 
@@ -43,7 +42,7 @@ final class Custom_Date {
 	 * @param	array			$field_data Data of the input field
 	 * @param	array			$block_data Data of the block
 	 */
-	private static function add_date_fields( array $fields, DOMDocument $dom, DOMElement $element, array $field_data, array $block_data ): void {
+	private static function add_date_fields( array $fields, \DOMDocument $dom, \DOMElement $element, array $field_data, array $block_data ): void {
 		foreach ( $fields as $type => $field ) {
 			$container = $dom->createElement( 'div' );
 			$input_container = $dom->createElement( 'div' );
@@ -70,6 +69,7 @@ final class Custom_Date {
 			$input_node->setAttribute( 'max', $field['validation']['max'] );
 			$input_node->setAttribute( 'min', $field['validation']['min'] );
 			$input_node->setAttribute( 'name', $field_data['name'] . '[' . $type . ']' );
+			$input_node->setAttribute( 'style', $field_data['style'] );
 			$input_node->setAttribute( 'type', 'number' );
 			$input_node->setAttribute( 'value', $block_data['value'][ $type ] ?? '' );
 			
@@ -278,6 +278,7 @@ final class Custom_Date {
 			'id' => $input_node->getAttribute( 'id' ),
 			'is_required' => $input_node->hasAttribute( 'required' ) ? true : false,
 			'name' => $input_node->getAttribute( 'name' ),
+			'style' => $input_node->getAttribute( 'style' ),
 			'type' => $input_node->getAttribute( 'type' ),
 		];
 		

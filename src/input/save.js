@@ -34,31 +34,27 @@ export default function InputSave( props ) {
 		elementProps[ allowedAttribute ] = props.attributes[ allowedAttribute ];
 	}
 
-	blockProps.className += ' is-type-' + type;
+	blockProps.className = clsx( blockProps.className, 'is-type-' + type, {
+		'wp-block-button': isButton,
+	} );
 
-	if ( isButton ) {
-		blockProps.className += ' wp-block-button';
-
-		if ( elementProps.className ) {
-			elementProps.className +=
-				' wp-block-button__link wp-element-button';
-		} else {
-			elementProps.className = 'wp-block-button__link wp-element-button';
+	elementProps.className = clsx(
+		borderProps.className,
+		colorProps.className,
+		elementProps.className,
+		shadowProps.className,
+		{
+			'wp-block-button__link wp-element-button': isButton,
 		}
-	}
+	);
 
 	return (
 		<div { ...blockProps }>
 			<input
-				className={ clsx(
-					borderProps.className,
-					shadowProps.className,
-					colorProps.className
-				) }
 				style={ {
 					...borderProps.style,
-					...shadowProps.style,
 					...colorProps.style,
+					...shadowProps.style,
 				} }
 				{ ...elementProps }
 			/>

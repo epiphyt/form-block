@@ -47,7 +47,7 @@ addFilter(
 
 export const isCustomDate = ( type ) => getAllowedInputTypes().includes( type );
 
-export function CustomDate( { props, elementProps } ) {
+export function CustomDate( { elementProps, ...props } ) {
 	const {
 		attributes: { customDate, label, type },
 		setAttributes,
@@ -119,15 +119,16 @@ export function CustomDate( { props, elementProps } ) {
 						) : null }
 
 						<FlexBlock className={ 'is-type-' + field }>
-							<TextControl
+							<FormBlockTextControl
+								elementProps={ elementProps }
 								hideLabelFromVision={ ! showLabel }
 								label={
 									formBlockInputCustomDate[ field ].label
 								}
-								onChange={ ( value ) =>
-									onFieldUpdate( field, value )
-								}
-								{ ...elementProps }
+								onFieldUpdate={ {
+									field,
+									onUpdate: onFieldUpdate,
+								} }
 								type="number"
 								placeholder={
 									showPlaceholder
@@ -136,6 +137,7 @@ export function CustomDate( { props, elementProps } ) {
 										: ''
 								}
 								value={ value ? value[ field ] || '' : '' }
+								{ ...props }
 							/>
 						</FlexBlock>
 

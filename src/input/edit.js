@@ -1,12 +1,5 @@
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 import {
-	RichText,
-	useBlockProps,
-	__experimentalUseBorderProps as useBorderProps,
-	__experimentalGetShadowClassesAndStyles as useShadowProps,
-	__experimentalUseColorProps as useColorProps,
-} from '@wordpress/block-editor';
-import {
-	BaseControl,
 	Button,
 	Flex,
 	FlexBlock,
@@ -22,8 +15,8 @@ import clsx from 'clsx';
 import Controls from './controls';
 import { isAllowedAttribute } from './html-data';
 import { CustomDate, isCustomDate } from './modules/custom-date';
+import FormBlockTextControl from '../components/text-control';
 import { stripSpecialChars } from '../data/util';
-import { useInstanceId } from '@wordpress/compose';
 
 export default function InputEdit( props ) {
 	const { attributes, setAttributes } = props;
@@ -56,9 +49,6 @@ export default function InputEdit( props ) {
 		width,
 	} = attributes;
 	const blockProps = useBlockProps();
-	const borderProps = useBorderProps( attributes );
-	const colorProps = useColorProps( attributes );
-	const shadowProps = useShadowProps( attributes );
 	const elementProps = {
 		accept,
 		alt,
@@ -89,7 +79,9 @@ export default function InputEdit( props ) {
 	const isButton = type === 'reset' || type === 'submit';
 	const nameControlRef = useRef( null );
 
-	blockProps.className += ' is-type-' + type;
+	blockProps.className = clsx( blockProps.className, 'is-type-' + type, {
+		'wp-block-button': isButton,
+	} );
 
 	if ( type === 'hidden' ) {
 		elementProps.help = __(
@@ -99,12 +91,6 @@ export default function InputEdit( props ) {
 		elementProps.type = 'text';
 	}
 
-	if ( isButton ) {
-		blockProps.className += ' wp-block-button';
-	}
-
-	const fieldValue = value || '';
-	const id = useInstanceId( BaseControl, 'inspector-text-control', '' );
 	const nameAttribute = name
 		? stripSpecialChars( name, false )
 		: stripSpecialChars( label );
@@ -219,41 +205,13 @@ export default function InputEdit( props ) {
 					{ isCustomDate( type ) ? (
 						<CustomDate
 							elementProps={ elementProps }
-							props={ props }
+							{ ...props }
 						/>
 					) : (
-						<BaseControl
-							className={ clsx( {
-								'wp-block-button__link wp-element-button':
-									isButton,
-							} ) }
-							hideLabelFromVision={ true }
-							id={ id }
-							label={ label }
-						>
-							<input
-								className={ clsx(
-									'components-text-control__input',
-									borderProps.className,
-									shadowProps.className,
-									colorProps.className
-								) }
-								id={ id }
-								onChange={ ( event ) =>
-									setAttributes( {
-										value: event.target.value,
-									} )
-								}
-								style={ {
-									...borderProps.style,
-									...shadowProps.style,
-									...colorProps.style,
-								} }
-								type={ type }
-								value={ fieldValue }
-								{ ...elementProps }
-							/>
-						</BaseControl>
+						<FormBlockTextControl
+							elementProps={ elementProps }
+							{ ...props }
+						/>
 					) }
 				</>
 			) }
