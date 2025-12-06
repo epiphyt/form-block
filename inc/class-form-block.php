@@ -99,7 +99,7 @@ final class Form_Block {
 	}
 	
 	/**
-	 * Add attributes for name, id and label for.
+	 * Add form block attributes.
 	 * 
 	 * @param	string	$block_content The block content
 	 * @param	array	$block Block attributes
