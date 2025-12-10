@@ -284,13 +284,13 @@ final class Validation {
 		}
 		
 		// remove empty fields
-		foreach ( $validated as $key => $value ) {
-			if ( ! empty( $value ) ) {
-				continue;
+		$validated = \array_filter( $validated, static function( $value ): bool {
+			if ( \is_array( $value ) ) {
+				return ! empty( $value );
 			}
 			
-			unset( $validated[ $key ] );
-		}
+			return (bool) \strlen( (string) $value );
+		} );
 		
 		/**
 		 * Filter the validated fields.
@@ -316,7 +316,7 @@ final class Validation {
 					empty( $_FILES[ $field_name ]['tmp_name'] )
 					|| ( \is_array( $_FILES[ $field_name ]['tmp_name'] ) && empty( \array_filter( $_FILES[ $field_name ]['tmp_name'] ) ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 				)
-				&& empty( $validated[ $field_name ] )
+				&& ! isset( $validated[ $field_name ] )
 			) {
 				$missing_fields[ $field_name ] = Field::get_title_by_name( $field_name, $form_data['fields'] );
 			}

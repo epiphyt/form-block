@@ -95,8 +95,8 @@ final class Submission_Handler {
 		$submission = new Submission( $form_id, $data );
 		$form_submissions = self::get_submissions( $form_id );
 		$form_submissions[] = $submission;
-		
 		$success = \update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, $form_submissions );
+		
 		\remove_filter( 'form_block_file_is_saved_locally', '__return_true' );
 		
 		return $success;

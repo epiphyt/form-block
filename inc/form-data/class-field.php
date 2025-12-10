@@ -188,6 +188,11 @@ final class Field {
 			}
 			else if ( $field['block_type'] !== 'repeater' ) {
 				$output .= $prefix;
+				
+				if ( $level === 0 ) {
+					$output .= $label . ': ';
+				}
+				
 				$output .= self::match_value_with_field_type( $value, $field, $label ) . \PHP_EOL;
 			}
 			else {
@@ -427,9 +432,13 @@ final class Field {
 					$value = self::get_matching_post_field_values( $post_fields, $field );
 					
 					if (
-						empty( $value )
-						&& empty( $field['fields'] )
-						|| (
+						(
+							(
+								( \is_string( $value ) && \strlen( $value ) === 0 )
+								|| ( ! \is_string( $value ) && empty( $value ) )
+							)
+							&& empty( $field['fields'] )
+						) || (
 							\is_array( $value )
 							&& isset( $field['type'] )
 							&& $field['type'] !== 'date-custom'
