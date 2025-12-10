@@ -92,10 +92,42 @@ final class Submission_Handler {
 			'files' => $formatted_files,
 			'files_local' => $files['local'],
 		];
+		
+		/**
+		 * Filter data before creating a submission.
+		 * 
+		 * @since	1.7.0
+		 * 
+		 * @param	array{fields: mixed[], files: array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{field_name: string, name: string, path: string, size: int, type: string}|array{}}, files_local: array{array{filename?: string, hash?: string, path?: string, url?: string}}}	$data Submission data
+		 * @param	string	$form_id Form ID
+		 */
+		$data = (array) \apply_filters( 'form_block_create_submission_data', $data, $form_id );
+		
+		/**
+		 * Action before submission is created.
+		 * 
+		 * @since	1.7.0
+		 * 
+		 * @param	string	$form_id Form ID
+		 * @param	array{fields: mixed[], files: array{local: array{filename?: string, hash?: string, path?: string, url?: string}, validated: array{field_name: string, name: string, path: string, size: int, type: string}|array{}}, files_local: array{array{filename?: string, hash?: string, path?: string, url?: string}}}	$data Submission data
+		 */
+		\do_action( 'form_block_pre_create_submission', $form_id, $data );
+		
 		$submission = new Submission( $form_id, $data );
 		$form_submissions = self::get_submissions( $form_id );
 		$form_submissions[] = $submission;
 		$success = \update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, $form_submissions );
+		
+		/**
+		 * Action after submission is created.
+		 * 
+		 * @since	1.7.0
+		 * 
+		 * @param	\epiphyt\Form_Block\submissions\Submission	$submission Submission object
+		 * @param	string										$form_id Form ID
+		 * @param	array{fields: mixed[], files: array{local: array{filename?: string, hash?: string, path?: string, url?: string}, validated: array{field_name: string, name: string, path: string, size: int, type: string}|array{}}: files_local: array{local: array{filename?: string, hash?: string, path?: string, url?: string}}} Submission data
+		 */
+		\do_action( 'form_block_after_create_submission', $submission, $form_id, $data );
 		
 		\remove_filter( 'form_block_file_is_saved_locally', '__return_true' );
 		

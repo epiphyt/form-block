@@ -13,7 +13,7 @@ use epiphyt\Form_Block\form_data\Data;
  */
 final class Submission {
 	/**
-	 * @var		array{fields: mixed[], files: string[], files_local?: array{array{filename?: string, hash?: string, path?: string, url?: string}}, raw: array<string, mixed[]|array>} Submission data
+	 * @var		array{fields: mixed[], files: array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{field_name: string, name: string, path: string, size: int, type: string}|array{}}|array{}, files_local?: array{array{filename?: string, hash?: string, path?: string, url?: string}}, raw: array<string, mixed[]|array>} Submission data
 	 */
 	private array $data = [
 		'fields' => [],
@@ -38,7 +38,7 @@ final class Submission {
 	 * Submission constructor.
 	 * 
 	 * @param	string	$form_id Form ID
-	 * @param	array{fields: mixed[], files: string[], files_local: array{array{filename?: string, hash?: string, path?: string, url?: string}}}	$data Submission data
+	 * @param	array{fields: mixed[], files: array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{field_name: string, name: string, path: string, size: int, type: string}|array{}}, files_local: array{array{filename?: string, hash?: string, path?: string, url?: string}}}	$data Submission data
 	 */
 	public function __construct( string $form_id, array $data ) {
 		$this->data = [
