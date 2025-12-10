@@ -1,5 +1,5 @@
 /**
- * Form block.
+ * Input block.
  */
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
@@ -9,6 +9,8 @@ import deprecated from './deprecated';
 import InputEdit from './edit';
 import { input } from './icon';
 import InputSave from './save';
+import transforms from './transforms';
+import variations from './variations';
 import meta from './block.json';
 
 import './editor.scss';
@@ -19,4 +21,6 @@ registerBlockType( meta, {
 	edit: InputEdit,
 	save: InputSave,
 	deprecated,
+	transforms,
+	variations,
 } );

@@ -4,9 +4,9 @@ export default function FormSave( props ) {
 	const blockProps = useBlockProps.save();
 	const innerBlocksProps = useInnerBlocksProps.save( blockProps );
 
-	if ( ! props?.innerBlocks?.length ) {
-		return null;
-	}
+	// if ( ! props?.innerBlocks?.length ) {
+	// 	return null;
+	// }
 
 	return (
 		<form

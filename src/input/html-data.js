@@ -24,6 +24,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'required',
 			'value',
 		],
+		description: __( 'A field to enable/disable an option.', 'form-block' ),
 		label: __( 'Checkbox', 'form-block' ),
 	},
 	color: {
@@ -33,6 +34,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'disabled',
 			'label',
 		],
+		description: __( 'A field to select a color.', 'form-block' ),
 		label: __( 'Color selection', 'form-block' ),
 	},
 	date: {
@@ -48,6 +50,10 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'spellCheck',
 			'step',
 		],
+		description: __(
+			'A field to enter a date with day, month and year.',
+			'form-block'
+		),
 		label: __( 'Date', 'form-block' ),
 	},
 	'date-custom': {
@@ -61,6 +67,10 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'required',
 			'spellCheck',
 		],
+		description: __(
+			'A field to enter a date in separate fields for day, month and year for improved usability.',
+			'form-block'
+		),
 		label: __( 'Date with separate fields', 'form-block' ),
 	},
 	'datetime-local': {
@@ -76,6 +86,10 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'spellCheck',
 			'step',
 		],
+		description: __(
+			'A field to add a date with day, month and year, and a time with hour and minute.',
+			'form-block'
+		),
 		label: __( 'Date and time', 'form-block' ),
 	},
 	'datetime-local-custom': {
@@ -89,6 +103,10 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'required',
 			'spellCheck',
 		],
+		description: __(
+			'A field to add a date in separate fields with day, month and year, and a time with hour and minute for improved usability.',
+			'form-block'
+		),
 		label: __( 'Date and time with separate fields', 'form-block' ),
 	},
 	email: {
@@ -108,6 +126,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'size',
 			'spellCheck',
 		],
+		description: __( 'A field to enter an e-mail address.', 'form-block' ),
 		label: __( 'E-mail', 'form-block' ),
 	},
 	file: {
@@ -124,10 +143,18 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'readOnly',
 			'required',
 		],
+		description: __(
+			'A field to select and upload a file from your local computer.',
+			'form-block'
+		),
 		label: __( 'File', 'form-block' ),
 	},
 	hidden: {
 		allowedAttributes: [ 'value' ],
+		description: __(
+			'A field that is invisible to the user.',
+			'form-block'
+		),
 		label: __( 'Hidden', 'form-block' ),
 	},
 	image: {
@@ -137,12 +164,15 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'autoCompleteSection',
 			'disabled',
 			'height',
-			'label',
 			'readOnly',
 			'required',
 			'src',
 			'width',
 		],
+		description: __(
+			'A field to create an image as a submit button.',
+			'form-block'
+		),
 		label: __( 'Image', 'form-block' ),
 	},
 	month: {
@@ -158,6 +188,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'spellCheck',
 			'step',
 		],
+		description: __( 'A field to enter a month.', 'form-block' ),
 		label: __( 'Month', 'form-block' ),
 	},
 	'month-custom': {
@@ -171,6 +202,10 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'required',
 			'spellCheck',
 		],
+		description: __(
+			'A field to enter a month and a year in separate fields for improved usability.',
+			'form-block'
+		),
 		label: __( 'Month with separate fields', 'form-block' ),
 	},
 	number: {
@@ -187,6 +222,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'spellCheck',
 			'step',
 		],
+		description: __( 'A field for numeric values.', 'form-block' ),
 		label: __( 'Number', 'form-block' ),
 	},
 	password: {
@@ -203,6 +239,10 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'required',
 			'size',
 		],
+		description: __(
+			'A field where the entered text is invisible to the user.',
+			'form-block'
+		),
 		label: __( 'Password (input not visible)', 'form-block' ),
 	},
 	radio: {
@@ -213,6 +253,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'required',
 			'value',
 		],
+		description: __( 'An option for a set of options.', 'form-block' ),
 		label: __( 'Radio button', 'form-block' ),
 	},
 	range: {
@@ -225,10 +266,18 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'min',
 			'step',
 		],
+		description: __(
+			'Specify a numeric value with a slider.',
+			'form-block'
+		),
 		label: __( 'Range', 'form-block' ),
 	},
 	reset: {
 		allowedAttributes: [ 'disabled', 'value' ],
+		description: __(
+			'Resets all entered values in any form elements of the current form.',
+			'form-block'
+		),
 		label: __( 'Reset button', 'form-block' ),
 	},
 	search: {
@@ -247,10 +296,15 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'size',
 			'spellCheck',
 		],
+		description: __(
+			'A field to enter search queries into.',
+			'form-block'
+		),
 		label: __( 'Search', 'form-block' ),
 	},
 	submit: {
 		allowedAttributes: [ 'disabled', 'value' ],
+		description: __( 'A button to submit the form.', 'form-block' ),
 		label: __( 'Submit button', 'form-block' ),
 	},
 	tel: {
@@ -268,6 +322,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'size',
 			'spellCheck',
 		],
+		description: __( 'A field for telephone numbers.', 'form-block' ),
 		label: __( 'Telephone', 'form-block' ),
 	},
 	text: {
@@ -286,6 +341,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'size',
 			'spellCheck',
 		],
+		description: __( 'A generic text field.', 'form-block' ),
 		label: __( 'Text', 'form-block' ),
 	},
 	time: {
@@ -301,6 +357,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'spellCheck',
 			'step',
 		],
+		description: __( 'A field to enter a time.', 'form-block' ),
 		label: __( 'Time', 'form-block' ),
 	},
 	'time-custom': {
@@ -314,6 +371,10 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'required',
 			'spellCheck',
 		],
+		description: __(
+			'A field to enter a timein separate fields for improved usability.',
+			'form-block'
+		),
 		label: __( 'Time with separate fields', 'form-block' ),
 	},
 	url: {
@@ -331,6 +392,10 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'size',
 			'spellCheck',
 		],
+		description: __(
+			'A field to enter a URL, usually starting with HTTPS.',
+			'form-block'
+		),
 		label: __( 'URL', 'form-block' ),
 	},
 	week: {
@@ -346,6 +411,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'spellCheck',
 			'step',
 		],
+		description: __( 'A field to enter a week.', 'form-block' ),
 		label: __( 'Week', 'form-block' ),
 	},
 	'week-custom': {
@@ -359,6 +425,10 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'required',
 			'spellCheck',
 		],
+		description: __(
+			'A field to enter a week and a year in separate fields for improved usability.',
+			'form-block'
+		),
 		label: __( 'Week with separate fields', 'form-block' ),
 	},
 } );

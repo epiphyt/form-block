@@ -13,7 +13,7 @@ import { getLabel } from '../controls/label';
 import { attributes as inputAttributes } from '../data/attributes';
 import Autocomplete from '../data/autocomplete/control';
 import { getSanitizedAttributeValue, stripSpecialChars } from '../data/util';
-import { getTypes, isAllowedAttribute, types } from './html-data';
+import { isAllowedAttribute } from './html-data';
 import CustomDateControls from './modules/custom-date/controls';
 import { autoAssign } from '../data/autocomplete/auto-assign';
 
@@ -254,15 +254,6 @@ export default function Controls( props ) {
 	return (
 		<InspectorControls>
 			<PanelBody>
-				<SelectControl
-					label={ _x( 'Type', 'HTML attribute name', 'form-block' ) }
-					onChange={ ( type ) => setAttributes( { type } ) }
-					options={ getTypes().map( ( type ) => ( {
-						label: types[ type ].label,
-						value: type,
-					} ) ) }
-					value={ type }
-				/>
 				<TextControl
 					help={
 						! name
