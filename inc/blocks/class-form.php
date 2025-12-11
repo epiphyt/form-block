@@ -32,6 +32,7 @@ final class Form {
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_method' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_object_inputs' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_required_notice' ], 10, 2 );
+		\add_filter( 'render_block_form-block/form', [ $this, 'clear_empty_block' ], -1, 2 );
 	}
 	
 	/**
@@ -247,6 +248,24 @@ final class Form {
 		$notice = \apply_filters( 'form_block_form_required_notice', $notice, $block_content, $block );
 		
 		return \str_replace( '<form', $notice . '<form', $block_content );
+	}
+	
+	/**
+	 * Remove output of an otherwise empty form block.
+	 * 
+	 * If a form block has no inner blocks, there are no form fields and thus
+	 * it makes no sense to show anything at all.
+	 * 
+	 * @param	string	$block_content The block content
+	 * @param	array	$block Block attributes
+	 * @return	string Empty string or original block content
+	 */
+	public static function clear_empty_block( string $block_content, array $block ): string {
+		if ( empty( $block['innerBlocks'] ) ) {
+			return '';
+		}
+		
+		return $block_content;
 	}
 	
 	/**
