@@ -2,7 +2,7 @@
 Contributors: epiphyt, kittmedia
 Tags: form, contact form, gutenberg, block editor, accessibility
 Requires at least: 6.7
-Stable tag: 1.6.1
+Stable tag: 1.7.0
 Tested up to: 6.9
 Requires PHP: 7.4
 License: GPL2
@@ -97,6 +97,14 @@ We are [Epiphyt](https://epiph.yt/en/), your friendly neighborhood WordPress plu
 You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/form-block)
 
 == Changelog ==
+
+= 1.7.0 =
+* Added: Support for block variations for inputs and block transforms for all types of form fields
+* Added: Support for global form styles
+* Added: Support for border, color and shadow styles for form fields
+* Added: Support for literal 0 as field value
+* Fixed: A form block without form fields is now completely hidden in the frontend, as it does not work without any field
+* Developer: New actions/filters before/after a form submission is created
 
 = 1.6.1 =
 * Fixed: Deleting form submissions manually
