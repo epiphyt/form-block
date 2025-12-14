@@ -240,7 +240,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'size',
 		],
 		description: __(
-			'A field where the entered text is invisible to the user.',
+			'A field that is invisible to the user.',
 			'form-block'
 		),
 		label: __( 'Password (input not visible)', 'form-block' ),
@@ -322,8 +322,8 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'size',
 			'spellCheck',
 		],
-		description: __( 'A field for telephone numbers.', 'form-block' ),
-		label: __( 'Telephone', 'form-block' ),
+		description: __( 'A field for phone numbers.', 'form-block' ),
+		label: __( 'Phone', 'form-block' ),
 	},
 	text: {
 		allowedAttributes: [
@@ -372,7 +372,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 			'spellCheck',
 		],
 		description: __(
-			'A field to enter a timein separate fields for improved usability.',
+			'A field to enter a time in separate fields for improved usability.',
 			'form-block'
 		),
 		label: __( 'Time with separate fields', 'form-block' ),

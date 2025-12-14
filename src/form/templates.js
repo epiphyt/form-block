@@ -21,7 +21,7 @@ export const contactForm = applyFilters( 'formBlock.form.template.contact', [
 	[
 		'form-block/input',
 		{
-			label: __( 'Telephone', 'form-block' ),
+			label: __( 'Phone', 'form-block' ),
 			type: 'tel',
 		},
 	],

@@ -42,7 +42,7 @@ export const OPTIONS = [
 	{ label: __( 'Username', 'form-block' ), value: 'username' },
 	{ label: __( 'Title or prefix', 'form-block' ), value: 'honorific-prefix' },
 	{ label: __( 'Email address', 'form-block' ), value: 'email' },
-	{ label: __( 'Telephone', 'form-block' ), value: 'tel' },
+	{ label: __( 'Phone', 'form-block' ), value: 'tel' },
 	{ label: __( 'Suffix', 'form-block' ), value: 'honorific-suffix' },
 	{ label: __( 'Organization', 'form-block' ), value: 'organization' },
 	{ label: __( 'Job title', 'form-block' ), value: 'organization-title' },
