@@ -1,6 +1,6 @@
 import { ExternalLink } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
-import { __, _x } from '@wordpress/i18n';
+import { __, _x, sprintf } from '@wordpress/i18n';
 
 const mdnAttributeLinkBase =
 	'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input';
