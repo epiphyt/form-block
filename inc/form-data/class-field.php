@@ -82,7 +82,6 @@ final class Field {
 		 * 
 		 * @param	string	$label The original label
 		 * @param	bool	$to_lowercase Whether the name should be lowercase
-		 * @return	string The updated label
 		 */
 		$label = \apply_filters( 'form_block_pre_get_name_by_label', $label, $to_lowercase );
 		
@@ -97,7 +96,6 @@ final class Field {
 		 * @param	string	$name The generated name
 		 * @param	string	$label The original label
 		 * @param	bool	$to_lowercase Whether the name should be lowercase
-		 * @return	string The updated name
 		 */
 		$name = \apply_filters( 'form_block_get_name_by_label', $name, $label, $to_lowercase );
 		
@@ -490,7 +488,7 @@ final class Field {
 				 * @param	int		$level Current output level
 				 * @param	string	$format_type 'plain' text or 'html'
 				 */
-				$current_output = \apply_filters( 'form_block_output_field_output', $current_output, $field['name'], $field['value'] ?? null, $fields, $level, $format_type );
+				$current_output = (string) \apply_filters( 'form_block_output_field_output', $current_output, $field['name'], $field['value'] ?? null, $fields, $level, $format_type );
 			}
 			else if ( ! empty( $field['legend']['textContent'] ) ) {
 				/**
@@ -502,7 +500,7 @@ final class Field {
 				 * @param	mixed[]		$field Form field data
 				 * @param	string[]	$post_fields POST fields
 				 */
-				$legend = \apply_filters( 'form_block_output_fieldset_legend', $field['legend']['textContent'], $field, $post_fields );
+				$legend = (string) \apply_filters( 'form_block_output_fieldset_legend', $field['legend']['textContent'], $field, $post_fields );
 				
 				/**
 				 * This filter is documented in inc/form-data/class-field.php

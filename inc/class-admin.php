@@ -137,9 +137,11 @@ final class Admin {
 		/**
 		 * Filter the default tab.
 		 * 
+		 * @since	1.7.0
+		 * 
 		 * @param	string	$default_tab The default tab
 		 */
-		$default_tab = \apply_filters( 'form_block_admin_options_default_tab', 'general' );
+		$default_tab = (string) \apply_filters( 'form_block_admin_options_default_tab', 'general' );
 		
 		// get current tab
 		$current_tab = isset( $_GET['tab'] ) ? \sanitize_text_field( \wp_unslash( $_GET['tab'] ) ) : $default_tab; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -215,6 +217,8 @@ final class Admin {
 		
 		/**
 		 * Filter admin options tabs.
+		 * 
+		 * @since	1.7.0
 		 * 
 		 * @param	array<string, array{callback: callable, name: string, title: string}>	$tabs Admin options tabs
 		 */
@@ -385,6 +389,8 @@ final class Admin {
 		
 		/**
 		 * Fires after the general Form Block settings in the settings tab.
+		 * 
+		 * @since	1.7.0
 		 */
 		\do_action( 'form_block_settings_page' );
 		

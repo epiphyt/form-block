@@ -104,7 +104,7 @@ final class Submission_Handler {
 		$data = (array) \apply_filters( 'form_block_create_submission_data', $data, $form_id );
 		
 		/**
-		 * Action before submission is created.
+		 * Fires before submission is created.
 		 * 
 		 * @since	1.7.0
 		 * 
@@ -119,7 +119,7 @@ final class Submission_Handler {
 		$success = \update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, $form_submissions );
 		
 		/**
-		 * Action after submission is created.
+		 * Fires after submission is created.
 		 * 
 		 * @since	1.7.0
 		 * 

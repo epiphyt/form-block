@@ -453,7 +453,7 @@ final class Validation {
 		 * @param	array	$form_data Current form data
 		 * @param	array	$_FILES PHP files array
 		 */
-		$validated = \apply_filters( 'form_block_files_validation', $validated, $form_data, $_FILES ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$validated = (array) \apply_filters( 'form_block_files_validation', $validated, $form_data, $_FILES ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		
 		return $validated;
 	}
@@ -544,6 +544,8 @@ final class Validation {
 		
 		/**
 		 * Filter allowed mime types to upload.
+		 * 
+		 * @since	1.5.6
 		 * 
 		 * @param	string[]	$allowed_mime_types List of allowed mime types
 		 * @param	array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string} $file Current file to validate

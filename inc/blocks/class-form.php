@@ -108,6 +108,8 @@ final class Form {
 		/**
 		 * Filter the object inputs.
 		 * 
+		 * @since	1.6.0
+		 * 
 		 * @param	string	$object_inputs The object inputs
 		 * @param	string	$block_content The block content
 		 * @param	array	$block Block attributes
@@ -331,7 +333,7 @@ final class Form {
 		 * @since	1.0.1
 		 * @since	1.3.0 Value is an array by default
 		 * 
-		 * @param	array	$styles Current block styles
+		 * @param	string[]	$styles Current block styles
 		 */
 		$metadata['style'] = \apply_filters( 'form_block_form_style', [ 'form-block' ] );
 		

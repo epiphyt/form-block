@@ -40,6 +40,13 @@ final class Submission_List_Table extends WP_List_Table {
 		switch ( $column_name ) {
 			case 'actions':
 				\ob_start();
+				/**
+				 * Fires when the submission list actions column is displayed.
+				 * 
+				 * @since	1.6.0
+				 * 
+				 * @param	array{data: mixed[], date: string, id: string, label?: string}	$item Current item
+				 */
 				\do_action( 'form_block_submission_actions', $item );
 				$actions = (string) \ob_get_clean();
 				
@@ -167,6 +174,8 @@ final class Submission_List_Table extends WP_List_Table {
 		/**
 		 * Filter submissions columns.
 		 * 
+		 * @since	1.6.0
+		 * 
 		 * @param	string[]	$columns List of columns
 		 */
 		$columns = (array) \apply_filters( 'form_block_submissions_columns', $columns );
@@ -231,6 +240,8 @@ final class Submission_List_Table extends WP_List_Table {
 		
 		/**
 		 * Filter submission sortable columns.
+		 * 
+		 * @since	1.6.0
 		 * 
 		 * @param	mixed[]	$sortable_columns Current sortable columns
 		 */

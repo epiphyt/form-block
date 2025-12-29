@@ -235,14 +235,14 @@ final class Data {
 		\do_action( 'form_block_validated_data', $this->form_id, $fields, $validated_files, $files['local'] );
 		
 		/**
-		 * Fires when form data is ready to be submitted.
+		 * Filter the data of each submission type's state.
 		 * 
 		 * @since	1.6.0
 		 * 
 		 * @param	bool[]	$success A list of successful or failed submission methods
-		 * @param	string		$form_id The form ID
-		 * @param	array		$fields Validated fields
-		 * @param	array		$files Files data
+		 * @param	string	$form_id The form ID
+		 * @param	array	$fields Validated fields
+		 * @param	array	$files Files data
 		 */
 		$success = (array) \apply_filters( 'form_block_submit_data', [], $this->form_id, $fields, $files );
 		
@@ -369,7 +369,7 @@ final class Data {
 		/**
 		 * Filter the honeypot key.
 		 * 
-		 * @param	string	$honeypot_key The default key '_town'
+		 * @param	string	$honeypot_key The honeypot key
 		 */
 		$honeypot_key = \apply_filters( 'form_block_honeypot_key', $honeypot_key );
 		
@@ -378,9 +378,9 @@ final class Data {
 		/**
 		 * Filter whether the honeypot is filled.
 		 * 
-		 * @param	bool	$is_filled Whether the honeypot is filled.
+		 * @param	bool	$is_filled Whether the honeypot is filled
 		 */
-		$is_filled = \apply_filters( 'form_block_is_honeypot_filled', $is_filled );
+		$is_filled = (bool) \apply_filters( 'form_block_is_honeypot_filled', $is_filled );
 		
 		return $is_filled;
 	}

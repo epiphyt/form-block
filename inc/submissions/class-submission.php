@@ -58,6 +58,8 @@ final class Submission {
 		/**
 		 * Filter form submission data.
 		 * 
+		 * @since	1.7.0
+		 * 
 		 * @param	mixed[]	$submission_data Submission data
 		 * @param	mixed[] $data Field and files data from the request
 		 * @param	string	$form_id Form ID

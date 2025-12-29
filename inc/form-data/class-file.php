@@ -148,7 +148,7 @@ final class File {
 		 * @param	array	$file Uploaded file information array
 		 * @param	array	$file_data Form field data for this file
 		 */
-		$new_path = \apply_filters( 'form_block_attachment_file_path', $new_path, $file, $file_data );
+		$new_path = (string) \apply_filters( 'form_block_attachment_file_path', $new_path, $file, $file_data );
 		
 		/**
 		 * Whether the file should be added as attachment.
@@ -159,7 +159,7 @@ final class File {
 		 * @param	array	$file Uploaded file information array
 		 * @param	array	$file_data Form field data for this file
 		 */
-		$add_to_attachments = \apply_filters( 'form_block_attachment_add_to_mail', true, $file, $file_data );
+		$add_to_attachments = (bool) \apply_filters( 'form_block_attachment_add_to_mail', true, $file, $file_data );
 		
 		if ( $add_to_attachments ) {
 			$attachments[] = $new_path;
@@ -186,14 +186,14 @@ final class File {
 		 * @param	array	$file data File data array
 		 * @param	string	$format_type 'plain' text or 'html'
 		 */
-		$output = \apply_filters( 'form_block_output_file_output', '', $file['validated']['field_name'], $new_path, $file_data, $file, $format_type );
+		$output = (string) \apply_filters( 'form_block_output_file_output', '', $file['validated']['field_name'], $new_path, $file_data, $file, $format_type );
 		
 		/**
 		 * This filter is documented in inc/form-data/class-data.php
 		 * 
 		 * @since	1.4.1 Added filter for file inputs
 		 */
-		$output = \apply_filters( 'form_block_output_field_output', $output, $file['validated']['field_name'], $new_path, $form_data, 0, $format_type );
+		$output = (string) \apply_filters( 'form_block_output_field_output', $output, $file['validated']['field_name'], $new_path, $form_data, 0, $format_type );
 		
 		return $output;
 	}
@@ -209,6 +209,8 @@ final class File {
 		
 		/**
 		 * Filter, whether a file is saved locally.
+		 * 
+		 * @since	1.6.0
 		 * 
 		 * @param	bool	$is_saved_locally Whether a file is saved locally
 		 * @param	mixed[]	$field_data Current field data

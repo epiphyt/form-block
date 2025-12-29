@@ -147,7 +147,7 @@ Your "%1$s" WordPress', 'form-block' ),
 		 * @param	string	$form_id The form ID
 		 * @param	array	$fields The validated fields
 		 */
-		$email_text = \apply_filters( 'form_block_email_text', $email_text, $field_output, $form_id, $fields );
+		$email_text = (string) \apply_filters( 'form_block_email_text', $email_text, $field_output, $form_id, $fields );
 		
 		$email_sent = [];
 		
@@ -164,7 +164,7 @@ Your "%1$s" WordPress', 'form-block' ),
 		 * 
 		 * @param	string	$subject The email subject
 		 */
-		$subject = \apply_filters( 'form_block_mail_subject', $subject );
+		$subject = (string) \apply_filters( 'form_block_mail_subject', $subject );
 		
 		foreach ( $recipients as $recipient ) {
 			if ( ! \filter_var( $recipient, \FILTER_VALIDATE_EMAIL ) ) {
@@ -175,7 +175,7 @@ Your "%1$s" WordPress', 'form-block' ),
 		}
 		
 		/**
-		 * Runs after sending emails with a status per recipient.
+		 * Fires after sending emails with a status per recipient.
 		 * If status is true, the email was sent.
 		 * 
 		 * @param	array	$email_sent List of emails and whether they were sent

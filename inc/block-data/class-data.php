@@ -322,7 +322,7 @@ final class Data {
 		 * 
 		 * @since	1.5.2
 		 * 
-		 * @param	string[]	$replacements List of replacements
+		 * @param	string[]	$context_prefixes List of prefixes
 		 */
 		$context_prefixes = (array) \apply_filters( 'form_block_block_context_prefixes', $context_prefixes );
 		
