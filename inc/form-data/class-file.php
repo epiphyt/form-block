@@ -182,8 +182,8 @@ final class File {
 		 * @param	string	$output The field output
 		 * @param	string	$name The field name
 		 * @param	mixed	$new_path File path
-		 * @param	array	$file data File data array
-		 * @param	array	$file data File data array
+		 * @param	array	$file_data File data array
+		 * @param	array	$file Uploaded file information array
 		 * @param	string	$format_type 'plain' text or 'html'
 		 */
 		$output = (string) \apply_filters( 'form_block_output_file_output', '', $file['validated']['field_name'], $new_path, $file_data, $file, $format_type );
