@@ -44,10 +44,10 @@ final class File {
 	/**
 	 * Get local and validated file data for a specific file.
 	 * 
-	 * @param	array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}	$validated_file Specified file
+	 * @param	array{error: int, path: string, name: string, size: int, tmp_name: string, type: string}	$validated_file Specified file
 	 * @param	int		$file_key Key of the file in the files array
-	 * @param	array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}}|array{}}	$files All files
-	 * @return	array{local: array{filename?: string, hash?: string, path?: string, url?: string}, validated: array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}|array{}} Local and validated file data
+	 * @param	array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{array{error: int, path: string, name: string, size: int, tmp_name: string, type: string}}|array{}}	$files All files
+	 * @return	array{local: array{filename?: string, hash?: string, path?: string, url?: string}, validated: array{error: int, name: string, size: int, path: string, tmp_name: string, type: string}|array{}} Local and validated file data
 	 */
 	public static function get_data( array $validated_file, int $file_key, array $files ): array {
 		return [
@@ -301,7 +301,7 @@ final class File {
 	 * @param	string	$field_name Field name
 	 * @param	string	$path Path to file
 	 * @param	array	$field_data Field data
-	 * @param	array{local: array{filename?: string, hash?: string, path?: string, url?: string}, validated: array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}|array{}}	$file File data
+	 * @param	array{local: array{filename?: string, hash?: string, path?: string, url?: string}, validated: array{error: int, path: string, name: string, size: int, tmp_name: string, type: string}|array{}}	$file File data
 	 * @param	string	$format_type 'plain' text or 'html'
 	 * @return	string Updated output
 	 */

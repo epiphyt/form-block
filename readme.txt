@@ -2,7 +2,7 @@
 Contributors: epiphyt, kittmedia
 Tags: form, contact form, gutenberg, block editor, accessibility
 Requires at least: 6.7
-Stable tag: 1.7.0
+Stable tag: 1.7.1
 Tested up to: 6.9
 Requires PHP: 7.4
 License: GPL2
@@ -97,6 +97,9 @@ We are [Epiphyt](https://epiph.yt/en/), your friendly neighborhood WordPress plu
 You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/form-block)
 
 == Changelog ==
+
+= 1.7.1 =
+* Fixed: Attachments were missing from emails (but still available through the form submissions in the backend)
 
 = 1.7.0 =
 * Added: Support for block variations for inputs and block transforms for all types of form fields

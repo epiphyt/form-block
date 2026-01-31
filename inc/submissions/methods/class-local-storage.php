@@ -71,7 +71,7 @@ final class Local_Storage {
 	 * @param	bool[]	$success A list of successful or failed submission methods
 	 * @param	string	$form_id The form ID
 	 * @param	mixed[]	$fields Validated fields
-	 * @param	array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}}|array{}}	$files Files data
+	 * @param	array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{array{error: int, path: string, name: string, size: int, tmp_name: string, type: string}}|array{}}	$files Files data
 	 * @return	bool[] Whether the submission has been saved successfully
 	 */
 	public static function save( array $success, string $form_id, array $fields, array $files ): array {

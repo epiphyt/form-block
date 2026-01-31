@@ -72,7 +72,7 @@ final class Submission_Handler {
 	 * 
 	 * @param	string	$form_id Form ID
 	 * @param	mixed[]	$fields Submitted fields
-	 * @param	array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}}|array{}}	$files Uploaded files data
+	 * @param	array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{array{error: int, path: string, name: string, size: int, tmp_name: string, type: string}}|array{}}	$files Uploaded files data
 	 * @return	bool Whether the submission has been created successfully
 	 */
 	public static function create_submission( string $form_id, array $fields, array $files ): bool {
