@@ -391,8 +391,9 @@ final class Form_Block {
 	public static function register_cron(): void {
 		if ( ! \wp_next_scheduled( 'form_block_cleanup' ) ) {
 			$date = new \DateTime( 'tomorrow 00:00:00', \wp_timezone() );
-			$date->add( new \DateInterval( 'PT' . $date->format( 'Z' ) . 'S' ) );
+			$offset = $date->format( 'Z' );
 			
+			$date->add( \DateInterval::createFromDateString( $offset . ' seconds' ) );
 			\wp_schedule_event( $date->getTimestamp(), 'daily', 'form_block_cleanup' );
 		}
 	}
