@@ -5,7 +5,7 @@ namespace epiphyt\Form_Block;
 Plugin Name:		Form Block
 Plugin URI:			https://formblock.pro/en/
 Description:		An extensive yet user-friendly form block.
-Version:			1.7.1
+Version:			1.7.2
 Author:				Epiphyt
 Author URI:			https://epiph.yt
 License:			GPL2
@@ -13,7 +13,7 @@ License URI:		https://www.gnu.org/licenses/gpl-2.0.html
 Requires at least:	6.7
 Requires PHP:		7.4
 Tags:				form, blocks, block editor, email, contact form
-Tested up to:		6.9
+Tested up to:		7.0
 Text Domain:		form-block
 
 Form Block is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ if ( ! \defined( 'EPI_FORM_BLOCK_BASE' ) ) {
 
 \define( 'EPI_FORM_BLOCK_FILE', \EPI_FORM_BLOCK_BASE . \basename( __FILE__ ) );
 \define( 'EPI_FORM_BLOCK_URL', \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) );
-\define( 'FORM_BLOCK_VERSION', '1.7.1' );
+\define( 'FORM_BLOCK_VERSION', '1.7.2' );
 
 if ( ! \extension_loaded( 'dom' ) ) {
 	/**

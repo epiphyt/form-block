@@ -68,36 +68,39 @@ final class Field {
 	/**
 	 * Get a valid name by its label.
 	 * 
+	 * @since	1.7.2 Deprecated second parameter
+	 * 
 	 * @param	string	$label The original label
-	 * @param	bool	$to_lowercase Whether the name should be lowercase
+	 * @param	bool	$deprecated Deprecated parameter
 	 * @return	string The valid name
 	 */
-	public static function get_name_by_label( string $label, bool $to_lowercase = true ): string {
-		if ( $to_lowercase ) {
-			$label = \mb_strtolower( $label );
+	public static function get_name_by_label( string $label, bool $deprecated = true ): string {
+		if ( $deprecated !== true ) {
+			\_deprecated_argument( __FUNCTION__, '1.7.2' );
 		}
 		
 		/**
 		 * Filter the label before generating a name out of it.
 		 * 
+		 * @since	1.7.2 Deprecated second parameter
+		 * 
 		 * @param	string	$label The original label
-		 * @param	bool	$to_lowercase Whether the name should be lowercase
+		 * @param	bool	$deprecated Deprecated attribute
 		 */
-		$label = \apply_filters( 'form_block_pre_get_name_by_label', $label, $to_lowercase );
+		$label = \apply_filters( 'form_block_pre_get_name_by_label', $label, $deprecated );
 		
-		$regex = '/[^A-Za-z0-9\-_\[\]]/';
-		$replace = [ 'ae', 'oe', 'ue', 'ss', '-' ];
-		$search = [ 'ä', 'ö', 'ü', 'ß', ' ' ];
-		$name = \preg_replace( $regex, '', \str_replace( $search, $replace, $label ) );
+		$name = self::strip_special_characters( $label );
 		
 		/**
 		 * Filter the generated name from a label.
 		 * 
+		 * @since	1.7.2 Deprecated second parameter
+		 * 
 		 * @param	string	$name The generated name
 		 * @param	string	$label The original label
-		 * @param	bool	$to_lowercase Whether the name should be lowercase
+		 * @param	bool	$deprecated Deprecated attribute
 		 */
-		$name = \apply_filters( 'form_block_get_name_by_label', $name, $label, $to_lowercase );
+		$name = \apply_filters( 'form_block_get_name_by_label', $name, $label, $deprecated );
 		
 		return $name;
 	}
@@ -170,7 +173,10 @@ final class Field {
 					$matched_value = self::match_value_with_field_type( $value, $field, $label );
 					
 					if ( $matched_value !== $value ) {
-						list( $output_label, $output_value ) = \array_map( 'trim', \explode( ':', $matched_value ) );
+						$output_parts = \explode( ':', $matched_value );
+						$output_label = $output_parts[0];
+						unset( $output_parts[0] );
+						$output_value = \trim( \implode( ':', $output_parts ) );
 						$field_output = "<dt>{$prefix}{$output_label}:</dt>" . \PHP_EOL;
 						$field_output .= '<dd>' . $output_value . '</dd>' . \PHP_EOL;
 					}
@@ -186,12 +192,16 @@ final class Field {
 			}
 			else if ( $field['block_type'] !== 'repeater' ) {
 				$output .= $prefix;
+				$value_output = self::match_value_with_field_type( $value, $field, $label );
 				
-				if ( $level === 0 ) {
+				if ( $value_output !== $value ) {
+					return $output . $value_output . \PHP_EOL;
+				}
+				else if ( $level === 0 ) {
 					$output .= $label . ': ';
 				}
 				
-				$output .= self::match_value_with_field_type( $value, $field, $label ) . \PHP_EOL;
+				$output .= $value;
 			}
 			else {
 				$output .= $value . \PHP_EOL;
@@ -776,6 +786,13 @@ final class Field {
 				/* translators: form field title or value */
 				$return_value = \sprintf( \__( 'Selected: %s', 'form-block' ), $label );
 			}
+			
+			// by default, the label is displayed as value
+			// for fields with custom labels, add the actual value as well
+			if ( ! empty( $field_data['value'] ) && $field_data['value'] !== $label ) {
+				/* translators: defined field value */
+				$return_value .= ' ' . \sprintf( \__( '(Value: %s)', 'form-block' ), $field_data['value'] );
+			}
 		}
 		
 		return $return_value;
@@ -791,5 +808,28 @@ final class Field {
 		\preg_match_all( '/([^\[\]]+)|\[\]/', $field_name, $matches );
 		
 		return $matches[0] ?? []; // @phpstan-ignore nullCoalesce.offset
+	}
+	
+	/**
+	 * Strip special characters from a string.
+	 * 
+	 * @since	1.7.2
+	 * 
+	 * @param	string	$value Original string
+	 * @return	string Stripped string
+	 */
+	public static function strip_special_characters( string $value ): string {
+		$replacements = [
+			' ' => '-',
+			'ß' => 'ss',
+			'ä' => 'ae',
+			'ö' => 'oe',
+			'ü' => 'ue',
+		];
+		$value = \str_replace( \array_keys( $replacements ), \array_values( $replacements ), $value );
+		$value = \preg_replace( '/<[^>]*>/', '', $value );
+		$value = \preg_replace( '/[^a-z0-9\-_\.\[\]]/', '', \mb_strtolower( $value ) );
+		
+		return $value;
 	}
 }
