@@ -201,7 +201,7 @@ final class Field {
 					$output .= $label . ': ';
 				}
 				
-				$output .= $value;
+				$output .= $value . \PHP_EOL;
 			}
 			else {
 				$output .= $value . \PHP_EOL;
@@ -777,12 +777,18 @@ final class Field {
 	private static function match_value_with_field_type( string $value, array $field_data, string $label ): string {
 		$return_value = $value;
 		
-		if ( ! empty( $field_data['type'] ) ) {
+		if (
+			! empty( $field_data['type'] )
+			&& (
+				$field_data['type'] === 'checkbox'
+				|| $field_data['type'] === 'radio'
+			)
+		) {
 			if ( $field_data['type'] === 'checkbox' ) {
 				/* translators: form field title */
 				$return_value = \sprintf( \__( 'Checked: %s', 'form-block' ), $label );
 			}
-			else if ( $field_data['type'] === 'radio' ) {
+			else {
 				/* translators: form field title or value */
 				$return_value = \sprintf( \__( 'Selected: %s', 'form-block' ), $label );
 			}

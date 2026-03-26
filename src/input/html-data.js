@@ -150,7 +150,7 @@ export const types = applyFilters( 'formBlock.input.htmlTypes', {
 		label: __( 'File', 'form-block' ),
 	},
 	hidden: {
-		allowedAttributes: [ 'value' ],
+		allowedAttributes: [ 'label', 'value' ],
 		description: __(
 			'A field that is invisible to the user.',
 			'form-block'

@@ -235,6 +235,12 @@ final class Form_Block {
 			}
 		}
 		
+		if ( $element->getAttribute( 'type' ) === 'hidden' ) {
+			foreach ( $dom->getElementsByTagName( 'label' ) as $label ) {
+				$label->remove();
+			}
+		}
+		
 		return \str_replace( [ '<html><meta charset="UTF-8">', '</html>' ], '', $dom->saveHTML( $dom->documentElement ) ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 	}
 	

@@ -101,6 +101,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 = 1.7.3 =
 * Fixed: Visibility of checkboxes/radio buttons in the editor in WordPress 7.0
 * Fixed: Visibility of hidden input field in the editor
+* Fixed: Output of hidden fields
 
 = 1.7.2 =
 * Fixed: Getting name by label is more reliable

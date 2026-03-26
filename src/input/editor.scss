@@ -79,6 +79,15 @@
 	padding: 1px $grid-unit-05;
 }
 
+.wp-block-form-block-input.is-type-hidden {
+	opacity: .5;
+	
+	&.is-selected {
+		opacity: .75;
+	}
+}
+
+
 .wp-block-form-block-input.wp-block-button {
 	.components-base-control__field {
 		margin-bottom: 0;

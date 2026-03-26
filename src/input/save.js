@@ -58,7 +58,7 @@ export default function InputSave( props ) {
 				} }
 				{ ...elementProps }
 			/>
-			{ type !== 'hidden' && type !== 'reset' && type !== 'submit' ? (
+			{ type !== 'reset' && type !== 'submit' ? (
 				<label className="form-block__label is-input-label">
 					<RichText.Content
 						className="form-block__label-content"
