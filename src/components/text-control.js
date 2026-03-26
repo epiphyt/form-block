@@ -69,7 +69,6 @@ export default function FormBlockTextControl( {
 				label={ label }
 			>
 				<input
-					{ ...elementProps }
 					className={ clsx( 'components-text-control__input', {
 						[ classNameBorder ]: ! isButton,
 						[ classNameColor ]: ! isButton,
@@ -90,6 +89,7 @@ export default function FormBlockTextControl( {
 					style={ ! isButton ? customStyle : null }
 					type={ type }
 					value={ fieldValue }
+					{ ...elementProps }
 				/>
 			</BaseControl>
 		</div>
