@@ -25,6 +25,7 @@ final class Admin {
 		\add_action( 'admin_menu', [ self::class, 'register_options_page' ] );
 		\add_action( 'enqueue_block_editor_assets', [ $this, 'block_assets' ] );
 		\add_action( 'load-settings_page_' . self::PAGE_NAME, [ self::class, 'register_screen_options' ] );
+		\add_filter( 'plugin_row_meta', [ self::class, 'render_plugin_documentation_link' ], 10, 2 );
 		\add_filter( 'set_screen_option_submissions_per_page', [ self::class, 'save_per_page_screen_option' ], 10, 3 );
 		\add_filter( 'wp_script_attributes', [ self::class, 'set_script_attributes' ] );
 	}
@@ -489,6 +490,27 @@ final class Admin {
 				'default' => 20,
 				'label' => \__( 'Submissions per page', 'form-block' ),
 				'option' => 'submissions_per_page',
+			]
+		);
+	}
+	
+	/**
+	 * Add plugin meta links.
+	 * 
+	 * @param	array	$input Registered links.
+	 * @param	string	$file  Current plugin file.
+	 * @return	array Merged links
+	 */
+	public static function render_plugin_documentation_link( array $input, string $file ): array {
+		if ( ! \str_ends_with( \EPI_FORM_BLOCK_FILE, $file ) ) {
+			return $input;
+		}
+		
+		return \array_merge(
+			$input,
+			[
+				/* translators: plugin version */
+				'<a href="' . \esc_url( \sprintf( \__( 'https://docs.epiph.yt/form-block/?version=%s', 'form-block' ), \get_plugin_data( \EPI_FORM_BLOCK_FILE )['Version'] ) ) . '" target="_blank" rel="noopener noreferrer">' . \esc_html__( 'Documentation', 'form-block' ) . '</a>',
 			]
 		);
 	}
