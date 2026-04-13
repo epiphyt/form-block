@@ -60,6 +60,14 @@ There is also a Pro version of Form Block available. It offers additional featur
 
 You can find more information at [https://formblock.pro/en/](https://formblock.pro/en/).
 
+= Contribution =
+
+Feel free to contribute. The code is available at [GitHub](https://github.com/epiphyt/form-block).
+
+= Documentation =
+
+You can find the documentation for Form Block at [docs.epiph.yt](https://docs.epiph.yt/form-block/).
+
 
 == Installation ==
 
