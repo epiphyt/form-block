@@ -156,7 +156,7 @@ final class Form {
 		}
 		
 		$label_id = $block['attrs']['formId'] . '-label';
-		$block_content = \str_replace( '<form', '<form aria-labelledby="' . $label_id . '"', $block_content );
+		$block_content = \str_replace( '<form', '<form aria-labelledby="' . \esc_attr( $label_id ) . '"', $block_content );
 		
 		/**
 		 * Filter the form label.
