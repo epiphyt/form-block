@@ -218,7 +218,7 @@ final class Validation {
 	 * @return	array Sanitized array
 	 */
 	private static function sanitize_array_values( array $array, array $form_data ): array {
-		foreach ( $array as $key => &$value ) {
+		foreach ( $array as $key => $value ) {
 			if ( \is_array( $value ) ) {
 				$value = self::sanitize_array_values( $value, $form_data );
 			}
@@ -235,6 +235,8 @@ final class Validation {
 					),
 				] );
 			}
+			
+			$array[ \sanitize_key( $key ) ] = $value;
 		}
 		
 		return $array;
