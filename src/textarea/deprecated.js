@@ -1,5 +1,8 @@
 import { RichText, useBlockProps } from '@wordpress/block-editor';
 
+import metadata from './block.json';
+import save from './save';
+
 const v1 = {
 	attributes: {
 		disabled: {
@@ -49,6 +52,13 @@ const v1 = {
 			source: 'text',
 			type: 'string',
 		},
+	},
+	migrate( attributes ) {
+		if ( ! attributes.rows ) {
+			attributes.rows = 4;
+		}
+
+		return attributes;
 	},
 	save( props ) {
 		const {
@@ -163,6 +173,10 @@ const v2 = {
 	},
 	migrate( attributes ) {
 		attributes.spellCheck = true;
+
+		if ( ! attributes.rows ) {
+			attributes.rows = 4;
+		}
 
 		return attributes;
 	},
@@ -284,6 +298,10 @@ const v3 = {
 	migrate( attributes ) {
 		attributes.spellCheck = true;
 
+		if ( ! attributes.rows ) {
+			attributes.rows = 4;
+		}
+
 		return attributes;
 	},
 	save( props ) {
@@ -344,4 +362,29 @@ const v3 = {
 	},
 };
 
-export default [ v3, v2, v1 ];
+const v4 = {
+	apiVersion: metadata.apiVersion,
+	attributes: {
+		...metadata.attributes,
+		rows: {
+			attribute: 'rows',
+			selector: 'textarea',
+			source: 'attribute',
+			type: 'string',
+		},
+	},
+	supports: metadata.supports,
+	isEligible( { rows } ) {
+		return ! rows;
+	},
+	migrate( attributes ) {
+		if ( ! attributes.rows ) {
+			attributes.rows = 4;
+		}
+
+		return attributes;
+	},
+	save,
+};
+
+export default [ v4, v3, v2, v1 ];
