@@ -1,3 +1,4 @@
+import { speak } from '@wordpress/a11y';
 import {
 	RichText,
 	useBlockProps,
@@ -15,10 +16,9 @@ import {
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
-import { useRef, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import { error, reset } from '@wordpress/icons';
-import clsx from 'clsx';
+import { chevronDown, chevronUp, error, reset } from '@wordpress/icons';
 
 import Controls from './controls';
 import { stripSpecialChars } from '../data/util';
@@ -50,7 +50,66 @@ export default function SelectEdit( props ) {
 		value,
 	};
 	const [ isOptionModalOpen, setIsOptionModalOpen ] = useState( false );
+	const moveButtonsRef = useRef( {} );
 	const nameControlRef = useRef( null );
+	const pendingFocusRef = useRef( null );
+
+	// move an option from one position to another and announce the change
+	const moveOption = ( from, to ) => {
+		if ( to < 0 || to >= options.length || from === to ) {
+			return;
+		}
+
+		const newOptions = JSON.parse( JSON.stringify( options ) );
+		const [ moved ] = newOptions.splice( from, 1 );
+		newOptions.splice( to, 0, moved );
+
+		setAttributes( { options: newOptions } );
+
+		// keep the focus on the moved option's button (now at its new index)
+		pendingFocusRef.current = {
+			index: to,
+			direction: to < from ? 'up' : 'down',
+		};
+
+		speak(
+			sprintf(
+				/* translators: 1: option label or number, 2: new position, 3: total number of options */
+				__(
+					'Option "%1$s" moved to position %2$d of %3$d.',
+					'form-block'
+				),
+				moved.label || moved.value || to + 1,
+				to + 1,
+				newOptions.length
+			),
+			'assertive'
+		);
+	};
+
+	useEffect( () => {
+		const pending = pendingFocusRef.current;
+
+		if ( ! pending ) {
+			return;
+		}
+
+		pendingFocusRef.current = null;
+
+		const buttons = moveButtonsRef.current;
+		const preferred =
+			buttons[ `${ pending.index }-${ pending.direction }` ];
+		const fallback =
+			buttons[
+				`${ pending.index }-${
+					pending.direction === 'up' ? 'down' : 'up'
+				}`
+			];
+		const target = preferred && ! preferred.disabled ? preferred : fallback;
+
+		target?.focus();
+	}, [ options ] );
+
 	const nameAttribute = name
 		? stripSpecialChars( name, false )
 		: stripSpecialChars( label );
@@ -160,6 +219,8 @@ export default function SelectEdit( props ) {
 								<OptionEdit
 									key={ index }
 									index={ index }
+									moveButtonsRef={ moveButtonsRef }
+									moveOption={ moveOption }
 									option={ option }
 									options={ options }
 									setAttributes={ setAttributes }
@@ -200,11 +261,25 @@ export default function SelectEdit( props ) {
 	);
 }
 
-function OptionEdit( { index, option, options, setAttributes } ) {
+function OptionEdit( {
+	index,
+	moveButtonsRef,
+	moveOption,
+	option,
+	options,
+	setAttributes,
+} ) {
+	const optionName = option?.label || option?.value || index + 1;
+
+	// register the move buttons so focus can follow an option after it moves
+	const setMoveButtonRef = ( direction ) => ( node ) => {
+		moveButtonsRef.current[ `${ index }-${ direction }` ] = node;
+	};
+
 	return (
-		<>
+		<div className="form-block__select-option-wrapper">
 			<Flex align="center">
-				<FlexItem>
+				<FlexBlock>
 					<h2>
 						{
 							/* translators: option index */
@@ -214,6 +289,40 @@ function OptionEdit( { index, option, options, setAttributes } ) {
 							)
 						}
 					</h2>
+				</FlexBlock>
+
+				<FlexItem>
+					<Button
+						disabled={ index === 0 }
+						icon={ chevronUp }
+						label={ sprintf(
+							/* translators: option name or number */
+							__( 'Move option "%s" up', 'form-block' ),
+							optionName
+						) }
+						onClick={ () => moveOption( index, index - 1 ) }
+						ref={ setMoveButtonRef( 'up' ) }
+						showTooltip={ true }
+						size="small"
+						variant="secondary"
+					/>
+				</FlexItem>
+
+				<FlexItem>
+					<Button
+						disabled={ index === options.length - 1 }
+						icon={ chevronDown }
+						label={ sprintf(
+							/* translators: option name or number */
+							__( 'Move option "%s" down', 'form-block' ),
+							optionName
+						) }
+						onClick={ () => moveOption( index, index + 1 ) }
+						ref={ setMoveButtonRef( 'down' ) }
+						showTooltip={ true }
+						size="small"
+						variant="secondary"
+					/>
 				</FlexItem>
 
 				<FlexItem>
@@ -223,8 +332,8 @@ function OptionEdit( { index, option, options, setAttributes } ) {
 						label={
 							/* translators: option index */
 							sprintf(
-								__( 'Remove option %d', 'form-block' ),
-								index + 1
+								__( 'Remove option "%d"', 'form-block' ),
+								optionName
 							)
 						}
 						onClick={ () => {
@@ -275,6 +384,6 @@ function OptionEdit( { index, option, options, setAttributes } ) {
 					</FlexBlock>
 				</Flex>
 			</div>
-		</>
+		</div>
 	);
 }
