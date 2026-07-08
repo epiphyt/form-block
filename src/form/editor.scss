@@ -55,6 +55,10 @@
 	line-height: 0;
 }
 
+.form-block__reply-to-notice p:first-child {
+	margin-block-start: 0;
+}
+
 .form-block__wizard-modal {
 	.components-modal__content {
 		max-width: 600px;

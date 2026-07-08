@@ -14,6 +14,7 @@ import { __ } from '@wordpress/i18n';
 
 import Controls from './controls';
 import { form } from './icon';
+import ReplyToNotice from './reply-to-notice';
 import Wizard from './wizard';
 
 export default function FormEdit( props ) {
@@ -38,6 +39,8 @@ export default function FormEdit( props ) {
 	return (
 		<div { ...blockProps }>
 			<Controls props={ props } />
+
+			<ReplyToNotice clientId={ clientId } />
 
 			<InnerBlocks />
 		</div>
