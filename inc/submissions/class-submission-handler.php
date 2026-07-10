@@ -125,7 +125,7 @@ final class Submission_Handler {
 		 * 
 		 * @param	\epiphyt\Form_Block\submissions\Submission	$submission Submission object
 		 * @param	string										$form_id Form ID
-		 * @param	array{fields: mixed[], files: array{local: array{filename?: string, hash?: string, path?: string, url?: string}, validated: array{field_name: string, name: string, path: string, size: int, type: string}|array{}}: files_local: array{local: array{filename?: string, hash?: string, path?: string, url?: string}}} Submission data
+		 * @param	array{fields: mixed[], files: array{local: array{filename?: string, hash?: string, path?: string, url?: string}, validated: array{field_name: string, name: string, path: string, size: int, type: string}|array{}}, files_local: array{array{filename?: string, hash?: string, path?: string, url?: string}}}	$data Submission data
 		 */
 		\do_action( 'form_block_after_create_submission', $submission, $form_id, $data );
 		
@@ -224,5 +224,38 @@ final class Submission_Handler {
 		}
 		
 		return $submissions;
+	}
+	
+	/**
+	 * Add or remove a type on a submission.
+	 * 
+	 * @since	1.8.0
+	 * 
+	 * @param	string	$form_id Form ID
+	 * @param	int		$submission_key Key of the submission
+	 * @param	string	$type Type slug to add or remove
+	 * @param	bool	$add Whether to add (true) or remove (false) the type
+	 * @return	bool Whether the submission has been updated
+	 * @throws	\Exception
+	 */
+	public static function set_submission_type( string $form_id, int $submission_key, string $type, bool $add ): bool {
+		$form_submissions = self::get_submissions( $form_id );
+		
+		if ( ! isset( $form_submissions[ $submission_key ] ) ) {
+			return false;
+		}
+		
+		if ( \is_array( $form_submissions[ $submission_key ] ) ) {
+			throw new \Exception( \esc_html__( 'Only a single submission is allowed to be returned.', 'form-block' ) );
+		}
+		
+		if ( $add ) {
+			$form_submissions[ $submission_key ]->add_type( $type );
+		}
+		else {
+			$form_submissions[ $submission_key ]->remove_type( $type );
+		}
+		
+		return \update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, \array_values( $form_submissions ) );
 	}
 }

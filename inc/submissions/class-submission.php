@@ -13,7 +13,7 @@ use epiphyt\Form_Block\form_data\Data;
  */
 final class Submission {
 	/**
-	 * @var		array{fields: mixed[], files: array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{field_name: string, name: string, path: string, size: int, type: string}|array{}}|array{}, files_local?: array{array{filename?: string, hash?: string, path?: string, url?: string}}, raw: array<string, mixed[]|array>} Submission data
+	 * @var		array{fields: mixed[], files: array{local: array{array{filename?: string, hash?: string, path?: string, url?: string}}, validated: array{field_name: string, name: string, path: string, size: int, type: string}|array{}}|array{}, files_local?: array{array{filename?: string, hash?: string, path?: string, url?: string}}, raw: array<string, mixed[]|array>, types?: string[], spam_reasons?: string[]} Submission data
 	 */
 	private array $data = [
 		'fields' => [],
@@ -61,10 +61,28 @@ final class Submission {
 		 * @since	1.7.0
 		 * 
 		 * @param	mixed[]	$submission_data Submission data
-		 * @param	mixed[] $data Field and files data from the request
+		 * @param	mixed[]	$data Field and files data from the request
 		 * @param	string	$form_id Form ID
 		 */
 		$this->data = (array) \apply_filters( 'form_block_submission', $this->data, $data, $form_id );
+	}
+	
+	/**
+	 * Add a type to this submission.
+	 * 
+	 * @since	1.8.0
+	 * 
+	 * @param	string	$type Type slug to add
+	 */
+	public function add_type( string $type ): void {
+		$types = $this->get_types();
+		
+		if ( \in_array( $type, $types, true ) ) {
+			return;
+		}
+		
+		$types[] = $type;
+		$this->data['types'] = $types;
 	}
 	
 	/**
@@ -157,6 +175,47 @@ final class Submission {
 		}
 		
 		return $this->data['raw'][ $data_type ][ $name ] ?? null;
+	}
+	
+	/**
+	 * Get all types assigned to this submission.
+	 * 
+	 * @since	1.8.0
+	 * 
+	 * @return	string[] List of type slugs
+	 */
+	public function get_types(): array {
+		return $this->data['types'] ?? [];
+	}
+	
+	/**
+	 * Check whether this submission has a given type.
+	 * 
+	 * @since	1.8.0
+	 * 
+	 * @param	string	$type Type slug to check
+	 * @return	bool Whether the submission has the type
+	 */
+	public function is_type( string $type ): bool {
+		return \in_array( $type, $this->get_types(), true );
+	}
+	
+	/**
+	 * Remove a type from this submission.
+	 * 
+	 * @since	1.8.0
+	 * 
+	 * @param	string	$type Type slug to remove
+	 */
+	public function remove_type( string $type ): void {
+		$this->data['types'] = \array_values(
+			\array_filter(
+				$this->get_types(),
+				static function( string $current_type ) use ( $type ): bool {
+					return $current_type !== $type;
+				}
+			)
+		);
 	}
 	
 	/**

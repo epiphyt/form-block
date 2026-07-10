@@ -77,6 +77,16 @@ final class Admin {
 			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'submissions' . $suffix . '.js'; // @phpstan-ignore constant.notFound
 			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
 			
+			$submission_types = [];
+			
+			foreach ( submissions\Submission_Type::get_registered() as $type_slug => $type_data ) {
+				$submission_types[ $type_slug ] = [
+					'actionAdd' => $type_data['action_add'] ?? '',
+					'actionRemove' => $type_data['action_remove'] ?? '',
+					'hideFromDefault' => ! empty( $type_data['hide_from_default'] ),
+				];
+			}
+			
 			\wp_enqueue_script( 'form-block-admin-submissions', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
 			\wp_localize_script(
 				'form-block-admin-submissions',
@@ -86,6 +96,9 @@ final class Admin {
 					'restRootUrl' => \esc_url( \rest_url() ),
 					'submissionDeletedError' => \__( 'Submission could not be deleted.', 'form-block' ),
 					'submissionDeletedSuccess' => \__( 'Submission deleted successfully.', 'form-block' ),
+					'submissionTypes' => $submission_types,
+					'submissionUpdatedError' => \__( 'Submission could not be updated.', 'form-block' ),
+					'submissionUpdatedSuccess' => \__( 'Submission updated successfully.', 'form-block' ),
 				]
 			);
 		}
@@ -498,7 +511,7 @@ final class Admin {
 	 * Add plugin meta links.
 	 * 
 	 * @param	array	$input Registered links.
-	 * @param	string	$file  Current plugin file.
+	 * @param	string	$file Current plugin file.
 	 * @return	array Merged links
 	 */
 	public static function render_plugin_documentation_link( array $input, string $file ): array {

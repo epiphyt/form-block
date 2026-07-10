@@ -49,6 +49,7 @@ final class Submission_Page {
 		$table->init();
 		
 		$table->prepare_items();
+		$table->views();
 		$table->search_box( \__( 'Search Submissions', 'form-block' ), 'search_id' );
 		$table->display();
 		

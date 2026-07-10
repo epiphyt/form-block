@@ -12,6 +12,7 @@ use epiphyt\Form_Block\blocks\Textarea;
 use epiphyt\Form_Block\form_data\Data as Form_Data_Data;
 use epiphyt\Form_Block\form_data\Field;
 use epiphyt\Form_Block\form_data\File;
+use epiphyt\Form_Block\integration\Antispam_Bee;
 use epiphyt\Form_Block\modules\Custom_Date;
 use epiphyt\Form_Block\submissions\Submission_Handler;
 
@@ -48,6 +49,7 @@ final class Form_Block {
 	 * @var		array Registered Modules
 	 */
 	public array $modules = [
+		Antispam_Bee::class,
 		Custom_Date::class,
 	];
 	

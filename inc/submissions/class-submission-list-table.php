@@ -26,6 +26,7 @@ final class Submission_List_Table extends WP_List_Table {
 	 * Initialize functionality.
 	 */
 	public function init(): void {
+		\add_action( 'form_block_submission_actions', [ self::class, 'set_type_actions' ], 40 );
 		\add_action( 'form_block_submission_actions', [ self::class, 'set_delete_action' ], 50 );
 	}
 	
@@ -191,7 +192,9 @@ final class Submission_List_Table extends WP_List_Table {
 	private static function get_data(): array {
 		$data = [];
 		$filter_form_id = \sanitize_text_field( \wp_unslash( $_REQUEST['form_id'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$requested_type = \sanitize_text_field( \wp_unslash( $_REQUEST['type'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$search_term = \sanitize_text_field( \wp_unslash( $_REQUEST['s'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$hidden_types = Submission_Type::hidden_from_default();
 		$submissions = Submission_Handler::get_submissions();
 		
 		foreach ( $submissions as $form_id => $form_submissions ) {
@@ -204,6 +207,18 @@ final class Submission_List_Table extends WP_List_Table {
 			}
 			
 			foreach ( $form_submissions as $key => $submission ) {
+				$submission_types = $submission->get_types();
+				
+				// show only the requested type, or hide hidden types by default
+				if ( ! empty( $requested_type ) ) {
+					if ( ! \in_array( $requested_type, $submission_types, true ) ) {
+						continue;
+					}
+				}
+				else if ( ! empty( \array_intersect( $hidden_types, $submission_types ) ) ) {
+					continue;
+				}
+				
 				if ( ! empty( $search_term ) ) {
 					if ( ! $submission->search( $search_term ) ) {
 						continue;
@@ -221,6 +236,7 @@ final class Submission_List_Table extends WP_List_Table {
 					'date' => $submission->get_date(),
 					'id' => $form_id . '/' . $key,
 					'label' => $label,
+					'types' => $submission_types,
 				];
 			}
 		}
@@ -248,6 +264,80 @@ final class Submission_List_Table extends WP_List_Table {
 		$sortable_columns = (array) \apply_filters( 'form_block_submissions_columns_sortable', $sortable_columns );
 		
 		return $sortable_columns;
+	}
+	
+	/**
+	 * Get views for the list table.
+	 * 
+	 * Builds an "All" view plus one view per registered submission type.
+	 * 
+	 * @since	1.8.0
+	 * 
+	 * @return	string[] List of views, keyed by view slug
+	 */
+	public function get_views(): array {
+		$types = Submission_Type::get_registered();
+		
+		if ( empty( $types ) ) {
+			return [];
+		}
+		
+		$current = \sanitize_text_field( \wp_unslash( $_REQUEST['type'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$hidden_types = Submission_Type::hidden_from_default();
+		$counts = [ 'all' => 0 ];
+		
+		foreach ( \array_keys( $types ) as $type ) {
+			$counts[ $type ] = 0;
+		}
+		
+		foreach ( Submission_Handler::get_submissions() as $form_submissions ) {
+			if ( ! \is_iterable( $form_submissions ) ) {
+				continue;
+			}
+			
+			foreach ( $form_submissions as $submission ) {
+				$submission_types = $submission->get_types();
+				
+				foreach ( \array_keys( $types ) as $type ) {
+					if ( \in_array( $type, $submission_types, true ) ) {
+						++$counts[ $type ];
+					}
+				}
+				
+				if ( empty( \array_intersect( $hidden_types, $submission_types ) ) ) {
+					++$counts['all'];
+				}
+			}
+		}
+		
+		$base_url = \admin_url( 'tools.php?page=' . Submission_Page::NAME );
+		$filter_form_id = \sanitize_text_field( \wp_unslash( $_REQUEST['form_id'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		
+		if ( ! empty( $filter_form_id ) ) {
+			$base_url = \add_query_arg( 'form_id', $filter_form_id, $base_url );
+		}
+		
+		$views = [
+			'all' => \sprintf(
+				'<a href="%1$s"%2$s>%3$s <span class="count">(%4$d)</span></a>',
+				\esc_url( $base_url ),
+				$current === '' ? ' class="current" aria-current="page"' : '',
+				\esc_html__( 'All', 'form-block' ),
+				$counts['all']
+			),
+		];
+		
+		foreach ( $types as $type => $data ) {
+			$views[ $type ] = \sprintf(
+				'<a href="%1$s"%2$s>%3$s <span class="count">(%4$d)</span></a>',
+				\esc_url( \add_query_arg( 'type', $type, $base_url ) ),
+				$current === $type ? ' class="current" aria-current="page"' : '',
+				\esc_html( $data['label'] ?? $type ),
+				$counts[ $type ]
+			);
+		}
+		
+		return $views;
 	}
 	
 	/**
@@ -296,6 +386,39 @@ final class Submission_List_Table extends WP_List_Table {
 			?>
 		</button>
 		<?php
+	}
+	
+	/**
+	 * Set type toggle actions.
+	 * 
+	 * Renders one toggle button per registered submission type.
+	 * 
+	 * @since	1.8.0
+	 * 
+	 * @param	array{data: mixed[], date: string, id: string, types?: string[]}	$item Current item
+	 */
+	public static function set_type_actions( array $item ): void {
+		$types = Submission_Type::get_registered();
+		
+		if ( empty( $types ) ) {
+			return;
+		}
+		
+		$item_types = $item['types'] ?? [];
+		
+		foreach ( $types as $type => $data ) {
+			$has_type = \in_array( $type, $item_types, true );
+			$label = $has_type ? ( $data['action_remove'] ?? '' ) : ( $data['action_add'] ?? '' );
+			
+			if ( empty( $label ) ) {
+				continue;
+			}
+			?>
+			<button type="button" class="button form-block__button form-block__submission-type" data-id="<?php echo \esc_attr( $item['id'] ); ?>" data-type="<?php echo \esc_attr( $type ); ?>" data-add="<?php echo $has_type ? '0' : '1'; ?>">
+				<?php echo \esc_html( $label ); ?>
+			</button>
+			<?php
+		}
 	}
 	
 	/**
