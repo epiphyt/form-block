@@ -367,7 +367,7 @@ final class Field {
 	 * 
 	 * @param	array<int, mixed[]>		$fields Fields data
 	 * @param	array<string, mixed>	$post_fields POST fields
-	 * @param	int 					$level Current indentation level
+	 * @param	int						$level Current indentation level
 	 * @param	string					$format_type 'plain' text or 'html'
 	 * @return	string Aggregated output for all matched fields
 	 */
@@ -413,7 +413,7 @@ final class Field {
 						 * @param	mixed	$values Field values
 						 * @param	string	$name Field name
 						 * @param	array	$fields Fields data
-						 * @param	int 	$level Current indentation level
+						 * @param	int		$level Current indentation level
 						 */
 						$values = \apply_filters( 'form_block_output_field_value', $values, $field['name'], $fields, $level );
 						
@@ -560,7 +560,7 @@ final class Field {
 	 * @param	string	$name The field name
 	 * @param	mixed	$value The field value
 	 * @param	array	$fields Field data
-	 * @param	int 	$level Current indentation level
+	 * @param	int		$level Current indentation level
 	 * @param	string	$format_type 'plain' text or 'html'
 	 * @return	string The updated field output
 	 */
@@ -807,7 +807,7 @@ final class Field {
 	/**
 	 * Parse a field name into its keys.
 	 * 
-	 * @param	string 	$field_name Field name to parse
+	 * @param	string	$field_name Field name to parse
 	 * @return	array<int, string> Parsed keys as an array of strings
 	 */
 	private static function parse_field_name( string $field_name ): array {

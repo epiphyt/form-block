@@ -125,7 +125,7 @@ final class Submission_Handler {
 		 * 
 		 * @param	\epiphyt\Form_Block\submissions\Submission	$submission Submission object
 		 * @param	string										$form_id Form ID
-		 * @param	array{fields: mixed[], files: array{local: array{filename?: string, hash?: string, path?: string, url?: string}, validated: array{field_name: string, name: string, path: string, size: int, type: string}|array{}}: files_local: array{local: array{filename?: string, hash?: string, path?: string, url?: string}}} Submission data
+		 * @param	array{fields: mixed[], files: array{local: array{filename?: string, hash?: string, path?: string, url?: string}, validated: array{field_name: string, name: string, path: string, size: int, type: string}|array{}}, files_local: array{array{filename?: string, hash?: string, path?: string, url?: string}}}	$data Submission data
 		 */
 		\do_action( 'form_block_after_create_submission', $submission, $form_id, $data );
 		

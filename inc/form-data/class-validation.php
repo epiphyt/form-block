@@ -550,7 +550,7 @@ final class Validation {
 		 * @since	1.5.6
 		 * 
 		 * @param	string[]	$allowed_mime_types List of allowed mime types
-		 * @param	array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string} $file Current file to validate
+		 * @param	array{error: int, full_path: string, name: string, size: int, tmp_name: string, type: string}	$file Current file to validate
 		 */
 		$allowed_mime_types = (array) \apply_filters( 'form_block_validate_file_type_mime_types', $allowed_mime_types, $file );
 		

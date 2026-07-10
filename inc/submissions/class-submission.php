@@ -61,7 +61,7 @@ final class Submission {
 		 * @since	1.7.0
 		 * 
 		 * @param	mixed[]	$submission_data Submission data
-		 * @param	mixed[] $data Field and files data from the request
+		 * @param	mixed[]	$data Field and files data from the request
 		 * @param	string	$form_id Form ID
 		 */
 		$this->data = (array) \apply_filters( 'form_block_submission', $this->data, $data, $form_id );
