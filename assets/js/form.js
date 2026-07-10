@@ -118,12 +118,17 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 		formBlockAllowSubmit[ form ] = false;
 
-		const messageContainer = form.querySelector(
+		// clear any previous message, but keep the (persistent) live regions
+		// in the DOM so screen readers keep observing them for changes
+		for ( const messageContainer of form.querySelectorAll(
 			'.form-block__message-container'
-		);
-
-		if ( messageContainer ) {
-			messageContainer.remove();
+		) ) {
+			messageContainer.textContent = '';
+			messageContainer.classList.remove(
+				'is-type-error',
+				'is-type-loading',
+				'is-type-success'
+			);
 		}
 
 		let intervalCount = 0;
@@ -264,21 +269,29 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	 * @param	{Boolean}		isHtml Whether the message is raw HTML
 	 */
 	function setSubmitMessage( form, messageType, message, isHtml ) {
-		const ariaLiveType = messageType === 'error' ? 'assertive' : 'polite';
+		const role = messageType === 'error' ? 'alert' : 'status';
 		let messageContainer = form.querySelector(
-			'.form-block__message-container'
+			'.form-block__message-container[role="' + role + '"]'
 		);
 
-		if ( ! messageContainer ) {
-			messageContainer = document.createElement( 'div' );
-			messageContainer.classList.add( 'form-block__message-container' );
-			form.appendChild( messageContainer );
-		} else {
-			messageContainer.classList.remove(
+		// clear all previous regions
+		for ( const container of form.querySelectorAll(
+			'.form-block__message-container'
+		) ) {
+			container.textContent = '';
+			container.classList.remove(
 				'is-type-error',
 				'is-type-loading',
 				'is-type-success'
 			);
+		}
+
+		if ( ! messageContainer ) {
+			// fallback for markup without the persistent live regions
+			messageContainer = document.createElement( 'div' );
+			messageContainer.classList.add( 'form-block__message-container' );
+			messageContainer.setAttribute( 'role', role );
+			form.appendChild( messageContainer );
 		}
 
 		messageContainer.classList.add( 'is-type-' + messageType );
@@ -286,7 +299,6 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		messageContainer.textContent = message;
 		// then replace all newlines with <br />
 		messageContainer.innerHTML = nl2br( messageContainer.innerHTML );
-		messageContainer.setAttribute( 'aria-live', ariaLiveType );
 
 		if ( isHtml ) {
 			messageContainer.innerHTML = message;
@@ -299,7 +311,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			messageContainer.prepend( loadingIndicator );
 		}
 
-		// scroll error message into viewport
+		// scroll message into viewport
 		if ( ! isElementInViewport( messageContainer ) ) {
 			const rect = messageContainer.getBoundingClientRect();
 

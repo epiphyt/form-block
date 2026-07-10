@@ -29,6 +29,7 @@ final class Form {
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_honeypot' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_label' ], 20, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_maximum_upload_sizes' ], 10, 2 );
+		\add_filter( 'render_block_form-block/form', [ $this, 'add_message_container' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_method' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_object_inputs' ], 10, 2 );
 		\add_filter( 'render_block_form-block/form', [ $this, 'add_required_notice' ], 10, 2 );
@@ -207,6 +208,31 @@ final class Form {
 		$maximum_upload_size_per_file = (string) \apply_filters( 'form_block_form_maximum_upload_size_per_file', $maximum, $block_content, $block );
 		
 		return \str_replace( '<form', '<form data-max-upload="' . \esc_attr( $maximum_upload_size ) . '" data-max-upload-file="' . \esc_attr( $maximum_upload_size_per_file ) . '"', $block_content );
+	}
+	
+	/**
+	 * Add persistent, empty live regions for submit messages.
+	 * 
+	 * @param	string	$block_content The block content
+	 * @param	array	$block Block attributes
+	 * @return	string Updated block content
+	 */
+	public function add_message_container( string $block_content, array $block ): string {
+		$container = '<div class="form-block__message-container" role="status"></div>'
+			. '<div class="form-block__message-container" role="alert"></div>';
+			
+		/**
+		 * Filter the message container markup.
+		 * 
+		 * @since	1.8.0
+		 * 
+		 * @param	string	$container The message container markup
+		 * @param	string	$block_content The block content
+		 * @param	array	$block Block attributes
+		 */
+		$container = (string) \apply_filters( 'form_block_message_container', $container, $block_content, $block );
+		
+		return \str_replace( '</form>', $container . '</form>', $block_content );
 	}
 	
 	/**
