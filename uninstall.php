@@ -12,6 +12,7 @@ $GLOBALS['options'] = [
 	'form_block_local_file_map',
 	'form_block_maximum_upload_size',
 	'form_block_preserve_data_on_uninstall',
+	'form_block_time_honeypot',
 ];
 
 if ( \is_multisite() ) {

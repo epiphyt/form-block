@@ -178,7 +178,7 @@ final class Validation {
 	private function get_allowed_names( array $form_data ): array {
 		Form_Block::get_instance()->reset_block_name_attributes();
 		
-		$allowed_names = $this->system_field_names;
+		$allowed_names = $this->get_system_field_names();
 		$fields = $form_data['fields'];
 		
 		foreach ( $fields as $field ) {
@@ -186,6 +186,28 @@ final class Validation {
 		}
 		
 		return \array_unique( $allowed_names );
+	}
+	
+	/**
+	 * Get the list of field names used by the system.
+	 * 
+	 * @since	1.8.0
+	 * 
+	 * @return	string[] List of field names used by the system
+	 */
+	public function get_system_field_names(): array {
+		/**
+		 * Filter the list of field names used by the system.
+		 * 
+		 * System field names are ignored during validation and removed from
+		 * the validated data. Use this filter to register additional internal
+		 * field names (e.g. added by honeypot modules).
+		 * 
+		 * @since	1.8.0
+		 * 
+		 * @param	string[]	$system_field_names List of field names used by the system
+		 */
+		return (array) \apply_filters( 'form_block_system_field_names', $this->system_field_names );
 	}
 	
 	/**
@@ -281,7 +303,7 @@ final class Validation {
 		}
 		// phpcs:enable
 		
-		foreach ( $this->system_field_names as $name ) {
+		foreach ( $this->get_system_field_names() as $name ) {
 			unset( $validated[ $name ] );
 		}
 		

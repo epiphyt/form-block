@@ -106,6 +106,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= 1.8.0 =
+* Added: Time-based honeypot to reject spam submissions that are sent implausibly fast or that match common bot timing patterns (can be disabled in the settings)
+
 = 1.7.3 =
 * Fixed: Visibility of checkboxes/radio buttons in the editor in WordPress 7.0
 * Fixed: Visibility of hidden input field in the editor

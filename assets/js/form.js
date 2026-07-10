@@ -149,6 +149,8 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			clearInterval( interval );
 
 			const formData = new FormData( form );
+			// record the submit timestamp for the time-based honeypot
+			formData.set( '_submit_time', new Date().getTime() );
 			const url =
 				formBlockData.requestUrl !== form.action
 					? form.action
