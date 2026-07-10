@@ -13,6 +13,7 @@ use epiphyt\Form_Block\form_data\Data as Form_Data_Data;
 use epiphyt\Form_Block\form_data\Field;
 use epiphyt\Form_Block\form_data\File;
 use epiphyt\Form_Block\modules\Custom_Date;
+use epiphyt\Form_Block\modules\Flood_Control;
 use epiphyt\Form_Block\submissions\Submission_Handler;
 
 /**
@@ -49,6 +50,7 @@ final class Form_Block {
 	 */
 	public array $modules = [
 		Custom_Date::class,
+		Flood_Control::class,
 	];
 	
 	/**

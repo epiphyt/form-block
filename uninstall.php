@@ -7,6 +7,7 @@ if ( ! \defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 $GLOBALS['options'] = [
+	'form_block_flood_control_interval',
 	'form_block_form_ids',
 	'form_block_local_file_map',
 	'form_block_maximum_upload_size',
