@@ -797,7 +797,7 @@ final class Field {
 			// for fields with custom labels, add the actual value as well
 			if ( ! empty( $field_data['value'] ) && $field_data['value'] !== $label ) {
 				/* translators: defined field value */
-				$return_value .= ' ' . \sprintf( \__( '(Value: %s)', 'form-block' ), $field_data['value'] );
+				$return_value .= ' ' . \sprintf( \__( '(Value: %s)', 'form-block' ), \wp_strip_all_tags( $field_data['value'] ) );
 			}
 		}
 		
