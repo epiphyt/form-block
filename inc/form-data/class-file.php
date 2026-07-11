@@ -130,7 +130,7 @@ final class File {
 		\header( 'Content-Transfer-Encoding: Binary' );
 		\ob_clean();
 		\ob_flush();
-		\readfile( self::get_hash_data( $hash )['path'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile
+		\readfile( $data['path'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile
 		exit;
 	}
 	
@@ -268,6 +268,12 @@ final class File {
 			
 			$filename = self::set_hashed_filename( $file['name'] );
 			$new_path = self::get_directory()['base_dir'] . '/' . $filename;
+			
+			// only record the file once it is actually in place
+			if ( ! $wp_filesystem->move( $file['path'], $new_path ) ) {
+				continue;
+			}
+			
 			$hash = self::set_hash_map( $new_path, $file['name'] );
 			$url = \home_url( '?' . \http_build_query( [ 'form_block_file' => $hash ] ) );
 			$local_files[ $file_key ] = [
@@ -277,8 +283,6 @@ final class File {
 				'path' => $new_path,
 				'url' => $url,
 			];
-			
-			$wp_filesystem->move( $file['path'], $new_path );
 		}
 		
 		if ( Local_Storage::is_savable( $form_id ) ) {
