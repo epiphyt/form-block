@@ -113,10 +113,18 @@ final class File {
 			\auth_redirect();
 		}
 		
+		if ( ! \current_user_can( 'manage_options' ) ) {
+			\wp_die(
+				\esc_html__( 'You are not allowed to access this file.', 'form-block' ),
+				'',
+				[ 'response' => 403 ]
+			);
+		}
+		
 		$hash = \sanitize_text_field( \wp_unslash( $_GET['form_block_file'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$data = self::get_hash_data( $hash );
 		
-		\header( 'Content-Disposition: attachment; filename="' . $data['filename'] . '"' );
+		\header( 'Content-Disposition: attachment; filename="' . \sanitize_file_name( $data['filename'] ) . '"' );
 		\header( 'Content-Length: ' . \filesize( $data['path'] ) );
 		\header( 'Content-Type: application/octet-stream' );
 		\header( 'Content-Transfer-Encoding: Binary' );
