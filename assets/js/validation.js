@@ -371,7 +371,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				! form.hasAttribute( 'data-no-ajax' ) ||
 				! form.getAttribute( 'data-no-ajax' )
 			) {
-				formBlockAllowSubmit[ form ] = true;
+				formBlockAllowSubmit.set( form, true );
 				const invalidFieldNotice = form.querySelector(
 					'.form-block__invalid-field-notice'
 				);

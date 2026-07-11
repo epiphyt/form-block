@@ -2,11 +2,11 @@
  * Form related functions.
  */
 document.addEventListener( 'DOMContentLoaded', () => {
-	window.formBlockAllowSubmit = {};
+	window.formBlockAllowSubmit = new Map();
 	const forms = document.querySelectorAll( '.wp-block-form-block-form' );
 
 	for ( const form of forms ) {
-		formBlockAllowSubmit[ form ] = true;
+		formBlockAllowSubmit.set( form, true );
 		getNonce( form );
 		form.addEventListener( 'submit', submitForm );
 	}
@@ -112,11 +112,11 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 		event.preventDefault();
 
-		if ( ! formBlockAllowSubmit[ form ] ) {
+		if ( ! formBlockAllowSubmit.get( form ) ) {
 			return;
 		}
 
-		formBlockAllowSubmit[ form ] = false;
+		formBlockAllowSubmit.set( form, false );
 
 		// clear any previous message, but keep the (persistent) live regions
 		// in the DOM so screen readers keep observing them for changes
@@ -140,7 +140,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			}
 
 			if ( ! formBlockIsValidated ) {
-				formBlockAllowSubmit[ form ] = false;
+				formBlockAllowSubmit.set( form, false );
 
 				return;
 			}
@@ -166,7 +166,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 					return;
 				}
 
-				formBlockAllowSubmit[ form ] = false;
+				formBlockAllowSubmit.set( form, false );
 
 				if ( xhr.status === 200 ) {
 					try {
