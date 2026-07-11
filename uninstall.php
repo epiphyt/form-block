@@ -12,6 +12,7 @@ $GLOBALS['options'] = [
 	'form_block_local_file_map',
 	'form_block_maximum_upload_size',
 	'form_block_preserve_data_on_uninstall',
+	'form_block_submissions_auto_delete',
 	'form_block_time_honeypot',
 ];
 
@@ -51,5 +52,17 @@ function delete_data(): void {
 		}
 		
 		\delete_option( $option );
+	}
+	
+	// remove locally stored uploads
+	$upload_dir = \wp_get_upload_dir();
+	$files_dir = $upload_dir['basedir'] . '/form-block';
+	
+	if ( \is_dir( $files_dir ) ) {
+		require_once \ABSPATH . 'wp-admin/includes/file.php';
+		\WP_Filesystem();
+		global $wp_filesystem;
+		
+		$wp_filesystem->delete( $files_dir, true );
 	}
 }
