@@ -96,12 +96,12 @@ export default function Controls( props ) {
 
 		addFilter(
 			'formBlock.input.elementProps',
-			'formBlock/input-controls/element-props',
+			'formBlock/input-controls/element-props/' + attributeName,
 			( elementProps, blockProps ) => {
-				let newProps = { ...elementProps };
-				newProps[ attributeName ] = blockProps[ attributeName ];
-
-				return newProps;
+				return {
+					...elementProps,
+					[ attributeName ]: blockProps[ attributeName ],
+				};
 			}
 		);
 
