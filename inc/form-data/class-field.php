@@ -729,7 +729,11 @@ final class Field {
 			}
 			
 			if ( ! empty( $field['fields'] ) ) {
-				return self::get_title_by_name( $name, $field['fields'], false );
+				$field_title = self::get_title_by_name( $name, $field['fields'], false );
+				
+				if ( $field_title !== $name ) {
+					return $field_title;
+				}
 			}
 		}
 		
