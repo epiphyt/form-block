@@ -28,7 +28,7 @@ export const attributes = applyFilters( 'formBlock.data.attributes', {
 			'The number of columns of the form element.',
 			'form-block'
 		),
-		label: _x( 'Cols', 'HTML attribute name', 'form-block-pro' ),
+		label: _x( 'Cols', 'HTML attribute name', 'form-block' ),
 		linkOverride: __(
 			'https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#cols',
 			'form-block'
@@ -85,7 +85,7 @@ export const attributes = applyFilters( 'formBlock.data.attributes', {
 			'The number of rows of the form element.',
 			'form-block'
 		),
-		label: _x( 'Rows', 'HTML attribute name', 'form-block-pro' ),
+		label: _x( 'Rows', 'HTML attribute name', 'form-block' ),
 		linkOverride: __(
 			'https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#rows',
 			'form-block'
