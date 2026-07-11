@@ -245,10 +245,12 @@ final class Data {
 		 * @param	array	$files Files data
 		 */
 		$success = (array) \apply_filters( 'form_block_submit_data', [], $this->form_id, $fields, $files );
+		$states = \array_values( $success );
 		
-		if ( \in_array( false, \array_values( $success ), true ) ) {
+		// fail only if no method succeeded; a partial success still counts
+		if ( ! empty( $states ) && ! \in_array( true, $states, true ) ) {
 			\wp_send_json_error( [
-				'message' => \esc_html__( 'Form submission failed for at least one recipient.', 'form-block' ),
+				'message' => \esc_html__( 'Form submission failed. Please try again later.', 'form-block' ),
 			] );
 		}
 		
