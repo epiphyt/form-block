@@ -331,7 +331,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				}
 			}
 
-			if ( !!! validatorResult.valid ) {
+			if ( ! validatorResult.valid ) {
 				event.preventDefault();
 
 				if ( invalidFields.length > 1 ) {
