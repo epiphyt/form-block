@@ -135,7 +135,7 @@ const adjustMultiFieldErrors = ( data ) => {
 	data.field
 		.closest( '.form-block__element' )
 		.querySelector( '.inline-error' )
-		.remove();
+		?.remove();
 	data.field.ariaInvalid = true;
 };
 
