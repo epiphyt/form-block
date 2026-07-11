@@ -382,17 +382,36 @@ final class Form_Block {
 			];
 		}
 		
-		$path = $upload_dir['basedir'] . '/form-block' . ( ! empty( $sub_dir ) ? '/' . \ltrim( $sub_dir ) : '' );
+		$base_path = $upload_dir['basedir'] . '/form-block';
+		$path = $base_path . ( ! empty( $sub_dir ) ? '/' . \ltrim( $sub_dir ) : '' );
 		$url = $upload_dir['baseurl'] . '/form-block' . ( ! empty( $sub_dir ) ? '/' . \ltrim( $sub_dir ) : '' );
 		
 		if ( ! \file_exists( $path ) ) {
 			\wp_mkdir_p( $path );
 		}
 		
+		self::add_directory_index( $base_path );
+		self::add_directory_index( $path );
+		
 		return [
 			'base_dir' => $path,
 			'base_url' => $url,
 		];
+	}
+	
+	/**
+	 * Add a silent index.php to a directory to prevent direct listing.
+	 * 
+	 * @param	string	$directory Directory path
+	 */
+	private static function add_directory_index( string $directory ): void {
+		$index_file = \trailingslashit( $directory ) . 'index.php';
+		
+		if ( \file_exists( $index_file ) ) {
+			return;
+		}
+		
+		\file_put_contents( $index_file, '<?php' . \PHP_EOL . '// Silence is golden.' . \PHP_EOL ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 	}
 	
 	/**
