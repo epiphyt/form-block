@@ -195,8 +195,8 @@ final class Form_Block {
 			$element->removeAttribute( 'min' );
 		}
 		
-		if ( $element->hasAttribute( 'nax' ) && empty( $element->getAttribute( 'nax' ) ) ) {
-			$element->removeAttribute( 'nax' );
+		if ( $element->hasAttribute( 'max' ) && empty( $element->getAttribute( 'max' ) ) ) {
+			$element->removeAttribute( 'max' );
 		}
 		
 		if ( $element->hasAttribute( 'minlength' ) && empty( $element->getAttribute( 'minlength' ) ) ) {
