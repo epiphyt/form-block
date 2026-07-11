@@ -145,7 +145,7 @@ final class File {
 	 */
 	public static function get_output( array $file, array $form_data, array &$attachments, string $format_type = 'plain' ): string {
 		$file_data = Field::get_by_name( $file['validated']['field_name'], $form_data['fields'] );
-		$new_path = \sys_get_temp_dir() . $file['validated']['name'];
+		$new_path = \trailingslashit( \sys_get_temp_dir() ) . $file['validated']['name'];
 		
 		/**
 		 * Filter the new path of an uploaded file.
