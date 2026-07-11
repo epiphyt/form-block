@@ -49,7 +49,7 @@ final class Data {
 				$reusable_post = \get_post( $block['attrs']['ref'] );
 				
 				if ( ! $reusable_post instanceof WP_Post ) {
-					return $data;
+					continue;
 				}
 				
 				$reusable_blocks = \parse_blocks( $reusable_post->post_content );
