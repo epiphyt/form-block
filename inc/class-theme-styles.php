@@ -78,32 +78,27 @@ final class Theme_Styles {
 	 * Register frontend styles.
 	 */
 	public function register_styles(): void {
-		$is_debug = \defined( 'WP_DEBUG' ) && \WP_DEBUG;
-		$suffix = ( $is_debug ? '' : '.min' );
+		$suffix = Assets::is_debug() ? '' : '.min';
 		
 		if ( $this->is_theme( 'Twenty Twenty-Five' ) ) {
-			$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-five' . $suffix . '.css';
-			$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-five' . $suffix . '.css';
+			$asset = Assets::get_asset( 'assets/style/build/twenty-twenty-five' . $suffix . '.css' );
 			
-			\wp_register_style( 'form-block-twenty-twenty-five', $file_url, [ 'form-block' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION );
+			\wp_register_style( 'form-block-twenty-twenty-five', $asset['url'], [ 'form-block' ], $asset['version'] );
 		}
 		else if ( $this->is_theme( 'Twenty Twenty-Four' ) ) {
-			$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-four' . $suffix . '.css';
-			$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-four' . $suffix . '.css';
+			$asset = Assets::get_asset( 'assets/style/build/twenty-twenty-four' . $suffix . '.css' );
 			
-			\wp_register_style( 'form-block-twenty-twenty-four', $file_url, [ 'form-block' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION );
+			\wp_register_style( 'form-block-twenty-twenty-four', $asset['url'], [ 'form-block' ], $asset['version'] );
 		}
 		else if ( $this->is_theme( 'Twenty Twenty-Three' ) ) {
-			$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-three' . $suffix . '.css';
-			$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-three' . $suffix . '.css';
+			$asset = Assets::get_asset( 'assets/style/build/twenty-twenty-three' . $suffix . '.css' );
 			
-			\wp_register_style( 'form-block-twenty-twenty-three', $file_url, [ 'form-block' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION );
+			\wp_register_style( 'form-block-twenty-twenty-three', $asset['url'], [ 'form-block' ], $asset['version'] );
 		}
 		else if ( $this->is_theme( 'Twenty Twenty-Two' ) ) {
-			$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-two' . $suffix . '.css';
-			$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/twenty-twenty-two' . $suffix . '.css';
+			$asset = Assets::get_asset( 'assets/style/build/twenty-twenty-two' . $suffix . '.css' );
 			
-			\wp_register_style( 'form-block-twenty-twenty-two', $file_url, [ 'form-block' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION );
+			\wp_register_style( 'form-block-twenty-twenty-two', $asset['url'], [ 'form-block' ], $asset['version'] );
 		}
 	}
 }

@@ -1,6 +1,7 @@
 <?php
 namespace epiphyt\Form_Block\blocks;
 
+use epiphyt\Form_Block\Assets;
 use epiphyt\Form_Block\Form_Block;
 
 /**
@@ -313,16 +314,16 @@ final class Form {
 	 * Enqueue block styles.
 	 */
 	public function enqueue_block_styles(): void {
-		$is_debug = \defined( 'WP_DEBUG' ) && \WP_DEBUG;
-		$suffix = ( $is_debug ? '' : '.min' );
+		$suffix = Assets::is_debug() ? '' : '.min';
+		$asset = Assets::get_asset( 'assets/style/build/form' . $suffix . '.css' );
 		
 		\wp_enqueue_block_style(
 			'form-block/form',
 			[
 				'deps' => [],
 				'handle' => 'form-block',
-				'src' => \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/form' . $suffix . '.css',
-				'ver' => $is_debug ? \filemtime( \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/style/build/form' . $suffix . '.css' ) : \FORM_BLOCK_VERSION,
+				'src' => $asset['url'],
+				'ver' => $asset['version'],
 			]
 		);
 	}
@@ -391,22 +392,20 @@ final class Form {
 	 * Register frontend assets.
 	 */
 	public function register_frontend_assets(): void {
-		$is_debug = \defined( 'WP_DEBUG' ) && \WP_DEBUG;
-		$suffix = ( $is_debug ? '' : '.min' );
-		$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'multi-field' . $suffix . '.js';
-		$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'multi-field' . $suffix . '.js';
+		$suffix = Assets::is_debug() ? '' : '.min';
+		$js_dir = Assets::is_debug() ? 'assets/js/' : 'assets/js/build/';
 		
-		\wp_register_script( 'form-block-multi-field', $file_url, [ 'form-block-form' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION, true );
+		$asset = Assets::get_asset( $js_dir . 'multi-field' . $suffix . '.js' );
 		
-		$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/js/vendor/validator' . $suffix . '.js';
-		$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/js/vendor/validator' . $suffix . '.js';
+		\wp_register_script( 'form-block-multi-field', $asset['url'], [ 'form-block-form' ], $asset['version'], true );
 		
-		\wp_register_script( 'form-block-validator', $file_url, [], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION, true );
+		$asset = Assets::get_asset( 'assets/js/vendor/validator' . $suffix . '.js' );
 		
-		$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'validation' . $suffix . '.js';
-		$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'validation' . $suffix . '.js';
+		\wp_register_script( 'form-block-validator', $asset['url'], [], $asset['version'], true );
 		
-		\wp_register_script( 'form-block-validation', $file_url, [ 'form-block-validator' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION, true );
+		$asset = Assets::get_asset( $js_dir . 'validation' . $suffix . '.js' );
+		
+		\wp_register_script( 'form-block-validation', $asset['url'], [ 'form-block-validator' ], $asset['version'], true );
 		\wp_localize_script( 'form-block-validation', 'formBlockValidationData', [
 			/* translators: invalid field count */
 			'validationInvalidFieldNotice' => \esc_js( \__( 'Could not submit form because %d fields are invalid.', 'form-block' ) ),
@@ -432,10 +431,9 @@ final class Form {
 		] );
 		\wp_add_inline_script( 'form-block-validation', 'let formBlockIsValidated = false;', 'before' );
 		
-		$file_path = \plugin_dir_path( \EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'form' . $suffix . '.js';
-		$file_url = \plugin_dir_url( \EPI_FORM_BLOCK_FILE ) . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'form' . $suffix . '.js';
+		$asset = Assets::get_asset( $js_dir . 'form' . $suffix . '.js' );
 		
-		\wp_register_script( 'form-block-form', $file_url, [ 'form-block-validator', 'form-block-validation' ], $is_debug ? \filemtime( $file_path ) : \FORM_BLOCK_VERSION, true );
+		\wp_register_script( 'form-block-form', $asset['url'], [ 'form-block-validator', 'form-block-validation' ], $asset['version'], true );
 		\wp_localize_script( 'form-block-form', 'formBlockData', [
 			'ajaxUrl' => \admin_url( 'admin-ajax.php' ),
 			'i18n' => [

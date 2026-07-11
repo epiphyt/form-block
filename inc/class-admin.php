@@ -47,37 +47,29 @@ final class Admin {
 			return;
 		}
 		
-		$is_debug = ( \defined( 'WP_DEBUG' ) && \WP_DEBUG ) || ( \defined( 'SCRIPT_DEBUG' ) && \SCRIPT_DEBUG );
-		$suffix = $is_debug ? '' : '.min';
+		$suffix = Assets::is_debug() ? '' : '.min';
+		$js_dir = Assets::is_debug() ? 'assets/js/' : 'assets/js/build/';
 		
 		if ( $screen->id === 'settings_page_form-block' || $screen->id === 'tools_page_form-block-submissions' ) {
-			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/style/build/admin' . $suffix . '.css';
-			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/style/build/admin' . $suffix . '.css'; // @phpstan-ignore constant.notFound
-			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
+			$asset = Assets::get_asset( 'assets/style/build/admin' . $suffix . '.css' );
 			
-			\wp_enqueue_style( 'form-block-admin', $asset_url, [], $version );
+			\wp_enqueue_style( 'form-block-admin', $asset['url'], [], $asset['version'] );
 		}
 		
 		if ( $screen->id === 'settings_page_form-block' ) {
-			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'tabs' . $suffix . '.js';
-			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'tabs' . $suffix . '.js'; // @phpstan-ignore constant.notFound
-			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
+			$asset = Assets::get_asset( $js_dir . 'tabs' . $suffix . '.js' );
 			
-			\wp_enqueue_script( 'form-block-admin-tabs', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
+			\wp_enqueue_script( 'form-block-admin-tabs', $asset['url'], [], $asset['version'], [ 'strategy' => 'defer' ] );
 		}
 		
 		if ( $screen->id === 'tools_page_form-block-submissions' ) {
-			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'snackbar' . $suffix . '.js';
-			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'snackbar' . $suffix . '.js'; // @phpstan-ignore constant.notFound
-			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
+			$asset = Assets::get_asset( $js_dir . 'snackbar' . $suffix . '.js' );
 			
-			\wp_enqueue_script( 'form-block-admin-snackbar', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
+			\wp_enqueue_script( 'form-block-admin-snackbar', $asset['url'], [], $asset['version'], [ 'strategy' => 'defer' ] );
 			
-			$asset_path = \EPI_FORM_BLOCK_BASE . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'submissions' . $suffix . '.js';
-			$asset_url = \EPI_FORM_BLOCK_URL . 'assets/js/' . ( $is_debug ? '' : 'build/' ) . 'submissions' . $suffix . '.js'; // @phpstan-ignore constant.notFound
-			$version = $is_debug ? (string) \filemtime( $asset_path ) : \FORM_BLOCK_VERSION;
+			$asset = Assets::get_asset( $js_dir . 'submissions' . $suffix . '.js' );
 			
-			\wp_enqueue_script( 'form-block-admin-submissions', $asset_url, [], $version, [ 'strategy' => 'defer' ] );
+			\wp_enqueue_script( 'form-block-admin-submissions', $asset['url'], [], $asset['version'], [ 'strategy' => 'defer' ] );
 			\wp_localize_script(
 				'form-block-admin-submissions',
 				'formBlockSubmissions',
