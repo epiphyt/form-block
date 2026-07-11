@@ -301,6 +301,11 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		messageContainer.textContent = message;
 		// then replace all newlines with <br />
 		messageContainer.innerHTML = nl2br( messageContainer.innerHTML );
+		// explicitly allow quotation marks
+		messageContainer.innerHTML = messageContainer.innerHTML.replaceAll(
+			'&amp;quot;',
+			'&quot;'
+		);
 
 		if ( isHtml ) {
 			messageContainer.innerHTML = message;
