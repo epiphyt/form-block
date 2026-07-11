@@ -62,7 +62,7 @@ final class Submission_Handler {
 				\delete_option( self::OPTION_KEY_PREFIX . '_' . $form_id );
 			}
 			else {
-				\update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, $submissions[ $form_id ] );
+				\update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, $submissions[ $form_id ], false );
 			}
 		}
 	}
@@ -116,7 +116,7 @@ final class Submission_Handler {
 		$submission = new Submission( $form_id, $data );
 		$form_submissions = self::get_submissions( $form_id );
 		$form_submissions[] = $submission;
-		$success = \update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, $form_submissions );
+		$success = \update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, $form_submissions, false );
 		
 		/**
 		 * Fires after submission is created.
@@ -175,7 +175,7 @@ final class Submission_Handler {
 			return \delete_option( self::OPTION_KEY_PREFIX . '_' . $form_id );
 		}
 		
-		return \update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, \array_values( $form_submissions ) );
+		return \update_option( self::OPTION_KEY_PREFIX . '_' . $form_id, \array_values( $form_submissions ), false );
 	}
 	
 	/**

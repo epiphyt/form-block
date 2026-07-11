@@ -22,7 +22,12 @@ final class Local_Storage {
 		\add_filter( 'form_block_data_form', [ self::class, 'update_form_data' ], 10, 2 );
 		\add_filter( 'form_block_submit_data', [ self::class, 'save' ], 10, 4 );
 		
-		if ( ! empty( self::has_submissions() ) ) {
+		// registering the admin page is only relevant in the dashboard
+		if ( ! \is_admin() || \wp_doing_ajax() ) {
+			return;
+		}
+		
+		if ( self::has_submissions() ) {
 			Submission_Page::init();
 		}
 	}
