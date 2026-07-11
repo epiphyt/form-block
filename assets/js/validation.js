@@ -253,6 +253,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			const form = event.currentTarget;
 			const fileFields = form.querySelectorAll( '[type="file"]' );
 			let invalidFields = [];
+			const invalidGroups = new Set();
 			const validatorResult = validator.checkAll( this );
 
 			validatorResult.fields
@@ -260,6 +261,18 @@ document.addEventListener( 'DOMContentLoaded', function () {
 				.forEach( function ( field, index, array ) {
 					if ( field.field.closest( '.form-block__input-group' ) ) {
 						adjustMultiFieldErrors( field );
+
+						// count each invalid group once so it is focused/announced
+						if ( ! field.valid ) {
+							const group = field.field.closest(
+								'.form-block__input-group'
+							);
+
+							if ( ! invalidGroups.has( group ) ) {
+								invalidGroups.add( group );
+								invalidFields.push( field );
+							}
+						}
 
 						return;
 					} else if ( field.field.type !== 'file' ) {
