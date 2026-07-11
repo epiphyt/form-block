@@ -409,7 +409,7 @@ final class Validation {
 		$filesize = 0;
 		$maximum_file_size = \wp_convert_hr_to_bytes( \ini_get( 'upload_max_filesize' ) );
 		$maximum_post_size = \wp_convert_hr_to_bytes( \ini_get( 'post_max_size' ) );
-		$maximum_upload_size = \max( $maximum_file_size, $maximum_post_size );
+		$maximum_upload_size = \min( $maximum_file_size, $maximum_post_size );
 		
 		if ( isset( $_SERVER['CONTENT_LENGTH'] ) || isset( $_SERVER['HTTP_CONTENT_LENGTH'] ) ) {
 			$content_length = (int) \sanitize_text_field( \wp_unslash( $_SERVER['CONTENT_LENGTH'] ?? $_SERVER['HTTP_CONTENT_LENGTH'] ?? $maximum_upload_size ) );
