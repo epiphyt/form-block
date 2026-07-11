@@ -831,6 +831,10 @@ final class Field {
 	public static function strip_special_characters( string $value ): string {
 		$replacements = [
 			' ' => '-',
+			'ẞ' => 'ss',
+			'Ä' => 'ae',
+			'Ö' => 'oe',
+			'Ü' => 'ue',
 			'ß' => 'ss',
 			'ä' => 'ae',
 			'ö' => 'oe',
