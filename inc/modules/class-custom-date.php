@@ -29,6 +29,7 @@ final class Custom_Date {
 	 */
 	public function init(): void {
 		\add_action( 'enqueue_block_editor_assets', [ self::class, 'enqueue_editor_assets' ] );
+		\add_filter( 'form_block_field_attributes_validation', [ self::class, 'validate_completeness' ], 10, 3 );
 		\add_filter( 'form_block_output_field_value', [ self::class, 'set_output_format' ], 10, 3 );
 		\add_filter( 'render_block_form-block/input', [ self::class, 'set_markup' ], 15, 2 );
 	}
@@ -361,5 +362,45 @@ final class Custom_Date {
 		}
 		
 		return $output;
+	}
+	
+	/**
+	 * Validate that a custom date field is either empty or completely filled.
+	 * 
+	 * @param	array	$errors Current error list
+	 * @param	mixed	$value The field value
+	 * @param	array	$attributes Form field attributes
+	 * @return	array Updated error list
+	 */
+	public static function validate_completeness( array $errors, mixed $value, array $attributes ): array {
+		if (
+			empty( $attributes['type'] )
+			|| ! \in_array( $attributes['type'], self::$field_types, true )
+			|| ! \is_array( $value )
+		) {
+			return $errors;
+		}
+		
+		$filled = [];
+		
+		foreach ( $value as $sub_type => $sub_value ) {
+			if ( $sub_value !== '' && $sub_value !== null && $sub_value !== [] ) {
+				$filled[] = $sub_type;
+			}
+		}
+		
+		// an empty field is only invalid when required, which is checked elsewhere
+		if ( empty( $filled ) ) {
+			return $errors;
+		}
+		
+		if ( ! empty( \array_diff( self::get_field_order( $attributes['type'] ), $filled ) ) ) {
+			$errors[] = [
+				'message' => \__( 'Please fill in all date fields.', 'form-block' ),
+				'type' => 'custom-date',
+			];
+		}
+		
+		return $errors;
 	}
 }
