@@ -116,14 +116,13 @@ final class Antispam_Bee {
 		
 		$reaction_type = self::get_reaction_type();
 		$item = [
-			'comment_agent' => \sanitize_text_field( \wp_unslash( $_SERVER['HTTP_USER_AGENT'] ?? '' ) ),
-			'comment_author' => '',
-			'comment_author_email' => $email,
-			'comment_author_IP' => \sanitize_text_field( \wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '' ) ),
-			'comment_author_url' => $this->get_url_field_value( $fields, $fields_config ),
-			'comment_content' => $content,
-			'comment_type' => $reaction_type,
+			'author' => '',
+			'body' => $content,
+			'email' => $email,
+			'ip' => \sanitize_text_field( \wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '' ) ),
 			'reaction_type' => $reaction_type,
+			'url' => $this->get_url_field_value( $fields, $fields_config ),
+			'useragent' => \sanitize_text_field( \wp_unslash( $_SERVER['HTTP_USER_AGENT'] ?? '' ) ),
 		];
 		
 		/**
