@@ -86,16 +86,28 @@ final class Submission_List_Table extends WP_List_Table {
 					\esc_html( $item['label'] ?? \__( 'Contact form', 'form-block' ) )
 				);
 				
+				/**
+				 * Filter the content before the submission data details element.
+				 * 
+				 * @since	1.8.0
+				 * 
+				 * @param	string	$before_output Current output before the details element
+				 * @param	array{data: mixed[], date: string, id: string, label?: string, types?: string[]}	$item Current item
+				 */
+				$before_output = (string) \apply_filters( 'form_block_submission_data_before', '', $item );
+				
 				return \sprintf(
 					'%1$s
+					%2$s
 					<details class="form-block__data-details">
-						<summary class="button">%2$s</summary>
+						<summary class="button">%3$s</summary>
 						<div class="form-block__field-output">
-							%3$s
 							%4$s
+							%5$s
 						</div>
 					</details>',
 					$title,
+					$before_output,
 					\esc_html__( 'View submitted data', 'form-block' ),
 					$field_output,
 					$file_output

@@ -4,6 +4,7 @@ declare( strict_types = 1 );
 namespace epiphyt\Form_Block\integration;
 
 use AntispamBee\Handlers\Rules;
+use AntispamBee\Helpers\SpamReasonTextHelper;
 use epiphyt\Form_Block\Admin;
 use epiphyt\Form_Block\Form_Block;
 use epiphyt\Form_Block\form_data\Data;
@@ -54,6 +55,7 @@ final class Antispam_Bee {
 		\add_action( 'admin_init', [ $this, 'register_settings' ] );
 		\add_action( 'plugins_loaded', [ $this, 'integrate' ] );
 		\add_filter( 'antispam_bee_disallow_ajax_calls', [ $this, 'allow_ajax_init' ] );
+		\add_filter( 'form_block_submission_data_before', [ $this, 'get_spam_reasons' ], 10, 2 );
 	}
 	
 	/**
@@ -262,6 +264,35 @@ final class Antispam_Bee {
 				'asb-lang-spam',
 				'asb-regexp',
 			]
+		);
+	}
+	
+	/**
+	 * Get the spam reasons of a submission above its data details.
+	 * 
+	 * @param	string	$content Current content
+	 * @param	array	$item Current submission item
+	 * @return	string Updated content
+	 */
+	public function get_spam_reasons( string $content, array $item ): string {
+		if ( ! \in_array( self::SPAM_TYPE, $item['types'] ?? [], true ) ) {
+			return $content;
+		}
+		
+		$reasons = $item['data']['spam_reasons'] ?? [];
+		
+		if ( empty( $reasons ) ) {
+			return $content;
+		}
+		
+		if ( self::is_available() && \class_exists( '\AntispamBee\Helpers\SpamReasonTextHelper' ) ) {
+			$reasons = SpamReasonTextHelper::get_texts_by_slugs( $reasons );
+		}
+		
+		return $content . \sprintf(
+			'<p class="form-block__spam-reasons"><strong>%1$s</strong> %2$s</p>',
+			\esc_html__( 'Spam reasons:', 'form-block' ),
+			\esc_html( \implode( ', ', \array_map( 'strval', $reasons ) ) )
 		);
 	}
 	
