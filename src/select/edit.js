@@ -210,6 +210,7 @@ export default function SelectEdit( props ) {
 					/>
 					{ isOptionModalOpen ? (
 						<Modal
+							isDismissible={ false }
 							onRequestClose={ () =>
 								setIsOptionModalOpen( false )
 							}

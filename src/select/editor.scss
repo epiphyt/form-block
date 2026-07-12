@@ -26,3 +26,7 @@
 		margin-top: $grid-unit-20 !important;
 	}
 }
+
+.form-block__select-option-wrapper + .form-block__inline-block-container {
+	margin-block-start: $grid-unit-20;
+}

@@ -3,6 +3,7 @@ import { createBlocksFromInnerBlocksTemplate } from '@wordpress/blocks';
 import {
 	Button,
 	Flex,
+	FlexBlock,
 	FlexItem,
 	Modal,
 	TextControl,
@@ -302,40 +303,55 @@ export default function Wizard( props ) {
 			onRequestClose={ () => setIsWizardOpen( false ) }
 			title={ __( 'Form creation wizard', 'form-block' ) }
 		>
-			<TextControl
-				help={ __(
-					'Define the field labels of the fields you need. Separate multiple field labels with a comma. Add an * to a label to automatically mark the field as required.',
-					'form-block'
-				) }
-				label={ __( 'Which form fields do you need?', 'form-block' ) }
-				onChange={ ( fields ) => setFields( fields ) }
-				onKeyPress={ onKeyPress }
-			/>
-			<ToggleControl
-				checked={ includeConsentCheckbox }
-				help={ __(
-					'Add a checkbox the user has to check to give consent to the processing of the data provided in the form.',
-					'form-block'
-				) }
-				label={ __( 'Consent checkbox', 'form-block' ) }
-				onChange={ ( value ) => setIncludeConsentCheckbox( !! value ) }
-			/>
+			<Flex direction="column" gap="2">
+				<FlexBlock>
+					<TextControl
+						help={ __(
+							'Define the field labels of the fields you need. Separate multiple field labels with a comma. Add an * to a label to automatically mark the field as required.',
+							'form-block'
+						) }
+						label={ __(
+							'Which form fields do you need?',
+							'form-block'
+						) }
+						onChange={ ( fields ) => setFields( fields ) }
+						onKeyPress={ onKeyPress }
+					/>
+				</FlexBlock>
+				<FlexBlock>
+					<ToggleControl
+						checked={ includeConsentCheckbox }
+						help={ __(
+							'Add a checkbox the user has to check to give consent to the processing of the data provided in the form.',
+							'form-block'
+						) }
+						label={ __( 'Consent checkbox', 'form-block' ) }
+						onChange={ ( value ) =>
+							setIncludeConsentCheckbox( !! value )
+						}
+					/>
+				</FlexBlock>
+				<FlexBlock>
+					<Flex gap="1" justify="flex-start">
+						<FlexItem>
+							<Button
+								onClick={ () => onInsert() }
+								variant="primary"
+							>
+								{ __( 'Create form', 'form-block' ) }
+							</Button>
+						</FlexItem>
 
-			<Flex gap="1" justify="flex-start">
-				<FlexItem>
-					<Button onClick={ () => onInsert() } variant="primary">
-						{ __( 'Create form', 'form-block' ) }
-					</Button>
-				</FlexItem>
-
-				<FlexItem>
-					<Button
-						onClick={ () => setIsWizardOpen( false ) }
-						variant="secondary"
-					>
-						{ __( 'Cancel', 'form-block' ) }
-					</Button>
-				</FlexItem>
+						<FlexItem>
+							<Button
+								onClick={ () => setIsWizardOpen( false ) }
+								variant="secondary"
+							>
+								{ __( 'Cancel', 'form-block' ) }
+							</Button>
+						</FlexItem>
+					</Flex>
+				</FlexBlock>
 			</Flex>
 		</Modal>
 	);
