@@ -1,0 +1,10 @@
+__pycache__
+.DS_Store
+.phpunit.cache
+.vscode
+*.css
+*.map
+*.min.js
+build
+node_modules
+vendor

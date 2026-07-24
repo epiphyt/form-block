@@ -24,10 +24,20 @@
 		"szepeviktor/phpstan-wordpress": "^2.0",
 		"phpstan/extension-installer": "^1.4",
 		"swissspidy/phpstan-no-private": "^1.0",
-		"phpstan/phpstan-deprecation-rules": "^2.0"
+		"phpstan/phpstan-deprecation-rules": "^2.0",
+		"phpunit/phpunit": "^12.5",
+		"brain/monkey": "2.*",
+		"brain/faker": "dev-master"
 	},
 	"scripts": {
-		"phpstan": "phpstan analyse -v --memory-limit=2G"
+		"phpcs": "phpcs -s .",
+		"phpstan": "phpstan analyse -v --memory-limit=2G",
+		"phpunit": "phpunit",
+		"test": [
+			"@phpcs",
+			"@phpstan",
+			"@phpunit"
+		]
 	},
 	"config": {
 		"allow-plugins": {
