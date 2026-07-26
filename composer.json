@@ -27,7 +27,8 @@
 		"phpstan/phpstan-deprecation-rules": "^2.0",
 		"phpunit/phpunit": "^12.5",
 		"brain/monkey": "2.*",
-		"brain/faker": "dev-master"
+		"brain/faker": "dev-master",
+		"epiphyt/coding-standard": "^1.0"
 	},
 	"scripts": {
 		"phpcs": "phpcs -s .",
@@ -41,7 +42,8 @@
 	},
 	"config": {
 		"allow-plugins": {
-			"phpstan/extension-installer": true
+			"phpstan/extension-installer": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
 		}
 	}
 }
