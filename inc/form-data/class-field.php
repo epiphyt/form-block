@@ -831,18 +831,14 @@ final class Field {
 	public static function strip_special_characters( string $value ): string {
 		$replacements = [
 			' ' => '-',
-			'ẞ' => 'ss',
-			'Ä' => 'ae',
-			'Ö' => 'oe',
-			'Ü' => 'ue',
 			'ß' => 'ss',
 			'ä' => 'ae',
 			'ö' => 'oe',
 			'ü' => 'ue',
 		];
-		$value = \str_replace( \array_keys( $replacements ), \array_values( $replacements ), $value );
+		$value = \str_replace( \array_keys( $replacements ), \array_values( $replacements ), \mb_strtolower( $value ) );
 		$value = \preg_replace( '/<[^>]*>/', '', $value );
-		$value = \preg_replace( '/[^a-z0-9\-_\.\[\]]/', '', \mb_strtolower( $value ) );
+		$value = \preg_replace( '/[^a-z0-9\-_\.\[\]]/', '', $value );
 		
 		return $value;
 	}
