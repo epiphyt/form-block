@@ -2,7 +2,7 @@
 Contributors: epiphyt, kittmedia
 Tags: form, contact form, gutenberg, block editor, accessibility
 Requires at least: 6.7
-Stable tag: 1.7.3
+Stable tag: 1.8.0
 Tested up to: 7.0
 Requires PHP: 7.4
 License: GPL2
@@ -40,7 +40,6 @@ After submission, the form data will be sent to the email address you have set i
 
 There is much more planned for Form Block. Here is a small selection of features that are coming soon:
 
-* Flood Control
 * [Antispam Bee](https://wordpress.org/plugins/antispam-bee/) integration
 * Custom date picker
 * More customization options
@@ -53,9 +52,8 @@ There is also a Pro version of Form Block available. It offers additional featur
 * Custom recipient(s) for each form
 * Custom form action
 * Upload via drag and drop
-* Storing files in WordPress instead of attaching them to an email
-* Global defined consent checkbox
 * Field dependencies
+* Multi-step forms with sections
 * Advanced functionality for accessibility
 
 You can find more information at [https://formblock.pro/en/](https://formblock.pro/en/).
@@ -108,6 +106,16 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 = 1.8.0 =
 * Added: Time-based honeypot to reject spam submissions that are sent implausibly fast or that match common bot timing patterns (can be disabled in the settings)
+* Added: Flood control to only allow one request every X seconds (default: 30 seconds)
+* Added: Allow sorting select options
+* Added: Notice if a form has no/too many "reply-to" email input fields
+* Added: Download of files now require the same capability as viewing submissions
+* Added: Unit tests
+* Fixed: Announcing form errors to screen readers
+* Fixed: Validation if not every input for date with separate fields is filled
+* Fixed: Focus on date with separate fields if it's the only invalid field
+* Fixed: Potentially broken textarea blocks in the editor
+* Fixed: Many smaller bugs
 
 = 1.7.3 =
 * Fixed: Visibility of checkboxes/radio buttons in the editor in WordPress 7.0
