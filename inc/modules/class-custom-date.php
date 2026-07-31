@@ -56,6 +56,8 @@ final class Custom_Date {
 			foreach ( $field['separator'] as $position => $value ) {
 				if ( ! empty( $value ) ) {
 					$separators[ $position ] = $dom->createElement( 'span' );
+					// each sub-field has its own label, so a separator is purely decorative
+					$separators[ $position ]->setAttribute( 'aria-hidden', 'true' );
 					$separators[ $position ]->setAttribute( 'class', 'form-block__date-custom--separator is-' . $position );
 					$separators[ $position ]->textContent = $value;
 				}

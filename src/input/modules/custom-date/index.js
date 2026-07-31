@@ -118,7 +118,10 @@ export function CustomDate( { elementProps, ...props } ) {
 				{ fields.map( ( field, index ) => (
 					<Fragment key={ index }>
 						{ formBlockInputCustomDate[ field ].separator.before ? (
-							<FlexItem className="form-block__date-custom--separator is-before">
+							<FlexItem
+								aria-hidden="true"
+								className="form-block__date-custom--separator is-before"
+							>
 								{
 									formBlockInputCustomDate[ field ].separator
 										.before
@@ -150,7 +153,10 @@ export function CustomDate( { elementProps, ...props } ) {
 						</FlexBlock>
 
 						{ formBlockInputCustomDate[ field ].separator.after ? (
-							<FlexItem className="form-block__date-custom--separator is-after">
+							<FlexItem
+								aria-hidden="true"
+								className="form-block__date-custom--separator is-after"
+							>
 								{
 									formBlockInputCustomDate[ field ].separator
 										.after
