@@ -7,13 +7,50 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		'.form-block__data-details > summary'
 	);
 
+	/**
+	 * Move focus to a sensible element before a row is removed.
+	 *
+	 * The focused button is removed together with its row, so without this focus
+	 * would end up on the document body.
+	 *
+	 * @param {HTMLElement} row The row that is about to be removed
+	 */
+	const setFocusBeforeRemoval = ( row ) => {
+		const nextButton =
+			row.nextElementSibling?.querySelector( '.form-block__delete' ) ??
+			row.previousElementSibling?.querySelector( '.form-block__delete' );
+
+		if ( nextButton ) {
+			nextButton.focus();
+
+			return;
+		}
+
+		// there is no submission left, so fall back to the page heading
+		const heading = document.querySelector( '.form-block__submissions h2' );
+
+		if ( ! heading ) {
+			return;
+		}
+
+		heading.tabIndex = -1;
+		heading.focus();
+	};
+
 	const onDelete = async ( event ) => {
 		const button = event.currentTarget;
+
+		// the button stays operable while the request is running, so ignore any
+		// further activation instead of deleting the submission twice
+		if ( button.getAttribute( 'aria-disabled' ) === 'true' ) {
+			return;
+		}
+
 		const row = button.closest( 'tr' );
 		const id = button.getAttribute( 'data-id' );
 
 		button.classList.add( 'is-busy' );
-		button.setAttribute( 'aria-disabled', true );
+		button.setAttribute( 'aria-disabled', 'true' );
 
 		await fetch(
 			formBlockSubmissions.restRootUrl +
@@ -28,7 +65,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		)
 			.then( async ( response ) => {
 				button.classList.remove( 'is-busy' );
-				button.setAttribute( 'aria-disabled', false );
+				button.removeAttribute( 'aria-disabled' );
 
 				if ( ! response.ok ) {
 					const json = await response.json();
@@ -45,6 +82,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 				return response;
 			} )
 			.then( () => {
+				setFocusBeforeRemoval( row );
 				row.remove();
 				addSnackbarMessage(
 					formBlockSubmissions.submissionDeletedSuccess
