@@ -103,16 +103,16 @@ final class Time_Honeypot {
 		$submit_time = isset( $_POST[ self::FIELD_SUBMIT_TIME ] ) ? \sanitize_text_field( \wp_unslash( $_POST[ self::FIELD_SUBMIT_TIME ] ) ) : '';
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 		
-		// timestamps not available: ignore silently
+		// timestamps not available: cannot be checked
 		if ( ! \is_numeric( $load_time ) || ! \is_numeric( $page_load ) || ! \is_numeric( $submit_time ) ) {
-			\wp_send_json_success();
+			self::reject( $form_id );
 		}
 		
 		$elapsed = (float) $submit_time - (float) $load_time;
 		
-		// timestamps do not differ: ignore silently
+		// timestamps do not differ: cannot be checked
 		if ( $elapsed <= 0 ) {
-			\wp_send_json_success();
+			self::reject( $form_id );
 		}
 		
 		// suspicious ~30 seconds window (30 seconds + page loading time, ± tolerance)
@@ -120,26 +120,15 @@ final class Time_Honeypot {
 		$tolerance = self::TOLERANCE_SECONDS * 1000;
 		
 		if ( \abs( $elapsed - $suspicious_center ) <= $tolerance ) {
-			/**
-			 * Fires when a submission is flagged as suspicious by the time-based honeypot.
-			 * 
-			 * @since	1.8.0
-			 * 
-			 * @param	string	$form_id The form ID
-			 */
-			\do_action( 'form_block_time_honeypot_triggered', $form_id );
-			
-			\wp_send_json_error( [
-				'message' => \esc_html__( 'Your submission was flagged as suspicious activity. Please try submitting again.', 'form-block' ),
-			] );
+			self::reject( $form_id );
 		}
 		
 		// minimum time: 2 seconds per required field
 		$minimum = \count( Data::get_instance()->get_required_fields( $form_id ) ) * 2000;
 		
-		// submitted too fast: ignore silently
+		// submitted too fast
 		if ( $elapsed < $minimum ) {
-			\wp_send_json_success();
+			self::reject( $form_id );
 		}
 	}
 	
@@ -203,6 +192,28 @@ final class Time_Honeypot {
 		}
 		
 		echo \wp_get_inline_script_tag( self::get_script() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+	
+	/**
+	 * Reject a submission flagged by the time-based honeypot.
+	 * 
+	 * @since	1.9.0
+	 * 
+	 * @param	string	$form_id The form ID
+	 */
+	private static function reject( string $form_id ): void {
+		/**
+		 * Fires when a submission is flagged as suspicious by the time-based honeypot.
+		 * 
+		 * @since	1.8.0
+		 * 
+		 * @param	string	$form_id The form ID
+		 */
+		\do_action( 'form_block_time_honeypot_triggered', $form_id );
+		
+		\wp_send_json_error( [
+			'message' => \esc_html__( 'Your submission was flagged as suspicious activity. Please try submitting again.', 'form-block' ),
+		] );
 	}
 	
 	/**

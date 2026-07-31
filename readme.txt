@@ -113,6 +113,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * Fixed: Busy state of the delete button for submissions and lost focus after deleting a submission
 * Fixed: Respect the reduced motion preference for the loading indicator and the snackbar
 * Fixed: Announcing decorative separators of a date with separate fields to screen readers
+* Fixed: Submissions rejected by the time-based spam protection are reported as an error instead of a success
 
 = 1.8.0 =
 * Added: Time-based honeypot to reject spam submissions that are sent implausibly fast or that match common bot timing patterns (can be disabled in the settings)

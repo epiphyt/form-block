@@ -20,6 +20,34 @@ final class TimeHoneypotTest extends TestCase {
 		);
 	}
 
+	public function test_check_does_nothing_when_disabled(): void {
+		Functions\when( 'get_option' )->justReturn( '' );
+		Functions\when( 'wp_send_json_error' )->alias( static function() {
+			throw new \RuntimeException( 'rejected' );
+		} );
+
+		Time_Honeypot::check( 'form-1' );
+
+		$this->assertTrue( true, 'a disabled honeypot must not reject a submission' );
+	}
+
+	public function test_check_rejects_instead_of_reporting_success(): void {
+		Functions\when( 'get_option' )->justReturn( 'yes' );
+		Functions\when( 'wp_send_json_error' )->alias( static function() {
+			throw new \RuntimeException( 'rejected' );
+		} );
+		// a silent success would discard the submission without telling the visitor
+		Functions\when( 'wp_send_json_success' )->alias( static function() {
+			throw new \LogicException( 'submission was silently discarded' );
+		} );
+
+		$_POST = [];
+
+		$this->expectException( \RuntimeException::class );
+
+		Time_Honeypot::check( 'form-1' );
+	}
+
 	public function test_is_enabled_true_by_default(): void {
 		Functions\when( 'get_option' )->justReturn( 'yes' );
 
