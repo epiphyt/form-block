@@ -108,6 +108,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 * Fixed: Announcing inline validation errors to screen readers
 * Fixed: Naming the invalid fields in the form error summary for screen readers
 * Fixed: Stripped ARIA attributes and custom option labels in form markup for users without the unfiltered_html capability
+* Fixed: Table header semantics and responsive layout of the feature comparison table
 
 = 1.8.0 =
 * Added: Time-based honeypot to reject spam submissions that are sent implausibly fast or that match common bot timing patterns (can be disabled in the settings)

@@ -56,6 +56,24 @@
 	}
 }
 
+.form-block__compare-table--buttons {
+	display: flex;
+	flex-flow: row wrap;
+	gap: .3em;
+	
+	@media only screen and (min-width: 768px) {
+		flex-wrap: nowrap;
+	}
+	
+	> .button {
+		margin-bottom: 0;
+	}
+}
+
+.form-block__compare-table--container {
+	overflow: auto;
+}
+
 .form-block__content-wrapper {
 	max-width: 692px;
 }
