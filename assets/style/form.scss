@@ -81,7 +81,10 @@
 }
 
 .form-block__loading-indicator {
-	animation: loading 1s linear infinite;
+	@media not (prefers-reduced-motion) {
+		animation: loading 1s linear infinite;
+	}
+	
 	display: inline-block;
 	height: 1em;
 	margin-right: .3em;

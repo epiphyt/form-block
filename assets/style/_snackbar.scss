@@ -35,9 +35,12 @@
 	}
 	
 	&.is-init {
+		@media not (prefers-reduced-motion) {
+			transition: height .3s cubic-bezier(0, 0, .2, 1), opacity .25s cubic-bezier(0, 0, .2, 1) .05s;
+		}
+		
 		height: 0;
 		opacity: 0;
-		transition: height .3s cubic-bezier(0, 0, .2, 1), opacity .25s cubic-bezier(0, 0, .2, 1) .05s;
 	}
 	
 	&.is-open {
@@ -46,7 +49,10 @@
 	}
 	
 	&.is-exit {
+		@media not (prefers-reduced-motion) {
+			transition: opacity .1s cubic-bezier(0, 0, .2, 1);
+		}
+		
 		opacity: 0;
-		transition: opacity .1s cubic-bezier(0, 0, .2, 1);
 	}
 }
