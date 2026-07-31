@@ -102,7 +102,13 @@ FormValidator.prototype.tests.url = function ( field, data ) {
 	return this.texts.url;
 };
 
-const adjustMultiFieldErrors = ( data ) => {
+/**
+ * Update the error message of a field that is part of a group.
+ *
+ * @param	{Object}	data Validation result, extended by the field itself
+ * @param	{boolean}	[announce] Whether to announce the message to screen readers
+ */
+const adjustMultiFieldErrors = ( data, announce ) => {
 	const parentField = data.field.closest( '.form-block__element' );
 	let innerError = document.getElementById(
 		data.field.id + '__inline-error'
@@ -126,7 +132,12 @@ const adjustMultiFieldErrors = ( data ) => {
 		'.form-block__label-content'
 	).textContent;
 	innerError.id = data.field.id + '__inline-error';
-	innerError.setAttribute( 'role', 'alert' );
+
+	// set the role before the text so the message is announced once it is added
+	if ( announce ) {
+		innerError.setAttribute( 'role', 'alert' );
+	}
+
 	innerError.textContent = labelContent + ': ' + data.error;
 	innerError.classList.add( 'inline-error' );
 	parentField.classList.add( 'form-error' );
@@ -141,17 +152,59 @@ const adjustMultiFieldErrors = ( data ) => {
 };
 
 /**
- * Turn an inline error message into a live region so screen readers announce it.
+ * Get the visible label text of a form field.
+ *
+ * For a field that is part of a group (eg. a date with separate fields), the
+ * label of the group is used, since the group is what the user perceives as one
+ * field.
+ *
+ * @param	{HTMLElement}	field The form field
+ * @returns	{string} The label text, or an empty string if there is none
+ */
+const getFieldLabel = ( field ) => {
+	const container =
+		field.closest( '.form-block__input-group' ) ||
+		field.closest( '.form-block__element' );
+	const label = container?.querySelector( '.form-block__label-content' );
+
+	return label ? label.textContent.trim() : '';
+};
+
+/**
+ * Get the inline error element belonging to a form field.
+ *
+ * @param	{HTMLElement}	field The form field
+ * @param	{HTMLElement}	[parentField] Element containing the error message
+ * @returns	{?HTMLElement} The inline error element, or null if there is none
+ */
+const getInlineError = ( field, parentField ) => {
+	const fieldToExtend = parentField || field;
+
+	return (
+		document.getElementById( field.id + '__inline-error' ) ||
+		fieldToExtend.parentNode.querySelector( '.inline-error:not([id])' )
+	);
+};
+
+/**
+ * Announce the inline error message of a field to screen readers.
+ *
+ * Only used when a field is validated on its own. On submit, the summary of all
+ * invalid fields is announced instead, so the individual messages have to stay
+ * silent to not talk over it.
  *
  * The validator injects the message together with its container, which means the
  * container is not yet a live region by the time the text arrives. Setting the
  * role and re-inserting the existing content afterwards turns the message into a
  * change inside a live region, which is what actually gets announced.
  *
- * @param	{HTMLElement}	innerError The inline error element
+ * @param	{HTMLElement}	field The form field
+ * @param	{HTMLElement}	[parentField] Element containing the error message
  */
-const setAlertRole = ( innerError ) => {
-	if ( innerError.getAttribute( 'role' ) === 'alert' ) {
+const announceInlineError = ( field, parentField ) => {
+	const innerError = getInlineError( field, parentField );
+
+	if ( ! innerError || innerError.getAttribute( 'role' ) === 'alert' ) {
 		return;
 	}
 
@@ -160,11 +213,8 @@ const setAlertRole = ( innerError ) => {
 };
 
 const setAriaDescribedBy = ( field, parentField ) => {
-	const fieldToExtend = parentField || field;
 	const errorId = field.id + '__inline-error';
-	const innerError =
-		document.getElementById( errorId ) ||
-		fieldToExtend.parentNode.querySelector( '.inline-error:not([id])' );
+	const innerError = getInlineError( field, parentField );
 
 	// there is no error element if the field has not been marked as invalid
 	if ( ! innerError ) {
@@ -172,8 +222,6 @@ const setAriaDescribedBy = ( field, parentField ) => {
 	}
 
 	innerError.id = errorId;
-
-	setAlertRole( innerError );
 
 	if (
 		! field.hasAttribute( 'aria-describedby' ) ||
@@ -240,6 +288,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						if ( ! result.valid ) {
 							validator.mark( event.target, result.error );
 							setAriaDescribedBy( event.target );
+							announceInlineError( event.target );
 						} else {
 							validator.unmark( event.target );
 						}
@@ -248,7 +297,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					if ( event.target.closest( '.form-block__input-group' ) ) {
 						let data = validator.checkField( event.target );
 						data.field = event.target;
-						adjustMultiFieldErrors( data );
+						adjustMultiFieldErrors( data, true );
 
 						return;
 					}
@@ -257,6 +306,7 @@ document.addEventListener( 'DOMContentLoaded', function () {
 					// undescribed and silent, so wire it up here as well
 					if ( ! result.valid && event.target.type !== 'file' ) {
 						setAriaDescribedBy( event.target );
+						announceInlineError( event.target );
 					}
 
 					const container = event.target.closest(
@@ -288,6 +338,17 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			const fileFields = form.querySelectorAll( '[type="file"]' );
 			let invalidFields = [];
 			const invalidGroups = new Set();
+
+			// on submit, the summary is what gets announced, so stop any message
+			// left over from validating a single field from talking over it
+			// (has to happen before validating, since re-using a message that is
+			// still a live region would announce it right away)
+			for ( const inlineError of form.querySelectorAll(
+				'.inline-error[role="alert"]'
+			) ) {
+				inlineError.removeAttribute( 'role' );
+			}
+
 			const validatorResult = validator.checkAll( this );
 
 			validatorResult.fields
@@ -384,11 +445,33 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						form.appendChild( invalidFieldNotice );
 					}
 
-					invalidFieldNotice.textContent =
+					// list the affected fields, so it is clear what needs
+					// fixing without tabbing through the whole form
+					const invalidFieldLabels = [
+						...new Set(
+							invalidFields
+								.map( ( invalidField ) =>
+									getFieldLabel( invalidField.field )
+								)
+								.filter( ( label ) => label )
+						),
+					];
+					let notice =
 						formBlockValidationData.validationInvalidFieldNotice.replace(
 							'%d',
 							invalidFields.length
 						);
+
+					if ( invalidFieldLabels.length ) {
+						notice +=
+							' ' +
+							formBlockValidationData.validationInvalidFieldList.replace(
+								'%s',
+								invalidFieldLabels.join( ', ' )
+							);
+					}
+
+					invalidFieldNotice.textContent = notice;
 				} else if ( invalidFields.length === 1 ) {
 					invalidFields[ 0 ].field.focus();
 				}

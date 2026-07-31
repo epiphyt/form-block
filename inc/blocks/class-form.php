@@ -407,6 +407,8 @@ final class Form {
 		
 		\wp_register_script( 'form-block-validation', $asset['url'], [ 'form-block-validator' ], $asset['version'], true );
 		\wp_localize_script( 'form-block-validation', 'formBlockValidationData', [
+			/* translators: list of invalid form field titles */
+			'validationInvalidFieldList' => \esc_js( \__( 'Invalid fields: %s', 'form-block' ) ),
 			/* translators: invalid field count */
 			'validationInvalidFieldNotice' => \esc_js( \__( 'Could not submit form because %d fields are invalid.', 'form-block' ) ),
 			'validatorAllFilesTooBig' => \esc_js( \__( 'The uploaded files are too big.', 'form-block' ) ),

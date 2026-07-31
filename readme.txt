@@ -106,6 +106,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 = 1.9.0 =
 * Fixed: Announcing inline validation errors to screen readers
+* Fixed: Naming the invalid fields in the form error summary for screen readers
 
 = 1.8.0 =
 * Added: Time-based honeypot to reject spam submissions that are sent implausibly fast or that match common bot timing patterns (can be disabled in the settings)
