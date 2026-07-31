@@ -300,6 +300,40 @@ final class Form_Block {
 	}
 	
 	/**
+	 * Get global HTML attributes, which are allowed on every element,
+	 * mimicking the private _wp_add_global_attributes().
+	 * 
+	 * @since	1.9.0
+	 * 
+	 * @return	array<string, bool> Global HTML attributes
+	 */
+	private static function get_global_attributes(): array {
+		return [
+			'aria-controls' => true,
+			'aria-current' => true,
+			'aria-describedby' => true,
+			'aria-details' => true,
+			'aria-expanded' => true,
+			'aria-hidden' => true,
+			'aria-invalid' => true,
+			'aria-label' => true,
+			'aria-labelledby' => true,
+			'aria-live' => true,
+			'aria-required' => true,
+			'class' => true,
+			'data-*' => true,
+			'dir' => true,
+			'hidden' => true,
+			'id' => true,
+			'lang' => true,
+			'role' => true,
+			'style' => true,
+			'title' => true,
+			'xml:lang' => true,
+		];
+	}
+	
+	/**
 	 * Get a unique instance of the class.
 	 * 
 	 * @return	\epiphyt\Form_Block\Form_Block The single instance of this class
@@ -448,24 +482,19 @@ final class Form_Block {
 			return $tags;
 		}
 		
-		$tags['form'] = [
+		$global_attributes = self::get_global_attributes();
+		$tags['form'] = \array_merge( $global_attributes, [
 			'accept' => true,
 			'accept-charset' => true,
 			'action' => true,
-			'class' => true,
-			'data-*' => true,
 			'enctype' => true,
-			'id' => true,
 			'method' => true,
 			'name' => true,
 			'target' => true,
-		];
-		$tags['input'] = [
+		] );
+		$tags['input'] = \array_merge( $global_attributes, [
 			'autocomplete' => true,
-			'class' => true,
-			'data-*' => true,
 			'disabled' => true,
-			'id' => true,
 			'max' => true,
 			'maxlength' => true,
 			'min' => true,
@@ -481,44 +510,31 @@ final class Form_Block {
 			'step' => true,
 			'type' => true,
 			'value' => true,
-		];
-		$tags['label'] = [
-			'class' => true,
-			'data-*' => true,
+		] );
+		$tags['label'] = \array_merge( $global_attributes, [
 			'for' => true,
-		];
-		$tags['option'] = [
-			'class' => true,
-			'data-*' => true,
+		] );
+		$tags['option'] = \array_merge( $global_attributes, [
 			'disabled' => true,
+			'label' => true,
 			'name' => true,
 			'selected' => true,
 			'value' => true,
-		];
-		$tags['select'] = [
+		] );
+		$tags['select'] = \array_merge( $global_attributes, [
 			'autocomplete' => true,
-			'class' => true,
-			'data-*' => true,
 			'disabled' => true,
-			'id' => true,
 			'multiple' => true,
 			'name' => true,
 			'readonly' => true,
 			'required' => true,
 			'size' => true,
-		];
-		$tags['span'] = [
-			'class' => true,
-			'data-*' => true,
-			'id' => true,
-		];
-		$tags['textarea'] = [
+		] );
+		$tags['span'] = $global_attributes;
+		$tags['textarea'] = \array_merge( $global_attributes, [
 			'autocomplete' => true,
-			'class' => true,
 			'cols' => true,
-			'data-*' => true,
 			'disabled' => true,
-			'id' => true,
 			'label' => true,
 			'maxlength' => true,
 			'minlength' => true,
@@ -531,7 +547,7 @@ final class Form_Block {
 			'type' => true,
 			'value' => true,
 			'wrap' => true,
-		];
+		] );
 		
 		return $tags;
 	}

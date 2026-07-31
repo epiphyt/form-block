@@ -91,6 +91,38 @@ final class FormBlockTest extends TestCase {
 		$this->assertArrayHasKey( 'textarea', $tags );
 	}
 
+	public function test_set_allow_tags_allows_aria_attributes(): void {
+		$tags = Form_Block::get_instance()->set_allow_tags( [], 'post' );
+
+		foreach ( [ 'form', 'input', 'label', 'option', 'select', 'span', 'textarea' ] as $tag ) {
+			$this->assertArrayHasKey( 'aria-describedby', $tags[ $tag ], $tag );
+			$this->assertArrayHasKey( 'aria-hidden', $tags[ $tag ], $tag );
+			$this->assertArrayHasKey( 'aria-invalid', $tags[ $tag ], $tag );
+			$this->assertArrayHasKey( 'aria-label', $tags[ $tag ], $tag );
+			$this->assertArrayHasKey( 'aria-labelledby', $tags[ $tag ], $tag );
+			$this->assertArrayHasKey( 'aria-required', $tags[ $tag ], $tag );
+			$this->assertArrayHasKey( 'role', $tags[ $tag ], $tag );
+		}
+	}
+
+	public function test_set_allow_tags_keeps_element_specific_attributes(): void {
+		$tags = Form_Block::get_instance()->set_allow_tags( [], 'post' );
+
+		$this->assertArrayHasKey( 'enctype', $tags['form'] );
+		$this->assertArrayHasKey( 'required', $tags['input'] );
+		$this->assertArrayHasKey( 'for', $tags['label'] );
+		// the select block uses the label attribute for custom option labels
+		$this->assertArrayHasKey( 'label', $tags['option'] );
+		$this->assertArrayHasKey( 'multiple', $tags['select'] );
+		$this->assertArrayHasKey( 'rows', $tags['textarea'] );
+	}
+
+	public function test_set_allow_tags_keeps_global_attributes_of_other_tags(): void {
+		$tags = Form_Block::get_instance()->set_allow_tags( [ 'p' => [ 'class' => true ] ], 'post' );
+
+		$this->assertSame( [ 'class' => true ], $tags['p'] );
+	}
+
 	public function test_get_maximum_upload_size_returns_server_limit_when_unset(): void {
 		Functions\when( 'get_option' )->justReturn( Form_Block::MAX_INT );
 		Functions\when( 'wp_max_upload_size' )->justReturn( 1000 );
