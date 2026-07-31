@@ -103,8 +103,8 @@ final class Admin {
 		$maximum_upload_size = \floor( \wp_max_upload_size() / 1024 / 1024 * 100 ) / 100;
 		$option_value = \get_option( 'form_block_maximum_upload_size' );
 		?>
-		<input type="number" id="form_block_maximum_upload_size" name="form_block_maximum_upload_size" value="<?php echo \esc_attr( $option_value ); ?>" step=".01" min="0" max="<?php echo \esc_attr( (string) $maximum_upload_size ); ?>" class="small-text" /> <?php \esc_html_e( 'MiB', 'form-block' ); ?>
-		<p>
+		<input type="number" id="form_block_maximum_upload_size" name="form_block_maximum_upload_size" value="<?php echo \esc_attr( $option_value ); ?>" step=".01" min="0" max="<?php echo \esc_attr( (string) $maximum_upload_size ); ?>" class="small-text" aria-describedby="form_block_maximum_upload_size_description" /> <?php \esc_html_e( 'MiB', 'form-block' ); ?>
+		<p id="form_block_maximum_upload_size_description">
 			<?php
 			/* translators: upload size limit */
 			\printf( \esc_html__( 'Your server is capable of uploads in size of %s MiB. Please keep in mind that your mail server could have other (lower) limits.', 'form-block' ), \esc_html( \number_format_i18n( $maximum_upload_size, 2 ) ) );
@@ -227,10 +227,10 @@ final class Admin {
 		$option_value = \get_option( 'form_block_preserve_data_on_uninstall' );
 		?>
 		<label>
-			<input type="checkbox" id="form_block_preserve_data_on_uninstall" name="form_block_preserve_data_on_uninstall" value="yes"<?php \checked( $option_value, 'yes' ) ?>/>
+			<input type="checkbox" id="form_block_preserve_data_on_uninstall" name="form_block_preserve_data_on_uninstall" value="yes"<?php \checked( $option_value, 'yes' ) ?> aria-describedby="form_block_preserve_data_on_uninstall_description"/>
 			<?php \esc_html_e( 'Preserve data on uninstall', 'form-block' ); ?>
 		</label>
-		<p><?php \esc_html_e( 'By enabling this option, all plugin data is preserved on uninstall.', 'form-block' ); ?></p>
+		<p id="form_block_preserve_data_on_uninstall_description"><?php \esc_html_e( 'By enabling this option, all plugin data is preserved on uninstall.', 'form-block' ); ?></p>
 		<?php
 	}
 	
