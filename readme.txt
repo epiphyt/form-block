@@ -104,6 +104,9 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
+= 1.9.0 =
+* Fixed: Announcing inline validation errors to screen readers
+
 = 1.8.0 =
 * Added: Time-based honeypot to reject spam submissions that are sent implausibly fast or that match common bot timing patterns (can be disabled in the settings)
 * Added: Flood control to only allow one request every X seconds (default: 30 seconds)

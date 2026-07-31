@@ -126,6 +126,7 @@ const adjustMultiFieldErrors = ( data ) => {
 		'.form-block__label-content'
 	).textContent;
 	innerError.id = data.field.id + '__inline-error';
+	innerError.setAttribute( 'role', 'alert' );
 	innerError.textContent = labelContent + ': ' + data.error;
 	innerError.classList.add( 'inline-error' );
 	parentField.classList.add( 'form-error' );
@@ -139,13 +140,40 @@ const adjustMultiFieldErrors = ( data ) => {
 	data.field.ariaInvalid = true;
 };
 
+/**
+ * Turn an inline error message into a live region so screen readers announce it.
+ *
+ * The validator injects the message together with its container, which means the
+ * container is not yet a live region by the time the text arrives. Setting the
+ * role and re-inserting the existing content afterwards turns the message into a
+ * change inside a live region, which is what actually gets announced.
+ *
+ * @param	{HTMLElement}	innerError The inline error element
+ */
+const setAlertRole = ( innerError ) => {
+	if ( innerError.getAttribute( 'role' ) === 'alert' ) {
+		return;
+	}
+
+	innerError.setAttribute( 'role', 'alert' );
+	innerError.replaceChildren( ...innerError.childNodes );
+};
+
 const setAriaDescribedBy = ( field, parentField ) => {
 	const fieldToExtend = parentField || field;
 	const errorId = field.id + '__inline-error';
 	const innerError =
 		document.getElementById( errorId ) ||
 		fieldToExtend.parentNode.querySelector( '.inline-error:not([id])' );
+
+	// there is no error element if the field has not been marked as invalid
+	if ( ! innerError ) {
+		return;
+	}
+
 	innerError.id = errorId;
+
+	setAlertRole( innerError );
 
 	if (
 		! field.hasAttribute( 'aria-describedby' ) ||
@@ -223,6 +251,12 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						adjustMultiFieldErrors( data );
 
 						return;
+					}
+
+					// checkField() marks the field but leaves the error message
+					// undescribed and silent, so wire it up here as well
+					if ( ! result.valid && event.target.type !== 'file' ) {
+						setAriaDescribedBy( event.target );
 					}
 
 					const container = event.target.closest(
@@ -375,6 +409,10 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						'.form-block__label-content'
 					);
 					const inlineError = block.querySelector( '.inline-error' );
+
+					if ( ! inlineError || ! label ) {
+						continue;
+					}
 
 					inlineError.textContent = invalidField.field
 						.getAttribute( 'data-validate-text-invalid' )
