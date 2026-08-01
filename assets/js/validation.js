@@ -501,6 +501,19 @@ document.addEventListener( 'DOMContentLoaded', function () {
 						.getAttribute( 'data-validate-text-invalid' )
 						.replace( '{field}', label.textContent );
 				}
+
+				// let extensions react to a failed submit once the fields are fully
+				// marked up, instead of having to guess when that has happened
+				form.dispatchEvent(
+					new CustomEvent( 'formBlock:validationFailed', {
+						bubbles: true,
+						detail: {
+							fields: invalidFields.map(
+								( invalidField ) => invalidField.field
+							),
+						},
+					} )
+				);
 			} else if (
 				! form.hasAttribute( 'data-no-ajax' ) ||
 				! form.getAttribute( 'data-no-ajax' )
