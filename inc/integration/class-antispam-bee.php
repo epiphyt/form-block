@@ -3,8 +3,7 @@ declare( strict_types = 1 );
 
 namespace epiphyt\Form_Block\integration;
 
-use AntispamBee\Handlers\Rules;
-use AntispamBee\Helpers\SpamReasonTextHelper;
+use AntispamBee\Api\SpamCheck;
 use epiphyt\Form_Block\Admin;
 use epiphyt\Form_Block\Form_Block;
 use epiphyt\Form_Block\form_data\Data;
@@ -54,8 +53,32 @@ final class Antispam_Bee {
 	public function init(): void {
 		\add_action( 'admin_init', [ $this, 'register_settings' ] );
 		\add_action( 'plugins_loaded', [ $this, 'integrate' ] );
+		\add_filter( 'antispam_bee_default_options', [ $this, 'add_default_options' ] );
 		\add_filter( 'antispam_bee_disallow_ajax_calls', [ $this, 'allow_ajax_init' ] );
 		\add_filter( 'form_block_submission_data_before', [ $this, 'get_spam_reasons' ], 10, 2 );
+	}
+	
+	/**
+	 * Activate the opted-in rules for our reaction type by default.
+	 * 
+	 * Without defaults, no rule is active for a newly registered reaction type,
+	 * so submissions would not be checked until an administrator enables rules on
+	 * the Antispam Bee settings page. Defaults only apply as long as the reaction
+	 * type has not been saved there, so a rule that was disabled stays disabled.
+	 * 
+	 * @param	array	$defaults Current default options per reaction type
+	 * @return	array Updated default options
+	 */
+	public function add_default_options( array $defaults ): array {
+		$reaction_defaults = [];
+		
+		foreach ( self::get_rule_slugs() as $slug ) {
+			$reaction_defaults[ 'rule_' . \str_replace( '-', '_', $slug ) . '_active' ] = 'on';
+		}
+		
+		$defaults[ self::get_reaction_type() ] = $reaction_defaults;
+		
+		return $defaults;
 	}
 	
 	/**
@@ -116,29 +139,28 @@ final class Antispam_Bee {
 			return;
 		}
 		
-		$reaction_type = self::get_reaction_type();
 		$item = [
 			'author' => '',
 			'body' => $content,
 			'email' => $email,
-			'ip' => \sanitize_text_field( \wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '' ) ),
-			'reaction_type' => $reaction_type,
 			'url' => $this->get_url_field_value( $fields, $fields_config ),
-			'useragent' => \sanitize_text_field( \wp_unslash( $_SERVER['HTTP_USER_AGENT'] ?? '' ) ),
 		];
 		
 		/**
 		 * Filter the item that is passed to Antispam Bee.
 		 * 
+		 * The remaining attributes Antispam Bee knows about – the IP address, the
+		 * user agent and the host of the URL – are filled in by its API.
+		 * 
 		 * @since	1.8.0
 		 * 
-		 * @param	array	$item The mapped item with comment-shaped keys
+		 * @param	array	$item The item attributes
 		 * @param	array	$fields Validated fields
 		 * @param	string	$form_id The form ID
 		 */
 		$item = (array) \apply_filters( 'form_block_antispam_bee_item', $item, $fields, $form_id );
 		
-		$rules = new Rules( $reaction_type ); // @phpstan-ignore class.notFound
+		$result = SpamCheck::check( $item, self::get_reaction_type() ); // @phpstan-ignore class.notFound
 		
 		/**
 		 * Filter whether the submission is considered spam.
@@ -146,16 +168,16 @@ final class Antispam_Bee {
 		 * @since	1.8.0
 		 * 
 		 * @param	bool	$is_spam Whether the submission is spam
-		 * @param	array	$item The mapped item
+		 * @param	array	$item The item attributes
 		 * @param	string	$form_id The form ID
 		 */
-		$is_spam = (bool) \apply_filters( 'form_block_antispam_bee_is_spam', $rules->apply( $item ), $item, $form_id ); // @phpstan-ignore class.notFound
+		$is_spam = (bool) \apply_filters( 'form_block_antispam_bee_is_spam', $result->is_spam(), $item, $form_id );
 		
 		if ( ! $is_spam ) {
 			return;
 		}
 		
-		$reasons = $rules->get_spam_reasons(); // @phpstan-ignore class.notFound
+		$reasons = $result->get_reasons();
 		
 		/**
 		 * Fires when a submission is detected as spam.
@@ -285,8 +307,8 @@ final class Antispam_Bee {
 			return $content;
 		}
 		
-		if ( self::is_available() && \class_exists( '\AntispamBee\Helpers\SpamReasonTextHelper' ) ) {
-			$reasons = SpamReasonTextHelper::get_texts_by_slugs( $reasons );
+		if ( self::is_available() ) {
+			$reasons = SpamCheck::get_reason_texts( $reasons ); // @phpstan-ignore class.notFound
 		}
 		
 		return $content . \sprintf(
@@ -350,7 +372,7 @@ final class Antispam_Bee {
 	 * @return	bool Whether Antispam Bee (version 3 or higher) is active
 	 */
 	public static function is_available(): bool {
-		return \class_exists( '\AntispamBee\Handlers\Rules' );
+		return \class_exists( '\AntispamBee\Api\SpamCheck' );
 	}
 	
 	/**
@@ -429,5 +451,8 @@ final class Antispam_Bee {
 			<?php \esc_html_e( 'Check form submissions for spam via Antispam Bee', 'form-block' ); ?>
 		</label>
 		<?php
+		if ( self::is_enabled() && ! SpamCheck::has_active_rules( self::get_reaction_type() ) ) { // @phpstan-ignore class.notFound
+			echo '<p class="description">' . \esc_html__( 'No Antispam Bee rule is currently enabled for form submissions, so nothing is checked. Enable at least one rule on the Antispam Bee settings page.', 'form-block' ) . '</p>';
+		}
 	}
 }
