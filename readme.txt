@@ -2,8 +2,8 @@
 Contributors: epiphyt, kittmedia
 Tags: form, contact form, gutenberg, block editor, accessibility
 Requires at least: 6.7
-Stable tag: 1.8.0
-Tested up to: 7.0
+Stable tag: 1.8.1
+Tested up to: 7.1
 Requires PHP: 7.4
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -94,9 +94,15 @@ Yes, there is a Pro version with enhanced functionality. Lean more at [https://f
 
 The code is open source and hosted on [GitHub](https://github.com/epiphyt/form-block). Read the [contributing guide](https://github.com/epiphyt/form-block/blob/main/CONTRIBUTING.md) for detailed information.
 
+= Is Form Block accessible? =
+
+Yes. During development, I test each feature against the Web Content Accessibility Guidelines (WCAG). You can find the [Accessibility Conformance Report](https://docs.epiph.yt/form-block/acr/free.html) in the documentation.
+
+If you find an issue, please don't hesitate to contact me via the support forums or via my [contact page](https://epiph.yt/en/contact/).
+
 = Who are you, folks? =
 
-We are [Epiphyt](https://epiph.yt/en/), your friendly neighborhood WordPress plugin shop from southern Germany.
+[Epiphyt](https://epiph.yt/en/) is your friendly neighborhood WordPress plugin shop from southern Germany.
 
 = How can I report security bugs? =
 
@@ -104,7 +110,7 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Changelog ==
 
-= 1.9.0 =
+= 1.8.1 =
 * Fixed: Announcing inline validation errors to screen readers
 * Fixed: Naming the invalid fields in the form error summary for screen readers
 * Fixed: Stripped ARIA attributes and custom option labels in form markup for users without the unfiltered_html capability
