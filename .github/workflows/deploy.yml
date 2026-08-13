@@ -89,6 +89,15 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - run: scp ${{ github.event.repository.name }}.zip ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_PATH_BASE }}/impressum-${{ github.ref_name }}.zip
+      - name: Publish Composer package
+        run: |
+          curl --fail-with-body -sS -X POST \
+            -u "${{ secrets.COMPOSER_PACKAGES_USER }}:${{ secrets.COMPOSER_PACKAGES_PASSWORD }}" \
+            -F "name=${{ github.event.repository.name }}" \
+            -F "version=${GITHUB_REF_NAME#v}" \
+            -F "authentication_required=true" \
+            -F "file=@${{ github.event.repository.name }}.zip" \
+            "${{ secrets.COMPOSER_PACKAGES_URL }}/wp-json/composer-packages/v1/packages"
       # Create artifacts
       - uses: actions/upload-artifact@v7
         with:
