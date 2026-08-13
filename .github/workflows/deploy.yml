@@ -95,7 +95,7 @@ jobs:
             -u "${{ secrets.COMPOSER_PACKAGES_USER }}:${{ secrets.COMPOSER_PACKAGES_PASSWORD }}" \
             -F "name=${{ github.event.repository.name }}" \
             -F "version=${GITHUB_REF_NAME#v}" \
-            -F "authentication_required=true" \
+            -F "authentication_required=false" \
             -F "file=@${{ github.event.repository.name }}.zip" \
             "${{ secrets.COMPOSER_PACKAGES_URL }}/wp-json/composer-packages/v1/packages"
       # Create artifacts
