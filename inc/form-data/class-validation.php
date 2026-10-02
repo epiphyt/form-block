@@ -258,7 +258,12 @@ final class Validation {
 				] );
 			}
 			
-			$array[ \sanitize_key( $key ) ] = $value;
+			$sanitized_key = \sanitize_key( $key );
+			$array[ $sanitized_key ] = $value;
+			
+			if ( $sanitized_key !== $key ) {
+				unset( $array[ $key ] );
+			}
 		}
 		
 		return $array;

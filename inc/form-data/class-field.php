@@ -123,7 +123,10 @@ final class Field {
 			$increment_keys = \array_key_first( $value ) === 0;
 			
 			if ( $format_type === 'html' && $level === 0 ) {
-				$output .= "<dt>{$prefix}{$label}:</dt>" . \PHP_EOL;
+				$output .= '<dt>' . $prefix . \esc_html( $label ) . ':</dt>' . \PHP_EOL;
+			}
+			else if ( $format_type === 'escape' ) {
+				$output .= $prefix . \esc_html( $label ) . \PHP_EOL;
 			}
 			else {
 				$output .= "{$prefix}{$label}:" . \PHP_EOL;
@@ -140,7 +143,10 @@ final class Field {
 				$value_output = self::format_output( $sub_value, $key, $field, $level + 1, $format_type );
 				
 				if ( $format_type === 'html' && $level === 0 ) {
-					$output .= '<dd>' . \trim( $value_output ) . '</dd>' . \PHP_EOL;
+					$output .= '<dd>' . \esc_html( \trim( $value_output ) ) . '</dd>' . \PHP_EOL;
+				}
+				else if ( $format_type === 'escape' ) {
+					$output .= \esc_html( $value_output );
 				}
 				else {
 					$output .= $value_output;
@@ -160,14 +166,17 @@ final class Field {
 				}
 				
 				if ( $format_type === 'html' ) {
-					$output .= "<dt>{$prefix}{$label}:</dt>" . \PHP_EOL . '<dd>' . $value . '</dd>' . \PHP_EOL;
+					$output .= '<dt>' . $prefix . \esc_html( $label ) . ':</dt>' . \PHP_EOL . '<dd>' . $value . '</dd>' . \PHP_EOL;
+				}
+				else if ( $format_type === 'escape' ) {
+					$output .= $prefix . \esc_html( $label ) . ':' . \PHP_EOL . '<dd>' . $value . '</dd>' . \PHP_EOL;
 				}
 				else {
 					$output .= "{$prefix}{$label}:" . \PHP_EOL . $value . \PHP_EOL;
 				}
 			}
 			else if ( $format_type === 'html' && $level === 0 ) {
-				$field_output = "<dt>{$prefix}{$label}:</dt>" . \PHP_EOL;
+				$field_output = '<dt>' . $prefix . \esc_html( $label ) . ':</dt>' . \PHP_EOL;
 				
 				if ( $field['block_type'] !== 'repeater' ) {
 					$matched_value = self::match_value_with_field_type( $value, $field, $label );
@@ -177,17 +186,17 @@ final class Field {
 						$output_label = $output_parts[0];
 						unset( $output_parts[0] );
 						$output_value = \trim( \implode( ':', $output_parts ) );
-						$field_output = "<dt>{$prefix}{$output_label}:</dt>" . \PHP_EOL;
-						$field_output .= '<dd>' . $output_value . '</dd>' . \PHP_EOL;
+						$field_output = '<dt>' . $prefix . \esc_html( $output_label ) . ':</dt>' . \PHP_EOL;
+						$field_output .= '<dd>' . \esc_html( $output_value ) . '</dd>' . \PHP_EOL;
 					}
 					else {
-						$field_output .= '<dd>' . $value . '</dd>' . \PHP_EOL;
+						$field_output .= '<dd>' . \esc_html( $value ) . '</dd>' . \PHP_EOL;
 					}
 					
 					$output .= $field_output;
 				}
 				else {
-					$output .= "<dt>{$prefix}{$label}:</dt>" . \PHP_EOL;
+					$output .= '<dt>' . $prefix . \esc_html( $label ) . ':</dt>' . \PHP_EOL;
 				}
 			}
 			else if ( $field['block_type'] !== 'repeater' ) {
@@ -195,10 +204,19 @@ final class Field {
 				$value_output = self::match_value_with_field_type( $value, $field, $label );
 				
 				if ( $value_output !== $value ) {
+					if ( $format_type === 'html' || $format_type === 'escape' ) {
+						return $output . \esc_html( $value_output ) . \PHP_EOL;
+					}
+					
 					return $output . $value_output . \PHP_EOL;
 				}
 				else if ( $level === 0 ) {
-					$output .= $label . ': ';
+					if ( $format_type === 'html' || $format_type === 'escape' ) {
+						$output .= \esc_html( $label ) . ': ';
+					}
+					else {
+						$output .= $label . ': ';
+					}
 				}
 				
 				$output .= $value . \PHP_EOL;
@@ -211,7 +229,7 @@ final class Field {
 			return $output;
 		}
 		else if ( $format_type === 'html' ) {
-			$output .= "<dt></dt><dd>{$prefix}{$value}</dd>" . \PHP_EOL;
+			$output .= '<dt></dt><dd>' . $prefix . \esc_html( $value ) . '</dd>' . \PHP_EOL;
 		}
 		else {
 			$output .= "{$prefix}{$value}" . \PHP_EOL;
@@ -521,7 +539,7 @@ final class Field {
 					continue;
 				}
 				
-				$subfields_output = $this->get_output( $field['fields'], $post_fields, $level + 1 );
+				$subfields_output = $this->get_output( $field['fields'], $post_fields, $level + 1, 'escape' );
 				
 				if ( \trim( $subfields_output ) ) {
 					if ( $format_type === 'html' ) {
@@ -625,21 +643,21 @@ final class Field {
 					&& $value !== 'on'
 				) {
 					if ( $format_type === 'html' && $level === 0 ) {
-						$return_value = '<dt>' . \__( 'Selected:', 'form-block' ) . '</dt>';
-						$return_value .= '<dd>' . $value . '</dd>';
+						$return_value = '<dt>' . \esc_html__( 'Selected:', 'form-block' ) . '</dt>';
+						$return_value .= '<dd>' . \esc_html( $value ) . '</dd>';
 					}
 					else {
 						/* translators: form field title or value */
-						$return_value = \sprintf( \__( 'Selected: %s', 'form-block' ), $value );
+						$return_value = \sprintf( \__( 'Selected: %s', 'form-block' ), \esc_html( $value ) );
 					}
 				}
 				else if ( $format_type === 'html' && $level === 0 ) {
-						$return_value = '<dt>' . \__( 'Selected:', 'form-block' ) . '</dt>';
+					$return_value = '<dt>' . \esc_html__( 'Selected:', 'form-block' ) . '</dt>';
 					$return_value .= '<dd>' . $label . '</dd>';
 				}
 				else {
 					/* translators: form field title or value */
-					$return_value = \sprintf( \__( 'Selected: %s', 'form-block' ), $label );
+					$return_value = \sprintf( \esc_html__( 'Selected: %s', 'form-block' ), $label );
 				}
 			}
 			
