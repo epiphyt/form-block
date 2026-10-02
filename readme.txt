@@ -2,7 +2,7 @@
 Contributors: epiphyt, kittmedia
 Tags: form, contact form, gutenberg, block editor, accessibility
 Requires at least: 6.7
-Stable tag: 1.8.1
+Stable tag: 1.8.2
 Tested up to: 7.1
 Requires PHP: 7.4
 License: GPL2
@@ -109,6 +109,9 @@ If you find an issue, please don't hesitate to contact me via the support forums
 You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/form-block)
 
 == Changelog ==
+
+= 1.8.2 =
+* Fixed: Escaping of label data in the form submission list in the backend
 
 = 1.8.1 =
 * Fixed: Announcing inline validation errors to screen readers
